@@ -44,16 +44,17 @@ export default function RootLayout() {
   }
 
   return (
-    <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+    <ThemeProvider value={colorScheme === "light" ? DefaultTheme : DarkTheme}>
       <QueryClientProvider client={queryClient}>
         <PaperProvider>
           <Stack>
             <Stack.Screen name="(onbording)" options={{ headerShown: false }} />
             <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+            <Stack.Screen name="(dashboard)" options={{ headerShown: false }} />
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
             <Stack.Screen name="+not-found" />
           </Stack>
-          <StatusBar style="dark" />
+          <StatusBar style="light" />
         </PaperProvider>
       </QueryClientProvider>
     </ThemeProvider>

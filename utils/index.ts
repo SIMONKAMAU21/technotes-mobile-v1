@@ -11,14 +11,23 @@ export async function getUserToken() {
     console.error("Failed to retrieve token:", error);
   }
 }
-
+export async function signOut() {
+  await SecureStore.deleteItemAsync("userToken");
+  await SecureStore.deleteItemAsync("userData");
+}
 export async function setUserToken(token: string) {
   await SecureStore.setItemAsync("userToken", token);
 }
 
 export async function setUser(user: UserData) {
   const userString = JSON.stringify(user);
-  await SecureStore.getItemAsync("userData", userString);
+  await SecureStore.setItemAsync("userData", userString);
+}
+interface UserData {
+  id: string;
+  name: string;
+  email: string;
+  role: 'admin' | 'teacher' | 'student';
 }
 
 export const useUserData = () => {
@@ -26,21 +35,21 @@ export const useUserData = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
-    setIsLoading(true);
-    useEffect(() => {
-      const fetchData = async () => {
-        try {
-          const userData = await SecureStore.getItemAsync("userData");
-          if (userData) {
-            setUser(JSON.parse(userData));
-          }
-        } catch (error) {
-          console.log(error);
-        } finally {
-          setIsLoading(false);
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsLoading(true);
+      try {
+        const userData = await SecureStore.getItemAsync("userData");
+        if (userData) {
+          setUser(JSON.parse(userData));
         }
-      };
-      fetchData();
-    }, []);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
   return { user, isLoading, error };
 };

@@ -6,10 +6,11 @@ import { router } from "expo-router";
 import React, { useState } from "react";
 import { TextInput, View, Text, SafeAreaView, ScrollView } from "react-native";
 import { useLogin } from "./data";
+import { setUser, setUserToken } from "@/utils";
 
 const SignIn = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("admin24@gmail.com");
+  const [password, setPassword] = useState("demo123");
   const [loading, setLoading] = useState(false);
   const { mutate: mutateLogin } = useLogin();
 
@@ -23,11 +24,12 @@ const SignIn = () => {
 
       mutateLogin(payload, {
         onSuccess: (response: any) => {
-            console.log('response', response)
+          setUser(response.user)
+          setUserToken(response.token)
           // Based on user role, redirect to appropriate dashboard
           switch (response.user.role) {
             case "admin":
-              router.replace("/dashboard/admin" as any);
+              router.replace("/(dashboard)/admin" as any);
               break;
             case "teacher":
               router.replace("/dashboard/teacher" as any);
@@ -45,9 +47,8 @@ const SignIn = () => {
         },
         onSettled: () => {
           setLoading(false);
-        }
+        },
       });
-
     } catch (error) {
       console.error("Sign in error:", error);
       setLoading(false);
