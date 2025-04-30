@@ -19,6 +19,7 @@ export function ThemedText({
 
   return (
     <Text
+    className='text-red'
       style={[
         { color },
         type === 'default' ? styles.default : undefined,
