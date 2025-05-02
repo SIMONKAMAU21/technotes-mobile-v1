@@ -19,7 +19,7 @@ export const CustomButton = ({
     <Button
       mode={mode}
       onPress={onPress}
-      style={style}
+      style={[style, {backgroundColor: '#EF8F02'}]}
     >
       {children}
     </Button>
