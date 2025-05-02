@@ -13,7 +13,7 @@ export const HeaderWithIcon = ({ title, showBackButton = true }: HeaderWithIconP
   const router = useRouter();
 
   return (
-    <View className="flex-row items-center justify-between w-full  mt-5 px-4 py-2 mt-[5%] bg-white">
+    <View className="flex-row items-center justify-between w-full  px-4 py-2 bg-white">
       <View className="flex-row items-center justify-between gap-2 w-full">
         {showBackButton && (
           <TouchableOpacity onPress={() => router.back()}>

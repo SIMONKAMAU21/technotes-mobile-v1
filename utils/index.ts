@@ -11,10 +11,10 @@ export async function getUserToken() {
     console.error("Failed to retrieve token:", error);
   }
 }
-export async function signOut() {
-  await SecureStore.deleteItemAsync("userToken");
-  await SecureStore.deleteItemAsync("userData");
-}
+// export async function signOut() {
+//   await SecureStore.deleteItemAsync("userToken");
+//   await SecureStore.deleteItemAsync("userData");
+// }
 export async function setUserToken(token: string) {
   await SecureStore.setItemAsync("userToken", token);
 }

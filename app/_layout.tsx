@@ -14,7 +14,7 @@ import { useColorScheme } from "@/hooks/useColorScheme";
 import React from "react";
 import { PaperProvider } from "react-native-paper";
 import { QueryClient, QueryClientProvider } from "react-query";
-// Prevent the splash screen from auto-hiding before asset loading is complete.
+
 SplashScreen.preventAutoHideAsync();
 
 export const queryClient = new QueryClient({
@@ -26,12 +26,12 @@ export const queryClient = new QueryClient({
     },
   },
 });
+
 export default function RootLayout() {
   const colorScheme = useColorScheme();
   const [loaded] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
   });
-
 
   useEffect(() => {
     if (loaded) {
@@ -48,13 +48,18 @@ export default function RootLayout() {
       <QueryClientProvider client={queryClient}>
         <PaperProvider>
           <Stack>
+            {/* Entry routes */}
             <Stack.Screen name="(onbording)" options={{ headerShown: false }} />
             <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-            <Stack.Screen name="(dashboard)" options={{ headerShown: false }} />
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+
+            {/* Role-based dashboards (loaded but routed only via onboarding/login) */}
+            <Stack.Screen name="(admin)" options={{ headerShown: false }} />
+            <Stack.Screen name="(student)" options={{ headerShown: false }} />
+            <Stack.Screen name="(teacher)" options={{ headerShown: false }} />
+
             <Stack.Screen name="+not-found" />
           </Stack>
-          <StatusBar style="light" />
+          <StatusBar style="dark" backgroundColor="white" />
         </PaperProvider>
       </QueryClientProvider>
     </ThemeProvider>

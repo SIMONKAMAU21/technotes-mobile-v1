@@ -3,188 +3,132 @@ import {
   View,
   Text,
   TouchableOpacity,
-  Animated,
-  Dimensions,
+  ScrollView,
 } from "react-native";
-import { useRouter, usePathname, router } from "expo-router";
+import { useRouter, usePathname } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
-import { signOut, useUserData } from "@/utils";
+import { useUserData } from "@/utils";
 
-interface SidebarItem {
+interface TabItem {
   title: string;
   icon: keyof typeof Ionicons.glyphMap;
   path: string;
   roles: ("admin" | "teacher" | "student")[];
-  onClick?: () => void;
 }
 
-const sidebarItems: SidebarItem[] = [
+const tabItems: TabItem[] = [
   // Admin items
   {
-    title: "Overview", 
+    title: "Overview",
     icon: "home",
-    path: "/", // Removed (dashboard)
+    path: "/",
     roles: ["admin"],
   },
   {
     title: "Users",
     icon: "people", 
-    path: "/users", // Removed (dashboard)
+    path: "/users",
     roles: ["admin"],
   },
   {
     title: "Settings",
     icon: "settings",
-    path: "/settings", // Removed (dashboard)
+    path: "/settings",
     roles: ["admin"],
   },
   // Teacher items
   {
-    title: "My Classes",
+    title: "Classes",
     icon: "book",
-    path: "/teacher/classes", // Removed (dashboard)
+    path: "/teacher/classes",
     roles: ["teacher"],
   },
   {
-    title: "Students",
+    title: "Students", 
     icon: "people",
-    path: "/teacher/students", // Removed (dashboard)
+    path: "/teacher/students",
     roles: ["teacher"],
   },
   {
     title: "Assignments",
     icon: "document-text",
-    path: "/teacher/assignments", // Removed (dashboard)
+    path: "/teacher/assignments",
     roles: ["teacher"],
   },
   // Student items
   {
-    title: "My Courses",
+    title: "Courses",
     icon: "book",
-    path: "/student/courses", // Removed (dashboard)
+    path: "/student/courses",
     roles: ["student"],
   },
   {
     title: "Assignments",
-    icon: "document-text",
-    path: "/student/assignments", // Removed (dashboard)
+    icon: "document-text", 
+    path: "/student/assignments",
     roles: ["student"],
   },
   {
     title: "Grades",
     icon: "bar-chart",
-    path: "/student/grades", // Removed (dashboard)
+    path: "/student/grades",
     roles: ["student"],
-  },
-  {
-    title: "Logout",
-    icon: "log-out",
-    path: "/logout",
-    roles: ["student", "teacher", "admin"],
-    onClick: () => {
-      // Call logout function
-      signOut();
-      router.push("/(auth)/signIn");
-    }
   },
 ];
 
-interface SidebarProps {
+interface TabBarProps {
   isDarkMode?: boolean;
-  isVisible: boolean;
-  onClose: () => void;
 }
 
-export const Sidebar: React.FC<SidebarProps> = ({
+export const TabBar: React.FC<TabBarProps> = ({
   isDarkMode = false,
-  isVisible,
-  onClose,
 }) => {
   const router = useRouter();
   const pathname = usePathname();
-  console.log("Current pathname:", pathname);
   const { user } = useUserData();
 
   if (!user) return null;
 
-  const filteredItems = sidebarItems.filter((item) =>
+  const filteredTabs = tabItems.filter((item) =>
     item.roles.includes(user.role)
   );
 
-  const handleNavigate = (path: string) => {
-    onClose();
-    router.push(path as any);
-  };
-
   return (
-    <>
-      {isVisible && (
-        <View
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            zIndex: 1000,
-          }}
-        >
+    <ScrollView 
+      horizontal
+      showsHorizontalScrollIndicator={false}
+      className={`${isDarkMode ? 'bg-gray-800' : 'bg-white'} py-2`}
+    >
+      {filteredTabs.map((tab) => {
+        const isActive = pathname === tab.path;
+        return (
           <TouchableOpacity
-            activeOpacity={1}
-            onPress={onClose}
-            className="flex-1 bg-black/50"
+            key={tab.path}
+            onPress={() => router.push(tab.path as any)}
+            className={`px-4 py-2 mx-1 rounded-full flex-row items-center ${
+              isActive ? 'bg-[#E9EEF6]' : ''
+            }`}
           >
-            <TouchableOpacity
-              activeOpacity={1}
-              onPress={(e) => e.stopPropagation()}
-              className={`w-[50%] h-full ${
-                isDarkMode ? "bg-gray-800" : "bg-gray-100"
-              }`}
+            <Ionicons
+              name={tab.icon}
+              size={20}
+              color={isActive ? '#EF8F02' : isDarkMode ? 'white' : 'black'}
+              className="mr-1"
+            />
+            <Text
+              className={`${
+                isActive
+                  ? 'text-[#EF8F02]'
+                  : isDarkMode
+                  ? 'text-white'
+                  : 'text-gray-900'
+              } font-medium`}
             >
-              <View className="">
-                <View className="space-y-2">
-                  {filteredItems.map((item) => {
-                    const isActive = pathname === item?.path;
-                    console.log("Path comparison:", item?.path, pathname, isActive);
-                    return (
-                      <TouchableOpacity
-                        key={item.path}
-                        onPress={() => {
-                            if (item.onClick) {
-                              item.onClick(); // call logout or any custom action
-                            } else {
-                              handleNavigate(item.path);
-                            }
-                          }}                        className={`flex-row items-center p-3 rounded-lg ${
-                          isDarkMode ? "hover:bg-gray-500" : "hover:bg-gray-200"
-                        }`}
-                      >
-                        <View className={`flex-row ${isActive ? 'bg-[#E9EEF6]' : ''} p-3 rounded-lg w-full items-center`}>
-                          <Ionicons
-                            name={item.icon}
-                            size={24}
-                            color={isActive ? "#EF8F02" : (isDarkMode ? "white" : "black")}
-                            className="mr-3"
-                          />
-                          <Text
-                            className={`${
-                              isActive 
-                                ? "text-[#EF8F02]"
-                                : (isDarkMode ? "text-[#EF8F02]" : "text-gray-900")
-                            } font-bold`}
-                          >
-                            {item.title}
-                          </Text>
-                        </View>
-                      </TouchableOpacity>
-                    );
-                  })}
-                </View>
-              </View>
-            </TouchableOpacity>
+              {tab.title}
+            </Text>
           </TouchableOpacity>
-        </View>
-      )}
-    </>
+        );
+      })}
+    </ScrollView>
   );
 };

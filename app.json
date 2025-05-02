@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "schoolmanagmen-v1",
-    "slug": "schoolmanagmen-v1",
+    "name": "Technote",
+    "slug": "Technote",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/school2.png",
@@ -10,7 +10,7 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.jahnnet.schoolmanagmenv1",
+      "bundleIdentifier": "com.jahnnet.Technote",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
       }
@@ -20,7 +20,7 @@
         "foregroundImage": "./assets/images/school2.png",
         "backgroundColor": "#000000"
       },
-      "package": "com.jahnnet.schoolmanagmenv1"
+      "package": "com.jahnnet.Technote"
     },
     "web": {
       "bundler": "metro",

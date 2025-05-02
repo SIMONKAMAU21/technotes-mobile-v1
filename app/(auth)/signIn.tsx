@@ -29,7 +29,7 @@ const SignIn = () => {
           // Based on user role, redirect to appropriate dashboard
           switch (response.user.role) {
             case "admin":
-              router.replace("/(dashboard)/admin" as any);
+              router.replace("(admin)/tabs/dashboard" as any);
               break;
             case "teacher":
               router.replace("/dashboard/teacher" as any);

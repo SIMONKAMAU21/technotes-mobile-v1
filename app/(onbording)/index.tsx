@@ -3,50 +3,45 @@ import {
   View,
   Text,
   Image,
-  TouchableOpacity,
   SafeAreaView,
   ScrollView,
 } from "react-native";
 import { useRouter } from "expo-router";
-import { Button } from "react-native-paper";
 import { CustomButton } from "@/components/ui/customButton";
 import { getUserToken, useUserData } from "@/utils";
 
 export default function OnboardingScreen() {
   const router = useRouter();
-  const {user} = useUserData();
-
+  const { user } = useUserData();
+console.log('user', user)
   useEffect(() => {
     const checkUserData = async () => {
       const userToken = await getUserToken();
-      console.log("userData", user);
+      console.log("user", user);
       if (user && userToken) {
-        if (user) {
-          switch (user.role) {
-            case "admin":
-              router.replace("/(dashboard)/(admin)/index");
-              break;
-            case "teacher":
-              router.replace("/(dashboard)/teacher");
-              break;
-            case "student":
-              router.replace("/(dashboard)/student");
-              break;
-            default:
-              router.replace("/(auth)/signIn");
-          }
+        switch (user.role) {
+          case "admin":
+            router.replace("/(admin)/tabs/dashboard");
+            break;
+          case "teacher":
+            router.replace("/(teacher)/tabs/dashboard");
+            break;
+          case "student":
+            router.replace("/(student)/tabs/dashboard");
+            break;
+          default:
+            router.replace("/(auth)/signIn");
         }
-      }else{
-        router.replace("/(auth)/signIn");
       }
     };
+
     checkUserData();
-  });
+  }, [user]); // Run when `user` changes
 
   return (
     <SafeAreaView className="flex-1 justify-between items-center p-8 bg-white">
       <ScrollView className="flex-1">
-        <View className=" justify-center mt-[50%] items-center">
+        <View className="justify-center mt-[50%] items-center">
           <Image
             source={require("../../assets/images/school2.png")}
             className="w-48 h-48 mb-8"

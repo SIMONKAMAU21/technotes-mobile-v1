@@ -4,26 +4,26 @@ import { CustomButton } from "@/components/ui/customButton";
 import { HeaderWithIcon } from "@/components/ui/headerWithIcon";
 import React, { useState } from 'react';
 
-const StudentDashboard = () => {
-  const [activeSection, setActiveSection] = useState('courses');
+const TeacherDashboard = () => {
+  const [activeSection, setActiveSection] = useState('classes');
 
   const renderSidebar = () => {
     return (
       <View className="w-64 bg-gray-100 h-full p-4">
-        <Text className="text-xl font-bold mb-6">Student Dashboard</Text>
+        <Text className="text-xl font-bold mb-6">Teacher Dashboard</Text>
         <CustomButton 
-          children="My Courses"
-          onPress={() => setActiveSection('courses')}
+          children="My Classes"
+          onPress={() => setActiveSection('classes')}
         //   className="mb-2"
         />
         <CustomButton
-          children="Assignments" 
+          children="Assignments"
           onPress={() => setActiveSection('assignments')}
         //   className="mb-2"
         />
         <CustomButton
-          children="Grades"
-          onPress={() => setActiveSection('grades')}
+          children="Student Progress"
+          onPress={() => setActiveSection('progress')}
         //   className="mb-2"
         />
         <CustomButton
@@ -37,32 +37,32 @@ const StudentDashboard = () => {
 
   const renderContent = () => {
     switch(activeSection) {
-      case 'courses':
+      case 'classes':
         return (
           <View className="p-6">
-            <Text className="text-2xl font-bold">My Courses</Text>
-            <Text className="mt-4">View your enrolled courses and class materials.</Text>
+            <Text className="text-2xl font-bold">My Classes</Text>
+            <Text className="mt-4">View and manage your classes here.</Text>
           </View>
         );
       case 'assignments':
         return (
           <View className="p-6">
             <Text className="text-2xl font-bold">Assignments</Text>
-            <Text className="mt-4">View and submit your assignments.</Text>
+            <Text className="mt-4">Create and manage assignments for your classes.</Text>
           </View>
         );
-      case 'grades':
+      case 'progress':
         return (
           <View className="p-6">
-            <Text className="text-2xl font-bold">Grades</Text>
-            <Text className="mt-4">Check your grades and academic progress.</Text>
+            <Text className="text-2xl font-bold">Student Progress</Text>
+            <Text className="mt-4">Track and analyze student performance.</Text>
           </View>
         );
       case 'resources':
         return (
           <View className="p-6">
-            <Text className="text-2xl font-bold">Learning Resources</Text>
-            <Text className="mt-4">Access study materials and learning resources.</Text>
+            <Text className="text-2xl font-bold">Teaching Resources</Text>
+            <Text className="mt-4">Access teaching materials and resources.</Text>
           </View>
         );
       default:
@@ -77,7 +77,7 @@ const StudentDashboard = () => {
           headerShown: false
         }}
       />
-      <HeaderWithIcon title="Student Dashboard" bgColor="tertiary" />
+      <HeaderWithIcon title="Teacher Dashboard" bgColor="secondary" />
       <View className="flex-1 flex-row">
         {renderSidebar()}
         <View className="flex-1 bg-white">
@@ -88,4 +88,4 @@ const StudentDashboard = () => {
   );
 };
 
-export default StudentDashboard;
+export default TeacherDashboard;

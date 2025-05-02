@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
   }
 });
 
-CustomInput.displayName = "CustomInput";
+
 
 export default CustomInput;
 
