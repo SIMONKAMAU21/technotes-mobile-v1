@@ -3,6 +3,9 @@ import { View, Text, ScrollView, SafeAreaView, ActivityIndicator, TouchableOpaci
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { useGetUsers } from '../../data';
 import { useRouter } from 'expo-router';
+import { CustomButton } from '@/components/ui/customButton';
+import { Ionicons } from '@expo/vector-icons';
+import { Logo } from '@/components/ui/logo';
 
 export default function UsersScreen() {
   const colorScheme = useColorScheme();
@@ -19,31 +22,6 @@ export default function UsersScreen() {
       pathname: '/(admin)/tabs/users/[userdata]',
       params: { userdata: JSON.stringify(user) }
     });
-  };
-
-  const handleEdit = () => {
-    setShowOptions(false);
-    // TODO: Implement edit functionality
-    Alert.alert('Edit User', `Edit ${selectedUser.name}'s details`);
-  };
-
-  const handleDelete = () => {
-    setShowOptions(false);
-    Alert.alert(
-      'Delete User',
-      `Are you sure you want to delete ${selectedUser.name}?`,
-      [
-        { text: 'Cancel', style: 'cancel' },
-        { 
-          text: 'Delete', 
-          style: 'destructive',
-          onPress: () => {
-            // TODO: Implement delete functionality
-            console.log('Delete user:', selectedUser.id);
-          }
-        }
-      ]
-    );
   };
 
   return (
@@ -100,38 +78,17 @@ export default function UsersScreen() {
         </View>
       </ScrollView>
 
-      <Modal
-        visible={showOptions}
-        transparent={true}
-        animationType="fade"
-        onRequestClose={() => setShowOptions(false)}
-      >
-        <TouchableOpacity
-          className="flex-1 bg-black/50 justify-center items-center"
-          activeOpacity={1}
-          onPress={() => setShowOptions(false)}
+      <View className="absolute bottom-6 right-6">
+        <CustomButton
+          onPress={() => router.push('/(admin)/tabs/users/userAdd')}
+          // style={{ borderRadius: 30, width: 60, height: 60 }}
         >
-          <View className={`w-80 rounded-lg ${isDarkMode ? 'bg-gray-800' : 'bg-white'} p-4`}>
-            <Text className={`text-lg font-semibold mb-4 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-              {selectedUser?.name}
-            </Text>
-            
-            <TouchableOpacity
-              onPress={handleEdit}
-              className={`p-3 rounded-md mb-2 ${isDarkMode ? 'bg-blue-600' : 'bg-blue-500'}`}
-            >
-              <Text className="text-white text-center font-medium">Edit User</Text>
-            </TouchableOpacity>
-            
-            <TouchableOpacity
-              onPress={handleDelete}
-              className={`p-3 rounded-md ${isDarkMode ? 'bg-red-600' : 'bg-red-500'}`}
-            >
-              <Text className="text-white text-center font-medium">Delete User</Text>
-            </TouchableOpacity>
+          <View className='flex-row justify-center items-center'>
+          <Logo className='w-10 h-10'/>
+          <Ionicons name="add" size={24} color="white" />
           </View>
-        </TouchableOpacity>
-      </Modal>
+        </CustomButton>
+      </View>
     </SafeAreaView>
   );
 }

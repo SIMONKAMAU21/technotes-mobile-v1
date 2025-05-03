@@ -1,9 +1,9 @@
 import axios from 'axios';
-import { BASE_API_V1_ENDPOINT } from '@/utils/constants/sessions';
+import { BASE_API_V1_ENDPOINT, BASE_API_V1_ENDPOINT_TEST } from '@/utils/constants/sessions';
 import { getUserToken } from '@/utils';
 
 // const token = BASE_TEST_TOKEN;
-
+console.log("BASE_API_V1_ENDPOINT_TEST", BASE_API_V1_ENDPOINT_TEST);
 export const httpV1 = axios.create({
   baseURL: BASE_API_V1_ENDPOINT,
   // headers: {
@@ -15,7 +15,6 @@ httpV1.interceptors.request.use(
   async (config) => {
     // Retrieve the token
     const token = await getUserToken();
-    console.log('token', token);
     // If token exists, set the Authorization header
     if (token) {
       config.headers['Authorization'] = `JWT ${token}`;

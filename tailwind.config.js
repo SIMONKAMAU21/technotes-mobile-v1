@@ -24,6 +24,7 @@ module.exports = {
       colors: {
         primary: '#4299e1', // Blue color
         secondary: '#ed8936', // Orange color
+        bg: '#E9EEF6',
         tertiary: {
           50: 'rgb(var(--color-tertiary-50)/<alpha-value>)',
           100: 'rgb(var(--color-tertiary-100)/<alpha-value>)',

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button } from 'react-native-paper';
+import { Button, Icon } from 'react-native-paper';
 import { StyleProp, ViewStyle } from 'react-native';
 
 interface CustomButtonProps {
@@ -7,6 +7,8 @@ interface CustomButtonProps {
   mode?: 'text' | 'outlined' | 'contained';
   style?: StyleProp<ViewStyle>;
   children: React.ReactNode;
+  disabled?: boolean;
+  loading?: boolean;
 }
 
 export const CustomButton = ({
@@ -14,11 +16,15 @@ export const CustomButton = ({
   mode = 'contained',
   style,
   children,
+  disabled = false,
+  loading = false,
 }: CustomButtonProps) => {
   return (
     <Button
       mode={mode}
       onPress={onPress}
+      disabled={disabled}
+      loading={loading}
       style={[style, {backgroundColor: '#EF8F02'}]}
     >
       {children}

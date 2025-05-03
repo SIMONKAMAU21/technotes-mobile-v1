@@ -5,9 +5,10 @@ import React from "react";
 
 export default function AdminTabsLayout() {
   const pathName = usePathname();
-console.log('pathName', pathName)
+// console.log('pathName', pathName)
     const hiddenPathNames = [
       '/tabs/users/[userdata]',
+      '/tabs/users/userAdd',
 
     ]
     const isHidden = (pathName: string,hiddenPathNames: string[]) => hiddenPathNames.includes(pathName);
@@ -32,7 +33,7 @@ console.log('pathName', pathName)
     screenOptions={({ route }) => ({
       headerShown: false,
       tabBarStyle: ((route)=>{
-        console.log('route', route)
+        // console.log('route', route)
         if(isHidden(pathName, hiddenPathNames)){
           return { display: 'none' }
         }

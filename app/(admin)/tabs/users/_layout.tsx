@@ -6,6 +6,7 @@ export default function UsersLayout() {
     <Stack screenOptions={{ headerShown: false }}>
       <Stack.Screen name="index" />
       <Stack.Screen name="[userdata]" />
+      <Stack.Screen name="userAdd" />
     </Stack>
   );
 }
