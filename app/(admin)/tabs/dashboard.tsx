@@ -9,7 +9,6 @@ export default function DashboardScreen() {
   const colorScheme = useColorScheme();
   const isDarkMode = colorScheme === 'light';
   const {user} = useUserData()
-  console.log('user', user)
 
   return (
     

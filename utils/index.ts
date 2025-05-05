@@ -16,7 +16,9 @@ export async function getUserToken() {
 //   await SecureStore.deleteItemAsync("userData");
 // }
 export async function setUserToken(token: string) {
-  await SecureStore.setItemAsync("userToken", token);
+    // console.log('token1', token)
+  const  success = await SecureStore.setItemAsync("userToken", token);
+  console.log('success', success)
 }
 
 export async function setUser(user: UserData) {

@@ -1,9 +1,9 @@
 import axios from 'axios';
-import { BASE_API_V1_ENDPOINT } from '@/utils/constants/sessions';
+import { BASE_API_V1_ENDPOINT, BASE_API_V1_ENDPOINT_TEST } from '@/utils/constants/sessions';
 import { getUserToken } from '@/utils';
 
 // const token = BASE_TEST_TOKEN;
-
+console.log("BASE_API_V1_ENDPOINT_TEST", BASE_API_V1_ENDPOINT_TEST);
 export const httpV1 = axios.create({
   baseURL: BASE_API_V1_ENDPOINT,
   // headers: {
@@ -17,7 +17,7 @@ httpV1.interceptors.request.use(
     const token = await getUserToken();
     // If token exists, set the Authorization header
     if (token) {
-      config.headers['Authorization'] = `Bearer ${token}`;
+      config.headers['Authorization'] = `JWT ${token}`;
     }
     return config;
   },
@@ -28,7 +28,7 @@ httpV1.interceptors.request.use(
 );
 
 export const updateAuthToken = (token: string) => {
-  httpV1.defaults.headers.Authorization = token ? `Bearer ${token}` : '';
+  httpV1.defaults.headers.Authorization = token ? `JWT ${token}` : '';
 };
 
 export const clearAuthToken = () => {
