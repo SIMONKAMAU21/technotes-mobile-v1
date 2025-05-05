@@ -22,7 +22,7 @@ export default function UserAddScreen() {
     address: "",
   });
 
-  const handleAddUser = async () => {
+  const handleAddUser = async (formData: any) => {
     // TODO: Implement API call to add user
     const payload = {
       name: formData.name,
@@ -89,7 +89,7 @@ export default function UserAddScreen() {
           >
             User Information
           </Text>
-          <UserAdd onSubmit={handleAddUser} isLoading={isLoading} isError={isError} initialData={formData}/>
+          <UserAdd onSubmit={handleAddUser}  isLoading={isLoading} isError={isError} initialData={formData}/>
 
         </View>
       </ScrollView>
