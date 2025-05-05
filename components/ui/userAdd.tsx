@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { View, ScrollView } from "react-native";
+import { View, ScrollView, Text } from "react-native";
 import CustomInput from "./customInput";
 import { CustomButton } from "./customButton";
+import { RadioButton } from "react-native-paper";
+import { RadioInputs } from "./radioInputs";
+import { Picker } from "@react-native-picker/picker";
 
 interface UserFormData {
   name: string;
@@ -73,26 +76,39 @@ export const UserAdd = ({
         />
 
         <CustomInput
-          label="Gender"
-          value={formData.gender}
-          onChangeText={(text) => setFormData({ ...formData, gender: text })}
-          placeholder="Enter gender"
-        />
-
-        <CustomInput
           label="Address"
           value={formData.address}
           onChangeText={(text) => setFormData({ ...formData, address: text })}
           placeholder="Enter address"
         />
 
-        <CustomInput
-          label="Role"
-          value={formData.role}
-          onChangeText={(text) => setFormData({ ...formData, role: text })}
-          placeholder="Enter role"
-        />
+        <View className="mb-4">
+          <Text className="mb-2 font-bold">Role</Text>
+          <View className="border border-gray-300 rounded">
+            <Picker
+              selectedValue={formData.role}
+              onValueChange={(value) => setFormData({ ...formData, role: value })}
+              style={{ color: 'black', }}
+            >
+              <Picker.Item label="Select a role" value="" />
+              <Picker.Item label="Admin" value="admin" />
+              <Picker.Item label="Teacher" value="teacher" />
+              <Picker.Item label="Student" value="student" />
+              <Picker.Item label="Parent" value="parent" />
+            </Picker>
+          </View>
+        </View>
 
+        <View className="flex-row items-center gap-4 text-black">
+          <RadioInputs
+            label="Gender"
+            options={["Male", "Female", "Other"]}
+            value={formData.gender}
+            onValueChange={(value) =>
+              setFormData({ ...formData, gender: value })
+            }
+          />
+        </View>
         <CustomButton
           disabled={isLoading}
           loading={isLoading}

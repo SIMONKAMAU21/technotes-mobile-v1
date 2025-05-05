@@ -30,11 +30,11 @@ export default function UserDetailsScreen() {
     try {
       const response = await updateUser(payload);
       console.log("User updated successfully:", response);
-      Alert.alert("Success", "User details updated successfully");
+    //   Alert.alert("Success", "User details updated successfully");
       router.back();
     } catch (error) {
       console.error("Error updating user:", error);
-      Alert.alert("Error", "Failed to update user details");
+    //   Alert.alert("Error", "Failed to update user details");
     }
   };
 

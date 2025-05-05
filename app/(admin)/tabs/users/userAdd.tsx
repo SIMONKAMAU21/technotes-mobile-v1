@@ -7,18 +7,19 @@ import { CustomButton } from "@/components/ui/customButton";
 import CustomInput from "@/components/ui/customInput";
 import { Logo } from "@/components/ui/logo";
 import { useAddUser } from "../../data";
-
+import { RadioButton } from "react-native-paper";
+import { UserAdd } from "@/components/ui/userAdd";
 export default function UserAddScreen() {
   const colorScheme = useColorScheme();
   const isDarkMode = colorScheme === "dark";
   const { mutate: addUser, isLoading, isError } = useAddUser();
   const [formData, setFormData] = useState({
-    name: "Talia",
-    email: "Talia@gmail.com",
-    phone: "0712345678",
-    role: "admin",
-    gender: "male",
-    address: "Kibutha, Kenya",
+    name: "",
+    email: "",
+    phone: "",
+    role: "",
+    gender: "",
+    address: "",
   });
 
   const handleAddUser = async () => {
@@ -36,14 +37,14 @@ export default function UserAddScreen() {
         return null;
       } else {
         const response = await addUser(payload);
-        if (response) {
+        if (response !== null) {
           router.back();
         } else {
           return null;
         }
       }
     } catch (error) {
-      return null;
+      console.log(error);
     }
   };
 
@@ -88,76 +89,8 @@ export default function UserAddScreen() {
           >
             User Information
           </Text>
+          <UserAdd onSubmit={handleAddUser} isLoading={isLoading} isError={isError} initialData={formData}/>
 
-          <View className="mb-4">
-            <CustomInput
-              label="Name"
-              value={formData.name}
-              onChangeText={(text) => setFormData({ ...formData, name: text })}
-              placeholder="Enter name"
-            />
-          </View>
-
-          <View className="mb-4">
-            <CustomInput
-              label="Email"
-              value={formData.email}
-              onChangeText={(text) => setFormData({ ...formData, email: text })}
-              placeholder="Enter email"
-              keyboardType="email-address"
-            />
-          </View>
-
-          <View className="mb-4">
-            <CustomInput
-              label="Phone"
-              value={formData.phone}
-              onChangeText={(text) => setFormData({ ...formData, phone: text })}
-              placeholder="Enter phone number"
-              keyboardType="phone-pad"
-            />
-          </View>
-
-          <View className="mb-4">
-            <CustomInput
-              label="Role"
-              value={formData.role}
-              onChangeText={(text) => setFormData({ ...formData, role: text })}
-              placeholder="Enter role"
-            />
-          </View>
-
-          <View className="mb-4">
-            <CustomInput
-              label="Gender"
-              value={formData.gender}
-              onChangeText={(text) =>
-                setFormData({ ...formData, gender: text })
-              }
-              placeholder="Enter gender"
-            />
-          </View>
-
-          <View className="mb-4">
-            <CustomInput
-              label="Address"
-              value={formData.address}
-              onChangeText={(text) =>
-                setFormData({ ...formData, address: text })
-              }
-              placeholder="Enter address"
-              multiline
-            />
-          </View>
-
-          <CustomButton
-            disabled={isLoading}
-            loading={isLoading}
-            onPress={handleAddUser}
-            style={{ marginTop: 20 }}
-          >
-            Add User
-          </CustomButton>
         </View>
       </ScrollView>
     </SafeAreaView>

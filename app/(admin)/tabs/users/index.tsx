@@ -6,6 +6,7 @@ import { useRouter } from 'expo-router';
 import { CustomButton } from '@/components/ui/customButton';
 import { Ionicons } from '@expo/vector-icons';
 import { Logo } from '@/components/ui/logo';
+import { Avatar } from 'react-native-paper';
 
 export default function UsersScreen() {
   const colorScheme = useColorScheme();
@@ -25,9 +26,9 @@ export default function UsersScreen() {
   };
 
   return (
-    <SafeAreaView className="flex-1 mt-10">
+    <SafeAreaView className="flex-1 mt-10 bg-gray-100">
       <ScrollView 
-        className={`flex-1 ${isDarkMode ? 'bg-white' : 'bg-white'}`}
+        className={`flex-1 ${isDarkMode ? 'bg-bg' : 'bg-bg'}`}
         contentContainerClassName="p-4"
       >
         <View className="mb-6">
@@ -57,18 +58,41 @@ export default function UsersScreen() {
                   key={user.id}
                   onPress={() => handleUserPress(user)}
                   className={`flex-row items-center p-3 mb-2 rounded-md ${
-                    isDarkMode ? 'bg-gray-700' : 'bg-gray-100'
+                    isDarkMode ? 'bg-bg' : 'bg-bg'
                   }`}
                 >
-                  <View className="flex-1">
-                    <Text className={`font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                  <View className="flex-1 flex-row items-center gap-2">
+                    {user?.photo ? (
+                      <Avatar.Image
+                        size={40}
+                        source={{ uri: user?.photo }}
+                      />
+                    ) : (
+                      <Avatar.Text
+                      style={{
+                        backgroundColor:'#4299E1'
+                      }}
+                        size={40}
+                        label={user?.name.charAt(0)}
+                        color={isDarkMode ? 'white' : 'black'}
+                      />
+                    )}
+                    <View className='flex-1'>
+                    <Text className={`font-medium ${isDarkMode ? 'text-black' : 'text-gray-900'}`}>
                       {user.name}
                     </Text>
-                    <Text className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                    <Text className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-100'}`}>
                       {user.email}
                     </Text>
+                    </View>
                   </View>
-                  <Text className={`${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                  <Text className={`${
+                    user.role === 'admin' ? 'text-blue-600' :
+                    user.role === 'teacher' ? 'text-yellow-600' :
+                    user.role === 'student' ? 'text-green-600' :
+                    user.role === 'parent' ? 'text-red-600' :
+                    isDarkMode ? 'text-gray-300' : 'text-gray-600'
+                  }`}>
                     {user.role}
                   </Text>
                 </TouchableOpacity>
@@ -92,3 +116,4 @@ export default function UsersScreen() {
     </SafeAreaView>
   );
 }
+
