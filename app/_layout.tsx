@@ -14,6 +14,7 @@ import { useColorScheme } from "@/hooks/useColorScheme";
 import React from "react";
 import { PaperProvider } from "react-native-paper";
 import { QueryClient, QueryClientProvider } from "react-query";
+import { screenOptions } from "@/constants/animation";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -49,13 +50,13 @@ export default function RootLayout() {
         <PaperProvider>
           <Stack>
             {/* Entry routes */}
-            <Stack.Screen name="(onbording)" options={{ headerShown: false }} />
-            <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+            <Stack.Screen name="(onbording)" options={screenOptions} />
+            <Stack.Screen name="(auth)" options={screenOptions} />
 
             {/* Role-based dashboards (loaded but routed only via onboarding/login) */}
-            <Stack.Screen name="(admin)" options={{ headerShown: false }} />
-            <Stack.Screen name="(student)" options={{ headerShown: false }} />
-            <Stack.Screen name="(teacher)" options={{ headerShown: false }} />
+            <Stack.Screen name="(admin)" options={screenOptions} />
+            <Stack.Screen name="(student)" options={screenOptions} />
+            <Stack.Screen name="(teacher)" options={screenOptions} />
 
             <Stack.Screen name="+not-found" />
           </Stack>

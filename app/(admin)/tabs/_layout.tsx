@@ -70,7 +70,26 @@ export default function AdminTabsLayout() {
           ),
         }}
       />
+     
       <Tabs.Screen
+        name="classes"
+        options={{
+          title: "Classes",
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="school" color={color} size={size} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="inbox"
+        options={{
+          title: "Inbox",
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="mail" color={color} size={size} />
+          ),
+        }}
+      />
+       <Tabs.Screen
         name="settings"
         options={{
           title: "Settings",
