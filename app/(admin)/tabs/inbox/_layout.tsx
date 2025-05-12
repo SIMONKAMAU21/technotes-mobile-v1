@@ -6,6 +6,7 @@ export default function ClassesLayout() {
   return (
     <Stack screenOptions={screenOptions}>
       <Stack.Screen name="index" options={screenOptions} />
+      <Stack.Screen name="conversation" options={screenOptions} />
     </Stack>
   );
 }

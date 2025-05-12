@@ -9,6 +9,7 @@ export default function AdminTabsLayout() {
     const hiddenPathNames = [
       '/tabs/users/[userdata]',
       '/tabs/users/userAdd',
+      '/tabs/inbox/conversation',
 
     ]
     const isHidden = (pathName: string,hiddenPathNames: string[]) => hiddenPathNames.includes(pathName);
