@@ -1,9 +1,11 @@
 import { httpV1 } from "@/api/axios";
+import { useSocketConnection } from "@/hooks/useSocket";
 import { useUserData } from "@/utils";
 import { useMutation, useQuery } from "react-query";
 
 export const useGetInbox = () => {
   const { user } = useUserData(); // This should be synchronous
+  useSocketConnection(user?.id);
 
   return useQuery(
     ["inbox", user?.id],
@@ -17,7 +19,6 @@ export const useGetInbox = () => {
     {
       enabled: !!user?.id, // only run if user ID exists
       onSuccess: (data) => {
-        console.log(data);
       },
     }
   );
@@ -30,6 +31,7 @@ export const useGetConversation = (conversationId: string) => {
       url: `/messages/conversation/${conversationId}`,
     });
     return response.data;
+
   });
 };
 

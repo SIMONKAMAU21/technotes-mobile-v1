@@ -20,7 +20,7 @@ export default function UsersScreen() {
     console.log('user', user)
     setSelectedUser(user);
     router.push({
-      pathname: '/(admin)/tabs/users/[userdata]',
+      pathname: '/(admin)/tabs/users/userdata',
       params: { userdata: JSON.stringify(user) }
     });
   };
@@ -29,7 +29,7 @@ export default function UsersScreen() {
     <SafeAreaView className="flex-1 mt-10 bg-gray-100">
       <ScrollView 
         className={`flex-1 ${isDarkMode ? 'bg-bg' : 'bg-bg'}`}
-        contentContainerClassName="p-4"
+        contentContainerClassName="p-2"
       >
         <View className="mb-6">
           <Text className={`text-2xl font-bold ${isDarkMode ? 'text-black' : 'text-gray-900'}`}>
@@ -40,10 +40,7 @@ export default function UsersScreen() {
           </Text>
         </View>
 
-        <View className={`rounded-l bg-white p-4 shadow-sm`}>
-          <Text className={`text-lg font-semibold ${isDarkMode ? 'text-black' : 'text-gray-900'} mb-4`}>
-            User List
-          </Text>
+        <View className={`rounded-l  shadow-sm`}>
 
           {isLoading ? (
             <ActivityIndicator size="large" color={isDarkMode ? '#4299E1' : '#000'} />
@@ -57,8 +54,8 @@ export default function UsersScreen() {
                 <TouchableOpacity
                   key={user.id}
                   onPress={() => handleUserPress(user)}
-                  className={`flex-row items-center p-3 mb-2 rounded-md ${
-                    isDarkMode ? 'bg-bg' : 'bg-bg'
+                  className={`flex-row items-center p-4 mb-1 rounded-md ${
+                    isDarkMode ? 'bg-white' : 'bg-white'
                   }`}
                 >
                   <View className="flex-1 flex-row items-center gap-2">
