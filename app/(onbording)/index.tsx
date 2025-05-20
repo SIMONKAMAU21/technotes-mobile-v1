@@ -10,14 +10,15 @@ import { useRouter } from "expo-router";
 import { CustomButton } from "@/components/ui/customButton";
 import { getUserToken, useUserData } from "@/utils";
 
+
 export default function OnboardingScreen() {
-  const router = useRouter();
   const { user } = useUserData();
-console.log('user', user)
+
+
+  const router = useRouter();
   useEffect(() => {
     const checkUserData = async () => {
       const userToken = await getUserToken();
-      console.log("user", user);
       if (user && userToken) {
         switch (user.role) {
           case "admin":

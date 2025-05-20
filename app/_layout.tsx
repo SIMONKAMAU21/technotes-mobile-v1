@@ -21,9 +21,9 @@ SplashScreen.preventAutoHideAsync();
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      retry: 0,
-      staleTime: 500000,
-      refetchOnWindowFocus: false,
+      retry: 3,
+      staleTime: 0,
+      refetchOnWindowFocus: true,
     },
   },
 });
@@ -52,12 +52,10 @@ export default function RootLayout() {
             {/* Entry routes */}
             <Stack.Screen name="(onbording)" options={screenOptions} />
             <Stack.Screen name="(auth)" options={screenOptions} />
-
             {/* Role-based dashboards (loaded but routed only via onboarding/login) */}
             <Stack.Screen name="(admin)" options={screenOptions} />
             <Stack.Screen name="(student)" options={screenOptions} />
             <Stack.Screen name="(teacher)" options={screenOptions} />
-
             <Stack.Screen name="+not-found" />
           </Stack>
           <StatusBar style="dark" backgroundColor="white" />
