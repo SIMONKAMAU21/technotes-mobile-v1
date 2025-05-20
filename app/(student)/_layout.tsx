@@ -8,6 +8,7 @@ export default function AdminLayout() {
     <>
       <Stack screenOptions={screenOptions}>
         <Stack.Screen name="tabs" options={{ headerShown: false }} />
+
       </Stack>
       <StatusBar style="light" backgroundColor="#4299E1" />
     </>

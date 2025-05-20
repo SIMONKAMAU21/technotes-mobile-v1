@@ -15,22 +15,7 @@ export default function AdminTabsLayout() {
     const isHidden = (pathName: string,hiddenPathNames: string[]) => hiddenPathNames.includes(pathName);
   return (
     <Tabs 
-    // screenOptions={{ 
-    //   headerShown: false,
-    //   tabBarStyle: { 
-    //     backgroundColor: '#4299E1',
-    //     display: 'flex',
-    //     height:60,
-    //     alignItems: 'center',
-    //   },
-    //   tabBarActiveTintColor: 'white',
-    //   tabBarInactiveTintColor: '#90CDF4',
-    //   tabBarLabelStyle: {
-    //     fontWeight: 'bold',
-    //     fontSize: 12,
-    //     // backgroundColor: ''
-    //   }
-    // }}
+   
     screenOptions={({ route }) => ({
       headerShown: false,
       tabBarStyle: ((route)=>{
