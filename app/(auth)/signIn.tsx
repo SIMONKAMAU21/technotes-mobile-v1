@@ -35,7 +35,7 @@ const SignIn = () => {
               router.replace("/dashboard/teacher" as any);
               break;
             case "student":
-              router.replace("/dashboard/student" as any);
+              router.replace("(student)/tabs/dashboard" as any);
               break;
             default:
               router.replace("/dashboard/default" as any);

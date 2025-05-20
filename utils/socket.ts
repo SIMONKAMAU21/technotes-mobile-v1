@@ -7,7 +7,6 @@ export const API = BASE_API_V1_ENDPOINT;
 const LOCAL_BASE = API.replace(`/api`, "");
 export const socket = io(LOCAL_BASE, {
   retries: 3,
-
   ackTimeout: 10000,
   auth: getUserToken(),
 });

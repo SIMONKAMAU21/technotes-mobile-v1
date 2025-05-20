@@ -14,7 +14,7 @@ import { getUserToken, useUserData } from "@/utils";
 export default function OnboardingScreen() {
   const { user } = useUserData();
 
-
+console.log('user', user)
   const router = useRouter();
   useEffect(() => {
     const checkUserData = async () => {

@@ -101,7 +101,7 @@ export default function SettingsScreen() {
           </View>
         </View>
 
-        <CustomButton children="Logout" onPress={() => {router.replace('/(auth)/signIn')}} />
+        <CustomButton children="Logout" onPress={() => {router.push('/(auth)/signIn')}} />
       </ScrollView>
     </SafeAreaView>
   );

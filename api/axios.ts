@@ -6,9 +6,7 @@ import { getUserToken } from '@/utils';
 console.log("BASE_API_V1_ENDPOINT_TEST", BASE_API_V1_ENDPOINT_TEST);
 export const httpV1 = axios.create({
   baseURL: BASE_API_V1_ENDPOINT,
-  // headers: {
-  //   Authorization: `Bearer ${token}`,
-  // },
+
 });
 // Add a request interceptor to add token to axios request header once user logs in an token is available
 httpV1.interceptors.request.use(

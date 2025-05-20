@@ -33,7 +33,6 @@ export default function RootLayout() {
   const [loaded] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
   });
-
   useEffect(() => {
     if (loaded) {
       SplashScreen.hideAsync();
@@ -52,13 +51,14 @@ export default function RootLayout() {
             {/* Entry routes */}
             <Stack.Screen name="(onbording)" options={screenOptions} />
             <Stack.Screen name="(auth)" options={screenOptions} />
+            {/* <Stack.Screen name="(tabs)" options={screenOptions} /> */}
             {/* Role-based dashboards (loaded but routed only via onboarding/login) */}
             <Stack.Screen name="(admin)" options={screenOptions} />
             <Stack.Screen name="(student)" options={screenOptions} />
             <Stack.Screen name="(teacher)" options={screenOptions} />
             <Stack.Screen name="+not-found" />
           </Stack>
-          <StatusBar style="dark" backgroundColor="white" />
+          <StatusBar style="light" backgroundColor="white" />
         </PaperProvider>
       </QueryClientProvider>
     </ThemeProvider>
