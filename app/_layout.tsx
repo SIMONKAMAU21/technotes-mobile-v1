@@ -57,6 +57,8 @@ export default function RootLayout() {
             <Stack.Screen name="(student)" options={screenOptions} />
             <Stack.Screen name="(teacher)" options={screenOptions} />
             <Stack.Screen name="+not-found" />
+            <Stack.Screen name="(profile)" options={screenOptions} />
+
           </Stack>
           <StatusBar style="light" backgroundColor="white" />
         </PaperProvider>
