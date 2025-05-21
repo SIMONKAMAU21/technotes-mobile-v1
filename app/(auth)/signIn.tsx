@@ -6,15 +6,17 @@ import { router } from "expo-router";
 import React, { useState } from "react";
 import { TextInput, View, Text, SafeAreaView, ScrollView } from "react-native";
 import { useLogin } from "./data";
-import { setUser, setUserToken } from "@/utils";
+import { deleteUserData, setUserToken } from "@/utils";
+import { useUserStore } from "@/store";
 
 const SignIn = () => {
   const [email, setEmail] = useState("admin24@gmail.com");
   const [password, setPassword] = useState("demo123");
   const [loading, setLoading] = useState(false);
   const { mutate: mutateLogin } = useLogin();
-
+  const setUser = useUserStore((state) => state.setUserData);
   const handleSignIn = async () => {
+    await deleteUserData()
     try {
       setLoading(true);
       const payload = {
@@ -24,8 +26,8 @@ const SignIn = () => {
 
       mutateLogin(payload, {
         onSuccess: (response: any) => {
-          setUser(response.user)
-          setUserToken(response.token)
+          setUser(response.user);
+          setUserToken(response.token);
           // Based on user role, redirect to appropriate dashboard
           switch (response.user.role) {
             case "admin":

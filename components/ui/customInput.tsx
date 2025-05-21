@@ -22,7 +22,7 @@ const CustomInput = React.forwardRef<typeof TextInput, InputProps>(
         textColor="black"
         onChangeText={props.onChangeText}
         placeholderTextColor="black"
-        activeOutlineColor="gray"
+        activeOutlineColor="#ed8936"
         value={props.value}
         {...props}
         helperText={error}

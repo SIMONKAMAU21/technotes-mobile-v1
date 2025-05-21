@@ -7,6 +7,8 @@ interface HeaderWithIconProps {
   title: string;
   showBackButton?: boolean;
   bgColor?: string;
+  leftIcon?:string;
+  onLeftPress?:()=>void
 }
 
 export const HeaderWithIcon = ({ title, showBackButton = true }: HeaderWithIconProps) => {

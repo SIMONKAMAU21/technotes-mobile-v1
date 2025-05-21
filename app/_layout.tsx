@@ -15,6 +15,7 @@ import React from "react";
 import { PaperProvider } from "react-native-paper";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { screenOptions } from "@/constants/animation";
+import { initializeUserStore } from "@/store";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -34,6 +35,7 @@ export default function RootLayout() {
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
   });
   useEffect(() => {
+    initializeUserStore()
     if (loaded) {
       SplashScreen.hideAsync();
     }
@@ -57,6 +59,8 @@ export default function RootLayout() {
             <Stack.Screen name="(student)" options={screenOptions} />
             <Stack.Screen name="(teacher)" options={screenOptions} />
             <Stack.Screen name="+not-found" />
+            <Stack.Screen name="(profile)" options={screenOptions} />
+
           </Stack>
           <StatusBar style="light" backgroundColor="white" />
         </PaperProvider>

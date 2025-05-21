@@ -1,10 +1,11 @@
 import { httpV1 } from "@/api/axios";
 import { useSocketConnection } from "@/hooks/useSocket";
+import { useUserStore } from "@/store";
 import { useUserData } from "@/utils";
 import { useMutation, useQuery } from "react-query";
 
 export const useGetInbox = () => {
-  const { user } = useUserData(); // This should be synchronous
+  const  user  = useUserStore(state =>state.userData); // This should be synchronous
   useSocketConnection(user?.id);
 
   return useQuery(
