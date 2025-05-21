@@ -2,22 +2,28 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Logo } from './logo';
-import placeholder from "@/assets/images/user-placeholder.png"
-import { useRouter } from 'expo-router';
+import {useFocusEffect, useRouter } from 'expo-router'
+import { useUserStore } from '@/store';
 interface HeaderDashboardProps {
-  userName: string;
+  userName: string | undefined;
   isDarkMode: boolean;
   onThemeToggle: () => void;
-  userImage: string;
+  userImage: string | undefined;
   onMenuPress: () => void;
 }
 
 const HeaderDashboard = ({ userName, isDarkMode, onThemeToggle ,userImage, onMenuPress}: HeaderDashboardProps) => {
   const router = useRouter()
+  const refreshUserData = useUserStore(state => state.refreshUserData)
+
   const goProfile = () =>{
    router.push("/(profile)/profile")
   }
 
+
+// useFocusEffect(()=>{
+//   refreshUserData()
+// },[refreshUserData])
   return (
     <View className="flex-row justify-between items-center p-2 bg-white  dark:bg-white">
       <TouchableOpacity onPress={goProfile}>
@@ -25,7 +31,7 @@ const HeaderDashboard = ({ userName, isDarkMode, onThemeToggle ,userImage, onMen
         <Image source={{ uri: userImage }} className="w-10 h-10 rounded-full" />
 
       ):(
-        <Image source={placeholder} className="w-10 h-10 rounded-full" />
+        <Image source={require("../../assets/images/user-placeholder.png")} className="w-10 h-10 rounded-full" />
 
       )}
       </TouchableOpacity>
@@ -33,7 +39,9 @@ const HeaderDashboard = ({ userName, isDarkMode, onThemeToggle ,userImage, onMen
         {/* <TouchableOpacity onPress={onMenuPress}>
           <Ionicons name="menu-outline" size={32} color={isDarkMode ? '#fff' : '#fff'} />
           </TouchableOpacity> */}
-        <Text className="ml-2 text-lg font-semibold dark:text-dark text-secondary">welcome {userName}</Text>
+        <View className='text-lg font-semibold tems-center flex-row'>
+        <Text className="text-lg font-semibold  dark:text-dark text-secondary">welcome </Text><Text className='text-lg font-semibold'>{userName}</Text>
+        </View>
           <Logo className='w-10 h-10'/>
       
       {/* <TouchableOpacity onPress={onThemeToggle}>

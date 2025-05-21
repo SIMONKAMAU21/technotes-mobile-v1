@@ -9,25 +9,44 @@ import {
 } from "react-native";
 import CustomInput from "./customInput";
 import { CustomButton } from "./customButton";
-import { useUpdatePassword } from "@/app/(profile)/data";
+import { useUpdatePassword, useUpdatePicture } from "@/app/(profile)/data";
 import { useRouter } from "expo-router";
-// import * as ImagePicker from 'expo-image-picker';
-
-const UpdateProfile = ({ userDetails }: { photo: string }) => {
-//   console.log("userDetails", userDetails);
+import * as ImagePicker from "expo-image-picker";
+import { formToJSON } from "axios";
+import { useUserStore } from "@/store";
+import LoadingIndicator from "./loading";
+interface userDetails {
+  userDetails: {
+    photo: string | undefined;
+    id: string | undefined;
+    name: string | undefined;
+  };
+}
+const UpdateProfile = () => {
+  //   console.log("userDetails", userDetails);
   const [currentPassword, setCurrentPassword] = useState("demo123");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  //   const [image, setImage] = useState(userDetails?.photo);
-  const { mutate: updatePassword } = useUpdatePassword();
+  const [image, setImage] = useState(null);
+  const { mutate: updatePassword, isError } = useUpdatePassword();
+  const {
+    mutate: updatePhoto,
+    isLoading: uploading,
+    isError: error,
+  } = useUpdatePicture();
+  const userData = useUserStore((state) => state.userData);
+  const isLoading = useUserStore((state) => state.isLoading);
+  const refreshUserData = useUserStore((state) => state.refreshUserData);
   const router = useRouter();
+  const user_id: string | undefined = userData ? userData.id : "N/A";
+
   const handlePasswordUpdate = async () => {
     // Handle password update logic here
     try {
       const payload = {
         oldPassword: currentPassword,
         newPassword,
-        id: userDetails?.id,
+        id: userData?.id,
       };
       const response = await updatePassword(payload);
       console.log("response", response);
@@ -37,36 +56,79 @@ const UpdateProfile = ({ userDetails }: { photo: string }) => {
     }
   };
 
-  //   const handleImagePick = async () => {
-  //     let result = await ImagePicker.launchImageLibraryAsync({
-  //       mediaTypes: ImagePicker.MediaTypeOptions.Images,
-  //       allowsEditing: true,
-  //       quality: 1,
-  //     });
+  const handleImagePick = async () => {
+    try {
+      const { status: mediaStatus } =
+        await ImagePicker.getMediaLibraryPermissionsAsync();
+      if (mediaStatus !== "granted") {
+        console.log("Media permission denied");
+      } else {
+        console.log("granted");
+      }
+      let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        quality: 1,
+      });
+      const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB in bytes
+      const overSize = result.assets?.filter(
+        (file) => file.fileSize > MAX_FILE_SIZE
+      );
+      if (overSize?.length > 0) {
+        const fileNames = overSize?.map((file) => file.fileName);
+        return;
+      }
+      if (!result.cancelled || overSize?.length < 0) {
+        setImage(result?.assets?.[0]?.uri);
+      }
+      const selectedItem = result?.assets?.[0];
+      const formData = new FormData();
+      // formData.append("user_id", user_id);
+      formData.append("photo", {
+        uri: selectedItem?.uri,
+        name: selectedItem?.fileName,
+        type: selectedItem?.mimeType,
+      });
 
-  //     if (!result.cancelled) {
-  //       setImage(result.uri);
-  //     }
-  //   };
-
-  const handleImageUpload = () => {
-    // Handle image upload logic here
+      await updatePhoto(
+        { formData, user_id },
+        {
+          onSuccess: async () => {
+            await refreshUserData();
+          },
+        }
+      );
+    } catch (error) {
+      console.log("error", error);
+    }
   };
 
   return (
     <View className="bg-white p-4 items-center  rounded-lg">
       {/* Cover + Profile */}
+
       <View style={styles.header} className="bg-primary" />
-      <View style={styles.avatarWrapper}>
-        <Image
-          source={
-            userDetails?.photo
-              ? { uri: userDetails?.photo }
-              : require("../../assets/images/user-placeholder.png")
-          }
-          style={styles.avatar}
-        />
-      </View>
+
+      <TouchableOpacity onPress={handleImagePick}>
+        <View style={styles.avatarWrapper}>
+          {uploading ? (
+            <LoadingIndicator />
+          ) : (
+            <>
+              <Image
+                source={
+                  userData?.photo
+                    ? { uri: userData?.photo }
+                    : image
+                    ? { uri: image }
+                    : require("../../assets/images/user-placeholder.png")
+                }
+                style={styles.avatar}
+              />
+            </>
+          )}
+        </View>
+      </TouchableOpacity>
 
       {/* Change Password */}
       <Text style={styles.title}>Change Password</Text>
@@ -98,15 +160,9 @@ const UpdateProfile = ({ userDetails }: { photo: string }) => {
       <CustomButton onPress={handlePasswordUpdate}>
         Update Password
       </CustomButton>
-
-      {/* Update Profile Picture */}
-      <Text style={styles.title}>Update Profile Picture</Text>
-      <TouchableOpacity style={styles.imagePicker} onPress={() => {}}>
-        <Text style={styles.pickText}>Upload a new profile picture</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.uploadButton} onPress={handleImageUpload}>
-        <Text style={styles.uploadText}>Upload Picture</Text>
-      </TouchableOpacity>
+      <Text className="text-gray-400 text-sm">{userData?.name}</Text>
+      <Text className="text-gray-400 text-sm">{userData?.email}</Text>
+      <Text className="text-gray-400 text-sm">{userData?.role}</Text>
     </View>
   );
 };
@@ -149,37 +205,5 @@ const styles = StyleSheet.create({
     // padding: 12,
     borderRadius: 8,
     // marginBottom: 10,
-  },
-  updateButton: {
-    backgroundColor: "#a7f3d0",
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 8,
-    marginBottom: 20,
-  },
-  updateText: {
-    color: "#064e3b",
-    fontWeight: "600",
-  },
-  imagePicker: {
-    backgroundColor: "#e5e7eb",
-    width: "100%",
-    padding: 12,
-    borderRadius: 8,
-    marginBottom: 10,
-    alignItems: "center",
-  },
-  pickText: {
-    color: "#1e293b",
-  },
-  uploadButton: {
-    backgroundColor: "green",
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 8,
-  },
-  uploadText: {
-    color: "white",
-    fontWeight: "600",
   },
 });

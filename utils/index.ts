@@ -29,9 +29,12 @@ interface UserData {
   id: string;
   name: string;
   email: string;
+  photo:string | undefined;
   role: 'admin' | 'teacher' | 'student';
 }
-
+export async function deleteUserData() {
+  await SecureStore.deleteItemAsync("userData");
+}
 export const useUserData = () => {
   const [user, setUser] = useState<UserData | null>(null);
   const [isLoading, setIsLoading] = useState(false);

@@ -3,7 +3,7 @@ import React from "react";
 
 const LoadingIndicator = () => {
   return (
-    <SafeAreaView className="flex-1 justify-center items-center bg-bg">
+    <SafeAreaView className="">
         <ActivityIndicator animating={true} color={"#EF8F02"} />
     </SafeAreaView>
   );

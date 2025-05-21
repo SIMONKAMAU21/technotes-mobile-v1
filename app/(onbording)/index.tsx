@@ -9,18 +9,20 @@ import {
 import { useRouter } from "expo-router";
 import { CustomButton } from "@/components/ui/customButton";
 import { getUserToken, useUserData } from "@/utils";
+import { useUpdateUser } from "../(admin)/data";
+import { useUserStore } from "@/store";
 
 
 export default function OnboardingScreen() {
+  const userData = useUserStore(state => state.userData)
   const { user } = useUserData();
-
-console.log('user', user)
+console.log('userData', userData)
   const router = useRouter();
   useEffect(() => {
     const checkUserData = async () => {
       const userToken = await getUserToken();
-      if (user && userToken) {
-        switch (user.role) {
+      if (userData && userToken) {
+        switch (userData.role) {
           case "admin":
             router.replace("/(admin)/tabs/dashboard");
             break;
@@ -33,14 +35,16 @@ console.log('user', user)
           default:
             router.replace("/(auth)/signIn");
         }
+      }else{
+        router.replace('/(auth)/signIn')
       }
     };
 
     checkUserData();
-  }, [user]); // Run when `user` changes
+  }, [userData]); // Run when `user` changes
 
   return (
-    <SafeAreaView className="flex-1 justify-between items-center p-8 bg-white">
+    <SafeAreaView className="flex-1 border border-red-200 justify-between items-center p-8 bg-white">
       <ScrollView className="flex-1">
         <View className="justify-center mt-[50%] items-center">
           <Image
@@ -65,8 +69,8 @@ console.log('user', user)
         <View className="w-full">
           <CustomButton
             mode="outlined"
-            style={{ backgroundColor: `var(--color-secondary)`, marginTop: 20 }}
-            onPress={() => router.push("/(auth)/signIn")}
+            style={{ backgroundColor: `var(--color-secondary)`, marginTop: 20, }}
+            onPress={() => router.replace("/(auth)/signIn")}
           >
             Sign in to continue
           </CustomButton>

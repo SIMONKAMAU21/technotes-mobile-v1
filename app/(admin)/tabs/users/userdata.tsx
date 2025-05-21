@@ -1,10 +1,15 @@
 import React, { useState } from "react";
-import { View, Text, ScrollView, SafeAreaView, Alert } from "react-native";
+import {
+  View,
+  Text,
+  ScrollView,
+  SafeAreaView,
+  Alert,
+  Image,
+} from "react-native";
 import { router, useLocalSearchParams } from "expo-router";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { HeaderWithIcon } from "@/components/ui/headerWithIcon";
-import { CustomButton } from "@/components/ui/customButton";
-import CustomInput from "@/components/ui/customInput";
 import { UserAdd } from "@/components/ui/userAdd";
 import { Ionicons } from "@expo/vector-icons";
 import { useDeleteUser, useUpdateUser } from "../../data";
@@ -14,10 +19,18 @@ export default function UserDetailsScreen() {
   const isDarkMode = colorScheme === "dark";
   const params = useLocalSearchParams();
   const userData = JSON.parse(params.userdata as string);
-  const { mutate: deleteUser, isLoading, isError } = useDeleteUser(userData._id);
-  const { mutate: updateUser, isLoading: updateLoading, isError: updateError } = useUpdateUser(userData._id);
+  const {
+    mutate: deleteUser,
+    isLoading,
+    isError,
+  } = useDeleteUser(userData._id);
+  const {
+    mutate: updateUser,
+    isLoading: updateLoading,
+    isError: updateError,
+  } = useUpdateUser(userData._id);
 
-  const handleUpdateUser = async (formData) => {
+  const handleUpdateUser = async (formData:any) => {
     const payload = {
       name: formData.name,
       email: formData.email,
@@ -30,11 +43,11 @@ export default function UserDetailsScreen() {
     try {
       const response = await updateUser(payload);
       console.log("User updated successfully:", response);
-    //   Alert.alert("Success", "User details updated successfully");
+      //   Alert.alert("Success", "User details updated successfully");
       router.back();
     } catch (error) {
       console.error("Error updating user:", error);
-    //   Alert.alert("Error", "Failed to update user details");
+      //   Alert.alert("Error", "Failed to update user details");
     }
   };
 
@@ -57,8 +70,8 @@ export default function UserDetailsScreen() {
         onLeftPress={() => router.back()}
       />
       <ScrollView
-        className={`${isDarkMode ? "bg-bg" : "bg-background"}`}
-        contentContainerClassName="p-4"
+        className={`${isDarkMode ? "bg-bg" : "bg-background"} `}
+        contentContainerClassName="p-2"
       >
         <View className="mb-6">
           <Text
@@ -68,31 +81,38 @@ export default function UserDetailsScreen() {
           >
             Edit User Details
           </Text>
-          <Text
-            className={`mt-1 ${isDarkMode ? "text-gray-300" : "text-gray-600"}`}
-          >
-            Update information for user: {userData.name}
-          </Text>
         </View>
 
         <View
           className={`rounded-lg ${
             isDarkMode ? "bg-white" : "bg-white"
-          } p-4 shadow-sm`}
+          } p-1 shadow-sm`}
         >
-          <View className="flex-row justify-between">
+          <View className="flex-row justify-between bg-primary w-full h-[20%] p-3 rounded-lg ">
             <Text
-              className={`text-lg font-semibold mb-4 ${
-                isDarkMode ? "text-black" : "text-gray-900"
+              className={`mt-1 ${
+                isDarkMode ? "text-gray-100" : "text-gray-600"
               }`}
             >
-              User Information
+              {userData.name}
             </Text>
+            <View className="items-center bg-bg p-1 w-40 h-40  shadow-lg rounded-full ">
+              <Image
+                alt="user photo"
+                className="w-full h-full rounded-full "
+                source={
+                  userData?.photo
+                    ? { uri: userData?.photo }
+                    : require("../../../../assets/images/user-placeholder.png")
+                }
+              />
+            </View>
+
             <Ionicons
               onPress={handleDeleteUser}
               name="trash"
               size={24}
-              color="black"
+              color="white"
             />
           </View>
 

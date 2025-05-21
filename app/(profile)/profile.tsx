@@ -3,16 +3,18 @@ import { View, Text, ScrollView, SafeAreaView, Switch } from "react-native";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { CustomButton } from "@/components/ui/customButton";
 import { useRouter } from "expo-router";
-import * as SecureStore from 'expo-secure-store';
-import { useUserData } from "@/utils";
+import * as SecureStore from "expo-secure-store";
+import { deleteUserData, useUserData } from "@/utils";
 import { HeaderWithIcon } from "@/components/ui/headerWithIcon";
 import Updateprofile from "@/components/ui/updateprofile";
+import { useUserStore } from "@/store";
 
 export default function ProfileScreen() {
   const colorScheme = useColorScheme();
   const [isDarkMode, setIsDarkMode] = useState(colorScheme === "dark");
   const router = useRouter();
-const {user} = useUserData()
+  const  user  = useUserStore(state => state.userData);
+  const setUser = useUserStore(state => state.setUserData)
   useEffect(() => {
     loadThemePreference();
   }, []);
@@ -41,30 +43,23 @@ const {user} = useUserData()
       console.error("Error saving theme preference:", error);
     }
   };
-
+const logout = async() =>{
+  setUser(null)
+await deleteUserData()
+  router.replace("/(auth)/signIn")
+}
   return (
     <SafeAreaView className="flex-1 mt-10">
-      <HeaderWithIcon title="Profile"/>
+      <HeaderWithIcon title="Profile" />
       <ScrollView
-        className={`flex-1 ${isDarkMode ? "bg-bg" : "bg-gray-50"} text-white`}
+        className={`flex-1 ${isDarkMode ? "bg-bg" : "bg-gray-50"}  text-white`}
         contentContainerClassName="p-4"
       >
-        <View className=" text-white">
-          
-       
-        </View>
-        <Updateprofile userDetails={user}/>
-        <Text className="text-gray-400">
-            {user?.name}
-        </Text>
-        <Text className="text-gray-400">
-            {user?.email}
-        </Text>
-        <Text className="text-gray-400">
-            {user?.role}
-        </Text>
+        <Updateprofile  />
+       <View className="mt-2 self-center ">
+       <CustomButton children="Logout" onPress={logout} />
 
-        {/* <CustomButton children="Logout" onPress={() => {router.push('/(auth)/signIn')}} /> */}
+       </View>
       </ScrollView>
     </SafeAreaView>
   );

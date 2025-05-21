@@ -3,13 +3,14 @@ import { View, Text, ScrollView, SafeAreaView, Switch } from "react-native";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { CustomButton } from "@/components/ui/customButton";
 import { useRouter } from "expo-router";
-import * as SecureStore from 'expo-secure-store';
+import * as SecureStore from "expo-secure-store";
+import { useUserStore } from "@/store";
 
 export default function SettingsScreen() {
   const colorScheme = useColorScheme();
   const [isDarkMode, setIsDarkMode] = useState(colorScheme === "dark");
   const router = useRouter();
-
+  const setUser = useUserStore((state) => state.setUserData);
   useEffect(() => {
     loadThemePreference();
   }, []);
@@ -38,7 +39,10 @@ export default function SettingsScreen() {
       console.error("Error saving theme preference:", error);
     }
   };
-
+  const Logout = () => {
+    setUser(null);
+    router.replace("/(auth)/signIn");
+  };
   return (
     <SafeAreaView className="flex-1 mt-10">
       <ScrollView
@@ -101,7 +105,7 @@ export default function SettingsScreen() {
           </View>
         </View>
 
-        <CustomButton children="Logout" onPress={() => {router.replace('/(auth)/signIn')}} />
+        <CustomButton children="Logout" onPress={Logout} />
       </ScrollView>
     </SafeAreaView>
   );
