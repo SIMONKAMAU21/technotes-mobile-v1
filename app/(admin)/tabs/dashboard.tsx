@@ -49,7 +49,7 @@ interface userData {
         className={` ${isDarkMode ? "bg-gray-900" : "bg-bg "}`}
         contentContainerClassName="p-2"
       >
-        <View className="mb-6">
+        {/* <View className="mb-6">
           <Text
             className={`text-2xl font-bold ${
               isDarkMode ? "text-white" : "text-gray-900"
@@ -62,7 +62,7 @@ interface userData {
           >
             Welcome to your admin dashboard
           </Text>
-        </View>
+        </View> */}
 
         <View
           className={`rounded-lg ${
@@ -188,7 +188,7 @@ interface userData {
           <View className="bg-white p-4 rounded-lg w-full">
             <Text className="text-black font-bold mb-2">Recent Users</Text>
             {users
-              .slice(0, 4)
+              .slice(0, 10)
               .map(
                 (
                   user: { name: string; role: string; photo: string },
@@ -214,7 +214,7 @@ interface userData {
 
                         // <Ionicons name="person-circle-outline" size={40} color="gray" />
                       )}
-                      <Text className="text-black">{user.name}</Text>
+                      <Text className="text-black text-trasnform capitalize">{user.name}</Text>
                     </View>
                     <Text className="text-black/70">{user.role}</Text>
                   </View>

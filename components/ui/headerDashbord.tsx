@@ -25,7 +25,7 @@ const HeaderDashboard = ({ userName, isDarkMode, onThemeToggle ,userImage, onMen
 //   refreshUserData()
 // },[refreshUserData])
   return (
-    <View className="flex-row justify-between items-center p-2 bg-white  dark:bg-white">
+    <View className="flex-row justify-between items-center p-2 bg-white shadow-2xl  dark:bg-white">
       <TouchableOpacity onPress={goProfile}>
       {userImage ? (
         <Image source={{ uri: userImage }} className="w-10 h-10 rounded-full" />

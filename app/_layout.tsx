@@ -15,7 +15,8 @@ import React from "react";
 import { PaperProvider } from "react-native-paper";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { screenOptions } from "@/constants/animation";
-import { initializeUserStore } from "@/store";
+import { initializeUserStore, useUserStore } from "@/store";
+import { connectSocket, disconnectSocket } from "@/utils/socket";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -31,6 +32,8 @@ export const queryClient = new QueryClient({
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
+  const userData = useUserStore(state => state.userData)
+
   const [loaded] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
   });
@@ -44,7 +47,13 @@ export default function RootLayout() {
   if (!loaded) {
     return null;
   }
-
+  // useEffect(() => {
+  //   if (userData) {
+  //     connectSocket();
+  //   } else {
+  //     disconnectSocket();
+  //   }
+  // }, [userData]);
   return (
     <ThemeProvider value={colorScheme === "light" ? DefaultTheme : DarkTheme}>
       <QueryClientProvider client={queryClient}>

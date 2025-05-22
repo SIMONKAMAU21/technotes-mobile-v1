@@ -3,7 +3,9 @@ import { socket } from "./socket";
 
 export const initializeSocketEvents = (queryClient: QueryClient, userId: string) => {
   console.log('Initializing socket events for userId:', userId);
-  socket.emit("join", { userId });
+  socket.on("connected", () => {
+    console.log("connected");
+  });
 
   // ✅ Listen for updated user conversations
   socket.on("userConversationsFetched", (populated) => {

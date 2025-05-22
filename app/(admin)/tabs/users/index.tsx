@@ -75,7 +75,7 @@ export default function UsersScreen() {
                       />
                     )}
                     <View className='flex-1'>
-                    <Text className={`font-medium ${isDarkMode ? 'text-black' : 'text-gray-900'}`}>
+                    <Text className={`font-medium ${isDarkMode ? 'text-black' : 'text-gray-900'} text-transform capitalize`}>
                       {user.name}
                     </Text>
                     <Text className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-100'}`}>

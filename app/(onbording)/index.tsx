@@ -11,13 +11,21 @@ import { CustomButton } from "@/components/ui/customButton";
 import { getUserToken, useUserData } from "@/utils";
 import { useUpdateUser } from "../(admin)/data";
 import { useUserStore } from "@/store";
+import { connectSocket, disconnectSocket } from "@/utils/socket";
 
 
 export default function OnboardingScreen() {
   const userData = useUserStore(state => state.userData)
-  const { user } = useUserData();
-console.log('userData', userData)
   const router = useRouter();
+
+useEffect(() => {
+  if (userData) {
+    connectSocket();
+  } else {
+    disconnectSocket();
+  }
+}, [userData]);
+
   useEffect(() => {
     const checkUserData = async () => {
       const userToken = await getUserToken();

@@ -10,7 +10,7 @@ interface InputProps extends React.ComponentProps<typeof TextInput> {
 }
 
 const CustomInput = React.forwardRef<typeof TextInput, InputProps>(
-  ({ style, label, error, ...props }, ref) => {
+  ({ style, label, error,multiline, ...props }, ref) => {
     return (
       <TextInput
         ref={ref}
@@ -24,6 +24,7 @@ const CustomInput = React.forwardRef<typeof TextInput, InputProps>(
         placeholderTextColor="black"
         activeOutlineColor="#ed8936"
         value={props.value}
+        multiline={multiline || true}
         {...props}
         helperText={error}
       />

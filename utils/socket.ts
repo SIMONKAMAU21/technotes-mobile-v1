@@ -1,19 +1,42 @@
 import { io } from "socket.io-client";
-import { BASE_API_V1_ENDPOINT, BASE_API_V1_ENDPOINT_TEST } from "./constants/sessions";
+import { BASE_API_V1_ENDPOINT } from "./constants/sessions";
 import { getUserToken } from ".";
-console.log('first',  BASE_API_V1_ENDPOINT)
-
-export const API = BASE_API_V1_ENDPOINT;
+const API = BASE_API_V1_ENDPOINT;
 const LOCAL_BASE = API.replace(`/api`, "");
+
+// Create the socket instance
 export const socket = io(LOCAL_BASE, {
-  retries: 3,
-  ackTimeout: 10000,
-  auth: getUserToken(),
+  autoConnect: false, // we’ll manually connect after setting auth
+  reconnection: true,
+  reconnectionAttempts: 10,     // how many times to retry
+  reconnectionDelay: 2000,      // time between attempts
+  reconnectionDelayMax: 10000,  // max delay between attempts
+  auth: {
+    token: getUserToken(),
+  },
 });
-export const Onlinee = socket.on("connect", () => {
-   return console.log('connected')
+// Connect with latest token (in case user logs in again)
+export const connectSocket = () => {
+  socket.auth = { token: getUserToken() }; // Refresh token
+  socket.connect();
+};
+
+// Disconnect socket
+export const disconnectSocket = () => {
+  if (socket.connected) {
+    socket.disconnect();
+  }
+};
+
+// Listen for connection events
+socket.on("connect", () => {
+  console.log("✅ Socket connected:", socket.id);
 });
-export const Offline = socket.on("disconnect", () => {
-//   ErrorToast("offline");
-return console.log("offline")
+
+socket.on("disconnect", (reason) => {
+  console.warn("❌ Socket disconnected:", reason);
+});
+
+socket.on("connect_error", (err) => {
+  console.error("⚠️ Connection Error:", err.message);
 });

@@ -14,18 +14,22 @@ import { useRouter } from "expo-router";
 import { formatTime } from "@/utils/constants/stringUtils";
 import { Ionicons, Octicons } from "@expo/vector-icons";
 import LoadingIndicator from "@/components/ui/loading";
-import { Onlinee } from "@/utils/socket";
+import { Onlinee, socket } from "@/utils/socket";
+import { Image } from "react-native";
 
 const InboxScreen = () => {
   const router = useRouter();
 
-
   const { data, isLoading, error } = useGetInbox();
-console.log('data', data)
+  useEffect(() => {
+    socket.on("userConversationsFetched", (populated) => {
+      console.log("populated", populated);
+    });
+  }, []);
   if (isLoading) {
     return (
       <SafeAreaView className="flex-1 justify-center items-center bg-bg">
-       <LoadingIndicator/>
+        <LoadingIndicator />
       </SafeAreaView>
     );
   }
@@ -56,32 +60,38 @@ console.log('data', data)
             <TouchableOpacity
               key={item._id}
               onPress={() => handleConversation(item)}
-              className=" bg-white bg-opacity-50 rounded-lg p-2 mt-1 flex-row"
+              className=" bg-white bg-opacity-50 align-center rounded-lg p-1 mt-1 flex-row"
             >
-              {item?.lastMessage.senderId.photo ? <Avatar.Image source={item?.lastMessage.senderId.photo} size={40}/> :  <Avatar.Text
-                style={{
-                  backgroundColor: "#4299E1",
-                }}
-                size={40}
-                label={item?.lastMessage?.senderId?.name.charAt(0)}
-                className="font-bold bg-red-500"
-                // color={isDarkMode ? 'white' : 'black'}
-                color="white"
-                
-              />
-              }
-             
-              <View
-                className="p-1 rounded-lg  flex-1 "
-              >
-                <Text className="font-bold">{item?.lastMessage?.senderId?.name}</Text>
-               <View className="flex-1 flex-row items-center ">
-               {item.lastMessage.read === false ? <Octicons name="check" size={15}  color={"gray"} /> : <Octicons name="check" color={"#4299E1"}/>}
-               <Text className=""> {item.lastMessage.content}</Text>
-               </View>
+              <View className="flex-row p-1 flex-1 gap-2 items-center">
+                <View className=" border  border-primary rounded-full">
+                  <Image
+                    source={
+                      item?.lastMessage?.receiverId?.photo
+                        ? { uri: item?.lastMessage?.receiverId?.photo }
+                        : require("../../../../assets/images/user-placeholder.png")
+                    }
+                    className="w-10 h-10 rounded-full "
+                  />
+                </View>
 
-                <Text className="self-end opcity-50 text-sm"> {formatTime(item?.lastMessage?.timestamp)}</Text>
+                <View className="  flex-1  pl-2 justify-center">
+                  <Text className=" font-semibold text-transform capitalize">
+                    {item?.lastMessage?.receiverId?.name}
+                  </Text>
+                  <View className="flex-row items-center gap-1">
+                    {item.lastMessage.read === false ? (
+                      <Octicons name="check" size={15} color={"gray"} />
+                    ) : (
+                      <Octicons name="check" color={"#4299E1"} />
+                    )}
+                    <Text  style={{textTransform:"lowercase"}}> {item.lastMessage.content}</Text>
+                  </View>
 
+                  <Text className="self-end opacity-50 text-sm">
+                    {" "}
+                    {formatTime(item?.lastMessage?.timestamp)}
+                  </Text>
+                </View>
               </View>
             </TouchableOpacity>
           ))}
