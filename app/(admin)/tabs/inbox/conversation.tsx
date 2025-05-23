@@ -16,7 +16,7 @@ import { CustomButton } from "@/components/ui/customButton";
 import { Ionicons } from "@expo/vector-icons";
 import { formatTime } from "@/utils/constants/stringUtils";
 import { socket } from "@/utils/socket";
-import { useAppState } from "@/store/actions";
+import { useAppActions, useAppState } from "@/store/actions";
 import WPSuccess from "@/components/ui/success/WPSuccess";
 import WPError from "@/components/ui/error/WPError";
 import Loading from "@/components/ui/toasts/Loading";
@@ -91,15 +91,15 @@ const ConversationScreen = () => {
   }, [conversationId]);
   //scrolling to latest message
 
- 
-
   const handleSend = async () => {
     const payload = {
       receiverId,
       senderId: userId,
       content,
     };
-
+    if (!content || !userId || !receiverId) {
+      return;
+    }
     try {
       if (payload) {
         const response = await sendMessage(payload);
@@ -125,12 +125,15 @@ const ConversationScreen = () => {
       <KeyboardAvoidingView
         className="flex-1 text-black"
         behavior={Platform.OS === "ios" ? "padding" : "height"}
-        // keyboardVerticalOffset={120} // adjust if needed
+        // keyboardVerticalOffset={100} // adjust if needed
+        keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}
       >
         <ScrollView
           className="flex-1 bg-bg px-4 mt-2"
           ref={scrollViewRef}
           keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ flexGrow: 1, paddingBottom: 10 }}
         >
           {isLoading && <Loading />}
           {allMessages?.map((message: any) => {
@@ -165,17 +168,33 @@ const ConversationScreen = () => {
 
         <View className="pl-2 pr-2 flex flex-row items-center justify-between">
           <CustomInput
-            style={{ width: "80%", height: 40, borderRadius: "50%" }}
-            placeholder="Message..."
+            style={{
+              minHeight: 40,
+              maxHeight: 40,
+              width: "80%",
+              borderRadius: 20,
+              padding: 2,
+              paddingTop: 2,
+              textOverflow: "hidden",
+
+              // paddingHorizontal: 10,
+              paddingVertical: 0,
+            }}
+            placeholder="Message...."
+            multiline={true}
             onChangeText={setContent}
             value={content}
           />
           <CustomButton
             onPress={handleSend}
+            disabled={!content}
             style={{ width: "15%", height: 40 }}
           >
             {sending ? (
-              <Text className="text-white font-bold text-lg">...</Text>
+              <>
+                <Loading />
+                <Text className="text-white font-bold text-lg">...</Text>{" "}
+              </>
             ) : (
               <Ionicons name="send" size={24} color="white" />
             )}
