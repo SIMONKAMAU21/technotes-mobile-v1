@@ -1,30 +1,28 @@
 import React, { useEffect } from "react";
-import {
-  View,
-  Text,
-  Image,
-  SafeAreaView,
-  ScrollView,
-} from "react-native";
+import { View, Text, Image, SafeAreaView, ScrollView } from "react-native";
 import { useRouter } from "expo-router";
 import { CustomButton } from "@/components/ui/customButton";
-import { getUserToken, useUserData } from "@/utils";
-import { useUpdateUser } from "../(admin)/data";
+import { getUserToken } from "@/utils";
 import { useUserStore } from "@/store";
 import { connectSocket, disconnectSocket } from "@/utils/socket";
-
+import WPSuccess from "@/components/ui/success/WPSuccess";
+import WPError from "@/components/ui/error/WPError";
+import { useAppState } from "@/store/actions";
 
 export default function OnboardingScreen() {
-  const userData = useUserStore(state => state.userData)
+  const state = useAppState();
+  const globalError = state.globalError;
+  const globalSuccess = state.globalSuccess;
+  const userData = useUserStore((state) => state.userData);
   const router = useRouter();
 
-useEffect(() => {
-  if (userData) {
-    connectSocket();
-  } else {
-    disconnectSocket();
-  }
-}, [userData]);
+  useEffect(() => {
+    if (userData) {
+      connectSocket();
+    } else {
+      disconnectSocket();
+    }
+  }, [userData]);
 
   useEffect(() => {
     const checkUserData = async () => {
@@ -43,8 +41,8 @@ useEffect(() => {
           default:
             router.replace("/(auth)/signIn");
         }
-      }else{
-        router.push('/(auth)/signIn')
+      } else {
+        // router.push("/(auth)/signIn");
       }
     };
 
@@ -53,6 +51,14 @@ useEffect(() => {
 
   return (
     <SafeAreaView className="flex-1 border border-red-200 justify-between items-center p-8 bg-white">
+      <WPSuccess
+        visible={globalSuccess?.visible}
+        description={globalSuccess?.description}
+      />
+      <WPError
+        visible={globalError?.visible}
+        description={globalError?.description}
+      />
       <ScrollView className="flex-1">
         <View className="justify-center mt-[50%] items-center">
           <Image
@@ -77,7 +83,7 @@ useEffect(() => {
         <View className="w-full">
           <CustomButton
             mode="outlined"
-            style={{ backgroundColor: `var(--color-secondary)`, marginTop: 20, }}
+            style={{ backgroundColor: `var(--color-secondary)`, marginTop: 20 }}
             onPress={() => router.replace("/(auth)/signIn")}
           >
             Sign in to continue

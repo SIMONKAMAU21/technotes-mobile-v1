@@ -3,14 +3,20 @@ import CustomInput from "@/components/ui/customInput";
 import { HeaderWithIcon } from "@/components/ui/headerWithIcon";
 import { Logo } from "@/components/ui/logo";
 import { router } from "expo-router";
-import React, { useCallback, useState } from "react";
-import { TextInput, View, Text, SafeAreaView, ScrollView } from "react-native";
+import React, { useState } from "react";
+import {View, Text, SafeAreaView, ScrollView } from "react-native";
 import { useLogin } from "./data";
-import { deleteUserData, setUserToken } from "@/utils";
-import { initializeUserStore, useUserStore } from "@/store";
-import { useFocusEffect } from "@react-navigation/native";
+import {setUserToken } from "@/utils";
+import {  useUserStore } from "@/store";
+import WPSuccess from "@/components/ui/success/WPSuccess";
+import WPError from "@/components/ui/error/WPError";
+import { useAppState } from "@/store/actions";
 
 const SignIn = () => {
+  const state = useAppState()
+  const globalError = state.globalError
+  const globalSuccess = state.globalSuccess
+  
   const [email, setEmail] = useState("admin24@gmail.com");
   const [password, setPassword] = useState("demo123");
   const [loading, setLoading] = useState(false);
@@ -66,6 +72,8 @@ const SignIn = () => {
   return (
     <SafeAreaView className="flex-1 justify-center items-center w-full bg-white">
       <HeaderWithIcon title="Sign In" bgColor="secondary" />
+      <WPSuccess visible={globalSuccess?.visible} description={globalSuccess?.description}/>
+      <WPError visible={globalError?.visible} description={globalError?.description} />  
       <ScrollView
         className="flex-1 w-full"
         contentContainerStyle={{

@@ -1,4 +1,5 @@
 import { httpV1 } from "@/api/axios";
+import { useAppActions } from "@/store/actions";
 import { setUserToken } from "@/utils";
 import { useMutation } from "react-query";
 
@@ -9,6 +10,7 @@ interface LoginCredentials {
 
 interface LoginResponse {
   token: string;
+  message:string;
   user: {
     id: string;
     email: string;
@@ -17,6 +19,7 @@ interface LoginResponse {
 }
 
 export const useLogin = () => {
+  const {setGlobalError,setGlobalSuccess} = useAppActions()
   return useMutation(
     async (payload: LoginCredentials) => {
       const response = await httpV1({
@@ -28,12 +31,21 @@ export const useLogin = () => {
     },
     {
       onSuccess: async (data:LoginResponse) => {
-        // setUserToken doesn't return anything (void), so token will be undefined
-        // await setUserToken(data.token);
-        // If you need the token value, get it directly from data
+        setGlobalSuccess({
+          visible:true,
+          description:data.message +" " + `${data.user.name}`
+        })
       },
       onError: (error: any) => {
-        console.log(error);
+        const message =
+        error.response?.data?.message ||
+        error.message ||
+        'An unexpected error occurred';
+    
+        setGlobalError({
+          visible:true,
+          description:message
+        })
       },
     },
   );

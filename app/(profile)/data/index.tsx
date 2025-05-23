@@ -2,6 +2,7 @@ import { httpV1 } from "@/api/axios";
 import { useMutation } from "react-query";
 import * as SecureStore from "expo-secure-store";
 import { useUserStore } from "@/store";
+import { useAppActions } from "@/store/actions";
 interface UpdatePassword {
   oldPassword: string;
   user_id: string;
@@ -13,10 +14,12 @@ interface UpdatePassword {
   };
   newPassword: string;
 }
+
 export const useUpdatePassword = () => {
+  const{setGlobalError,setGlobalSuccess}= useAppActions()
+
   return useMutation(
     async (payload: UpdatePassword) => {
-      console.log("payload", payload);
       const response = await httpV1({
         method: "POST",
         url: `/user/password/${payload?.id}`,
@@ -25,10 +28,18 @@ export const useUpdatePassword = () => {
       return response.data;
     },
     {
-      onSuccess: () => {
-        console.log("successful password update");
+      onSuccess: (data) => {
+        setGlobalSuccess({
+          visible:true,
+          description:data?.message
+        })
       },
       onError: (error: any) => {
+        const errorMsg = error?.response?.data?.message || error?.message || "Failed to update password"
+        setGlobalError({
+          visible:true,
+          description:errorMsg
+        })
         console.log("error", error);
       },
     }
@@ -36,7 +47,7 @@ export const useUpdatePassword = () => {
 };
 
 export const useUpdatePicture = () => {
-  // const updateUserData = useUserStore(state => state.updateUserPhoto)
+  const{setGlobalError,setGlobalSuccess}= useAppActions()
 
   return useMutation(
     async (payload: UpdatePassword) => {
@@ -53,13 +64,16 @@ export const useUpdatePicture = () => {
     },
     {
       onSuccess: async (data) => {
+        setGlobalSuccess({
+          visible:true,
+          description:data?.message || "Photo updated successfull"
+        })
         const userData = await SecureStore.getItemAsync("userData");
-        console.log("userData", userData);
         if (userData) {
           const currentUserData = JSON.parse(userData);
           const updatedUserData = {
             ...currentUserData,
-            photo: data.user.photo,
+            photo: data?.user?.photo,
           };
           await SecureStore.setItemAsync(
             "userData",
@@ -69,6 +83,11 @@ export const useUpdatePicture = () => {
         }
       },
       onError: (error: any) => {
+        const errorMsg = error?.response?.data?.message || error?.message || "Failed to update profile picture"
+        setGlobalError({
+          visible:true,
+          description:errorMsg
+        })
         console.log("error", error);
       },
     }

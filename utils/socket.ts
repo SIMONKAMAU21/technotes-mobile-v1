@@ -1,6 +1,7 @@
 import { io } from "socket.io-client";
 import { BASE_API_V1_ENDPOINT } from "./constants/sessions";
 import { getUserToken } from ".";
+import { useAppActions } from "@/store/actions";
 const API = BASE_API_V1_ENDPOINT;
 const LOCAL_BASE = API.replace(`/api`, "");
 
@@ -23,6 +24,7 @@ export const connectSocket = () => {
 
 // Disconnect socket
 export const disconnectSocket = () => {
+
   if (socket.connected) {
     socket.disconnect();
   }
@@ -30,13 +32,29 @@ export const disconnectSocket = () => {
 
 // Listen for connection events
 socket.on("connect", () => {
-  console.log("✅ Socket connected:", socket.id);
+  const{setGlobalError,setGlobalSuccess}= useAppActions()
+
+  setGlobalSuccess({
+    visible:true,
+    description:"Online"
+  })
 });
 
 socket.on("disconnect", (reason) => {
-  console.warn("❌ Socket disconnected:", reason);
+  const{setGlobalError,setGlobalSuccess}= useAppActions()
+
+  setGlobalError({
+    visible:true,
+    description:"Offline"
+  })
 });
 
 socket.on("connect_error", (err) => {
-  console.error("⚠️ Connection Error:", err.message);
+  const{setGlobalError,setGlobalSuccess}= useAppActions()
+
+  const erroeMsg = err.message
+  setGlobalError({
+    visible:true,
+    description:erroeMsg
+  })
 });

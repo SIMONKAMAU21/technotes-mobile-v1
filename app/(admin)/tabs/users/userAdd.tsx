@@ -9,7 +9,14 @@ import { Logo } from "@/components/ui/logo";
 import { useAddUser } from "../../data";
 import { RadioButton } from "react-native-paper";
 import { UserAdd } from "@/components/ui/userAdd";
+import { useAppState } from "@/store/actions";
+import WPSuccess from "@/components/ui/success/WPSuccess";
+import WPError from "@/components/ui/error/WPError";
+
 export default function UserAddScreen() {
+  const state = useAppState()
+  const globalError = state.globalError
+  const globalSuccess = state.globalSuccess
   const colorScheme = useColorScheme();
   const isDarkMode = colorScheme === "dark";
   const { mutate: addUser, isLoading, isError } = useAddUser();
@@ -38,7 +45,7 @@ export default function UserAddScreen() {
       } else {
         const response = await addUser(payload);
         if (response !== null) {
-          router.back();
+          // router.back();
         } else {
           return null;
         }
@@ -50,6 +57,8 @@ export default function UserAddScreen() {
 
   return (
     <SafeAreaView className="flex-1 mt-10">
+       <WPSuccess visible={globalSuccess?.visible} description={globalSuccess?.description}/>
+       <WPError visible={globalError?.visible} description={globalError?.description} /> 
       <HeaderWithIcon
         title="Add New User"
         leftIcon="arrow-back"
