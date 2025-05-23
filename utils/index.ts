@@ -13,13 +13,11 @@ export async function getUserToken() {
 }
 export async function signOut() {
 const response =   await SecureStore.deleteItemAsync("userToken");
-console.log('response here', response)
   await SecureStore.deleteItemAsync("userData");
 }
 export async function setUserToken(token:string) {
     // console.log('token1', token)
   const  success = await SecureStore.setItemAsync("userToken", token);
-  console.log('success', success)
 }
 
 

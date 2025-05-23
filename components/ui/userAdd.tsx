@@ -5,6 +5,8 @@ import { CustomButton } from "./customButton";
 import { RadioButton } from "react-native-paper";
 import { RadioInputs } from "./radioInputs";
 import { Picker } from "@react-native-picker/picker";
+import Loading from "./toasts/Loading";
+import { useRouter } from "expo-router";
 
 interface UserFormData {
   name: string;
@@ -38,7 +40,7 @@ export const UserAdd = ({
     gender: "",
     address: "",
   });
-
+  const router = useRouter();
   useEffect(() => {
     if (initialData) {
       setFormData(initialData);
@@ -47,6 +49,7 @@ export const UserAdd = ({
 
   const handleSubmit = () => {
     onSubmit(formData);
+    router.back();
   };
 
   return (
@@ -87,8 +90,10 @@ export const UserAdd = ({
           <View className="border border-gray-300 rounded">
             <Picker
               selectedValue={formData.role}
-              onValueChange={(value) => setFormData({ ...formData, role: value })}
-              style={{ color: 'black', }}
+              onValueChange={(value) =>
+                setFormData({ ...formData, role: value })
+              }
+              style={{ color: "black" }}
             >
               <Picker.Item label="Select a role" value="" />
               <Picker.Item label="Admin" value="admin" />
@@ -114,7 +119,7 @@ export const UserAdd = ({
           loading={isLoading}
           onPress={handleSubmit}
         >
-          {submitButtonText}
+          {isLoading ? <Loading /> : submitButtonText}
         </CustomButton>
       </View>
     </ScrollView>

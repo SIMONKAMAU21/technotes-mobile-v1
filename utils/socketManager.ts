@@ -2,7 +2,6 @@ import { QueryClient } from "react-query";
 import { socket } from "./socket";
 
 export const initializeSocketEvents = (queryClient: QueryClient, userId: string) => {
-  console.log('Initializing socket events for userId:', userId);
   socket.on("connected", () => {
     console.log("connected");
   });
@@ -62,7 +61,6 @@ export const initializeSocketEvents = (queryClient: QueryClient, userId: string)
 
   // Optional: return cleanup method
   return () => {
-    console.log('Cleaning up socket event listeners');
     socket.off("userConversationsFetched");
     socket.off("messagesInConversationFetched");
     socket.off("messageAdded");

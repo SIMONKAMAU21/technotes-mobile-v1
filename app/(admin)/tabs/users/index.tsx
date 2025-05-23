@@ -7,8 +7,14 @@ import { CustomButton } from '@/components/ui/customButton';
 import { Ionicons } from '@expo/vector-icons';
 import { Logo } from '@/components/ui/logo';
 import { Avatar } from 'react-native-paper';
+import { useAppState } from '@/store/actions';
+import WPSuccess from '@/components/ui/success/WPSuccess';
+import WPError from '@/components/ui/error/WPError';
 
 export default function UsersScreen() {
+  const state = useAppState()
+  const globalError = state.globalError
+  const globalSuccess = state.globalSuccess
   const colorScheme = useColorScheme();
   const isDarkMode = colorScheme === 'dark';
   const { data, isLoading, error } = useGetUsers();
@@ -17,7 +23,6 @@ export default function UsersScreen() {
   const router = useRouter();
 
   const handleUserPress = (user) => {
-    console.log('user', user)
     setSelectedUser(user);
     router.push({
       pathname: '/(admin)/tabs/users/userdata',
@@ -27,6 +32,8 @@ export default function UsersScreen() {
 
   return (
     <SafeAreaView className="flex-1 mt-10 bg-gray-100">
+        <WPSuccess visible={globalSuccess?.visible} description={globalSuccess?.description}/>
+        <WPError visible={globalError?.visible} description={globalError?.description} /> 
       <ScrollView 
         className={`flex-1 ${isDarkMode ? 'bg-bg' : 'bg-bg'}`}
         contentContainerClassName="p-2"

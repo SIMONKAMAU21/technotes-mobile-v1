@@ -13,12 +13,21 @@ import { HeaderWithIcon } from "@/components/ui/headerWithIcon";
 import { UserAdd } from "@/components/ui/userAdd";
 import { Ionicons } from "@expo/vector-icons";
 import { useDeleteUser, useUpdateUser } from "../../data";
+import { useAppActions, useAppState } from "@/store/actions";
+import WPSuccess from "@/components/ui/success/WPSuccess";
+import WPError from "@/components/ui/error/WPError";
+import Loading from "@/components/ui/toasts/Loading";
 
 export default function UserDetailsScreen() {
+  const state = useAppState();
+  const globalError = state.globalError;
+  const globalSuccess = state.globalSuccess;
   const colorScheme = useColorScheme();
   const isDarkMode = colorScheme === "dark";
   const params = useLocalSearchParams();
   const userData = JSON.parse(params.userdata as string);
+  const { setGlobalError, setGlobalSuccess } = useAppActions();
+
   const {
     mutate: deleteUser,
     isLoading,
@@ -26,11 +35,11 @@ export default function UserDetailsScreen() {
   } = useDeleteUser(userData._id);
   const {
     mutate: updateUser,
-    isLoading: updateLoading,
+    isLoading: isUpdateLoading,
     isError: updateError,
   } = useUpdateUser(userData._id);
 
-  const handleUpdateUser = async (formData:any) => {
+  const handleUpdateUser = async (formData: any) => {
     const payload = {
       name: formData.name,
       email: formData.email,
@@ -41,12 +50,13 @@ export default function UserDetailsScreen() {
     };
 
     try {
-      const response = await updateUser(payload);
-      console.log("User updated successfully:", response);
-      //   Alert.alert("Success", "User details updated successfully");
-      router.back();
+      await updateUser(payload);
+     
     } catch (error) {
-      console.error("Error updating user:", error);
+      setGlobalError({
+        visible: true,
+        description: "Erroe updating user",
+      });
       //   Alert.alert("Error", "Failed to update user details");
     }
   };
@@ -64,6 +74,14 @@ export default function UserDetailsScreen() {
 
   return (
     <SafeAreaView className="flex-1 mt-10 bg-bg">
+      <WPSuccess
+        visible={globalSuccess?.visible}
+        description={globalSuccess?.description}
+      />
+      <WPError
+        visible={globalError?.visible}
+        description={globalError?.description}
+      />
       <HeaderWithIcon
         title="User Details"
         leftIcon="arrow-back"
@@ -107,19 +125,22 @@ export default function UserDetailsScreen() {
                 }
               />
             </View>
-
-            <Ionicons
-              onPress={handleDeleteUser}
-              name="trash"
-              size={24}
-              color="white"
-            />
+            {isLoading ? (
+              <Loading />
+            ) : (
+              <Ionicons
+                onPress={handleDeleteUser}
+                name="trash"
+                size={24}
+                color="white"
+              />
+            )}
           </View>
 
           <UserAdd
             onSubmit={handleUpdateUser}
             initialData={userData}
-            isLoading={updateLoading}
+            isLoading={isUpdateLoading}
             isError={updateError}
             submitButtonText="Update User Details"
           />

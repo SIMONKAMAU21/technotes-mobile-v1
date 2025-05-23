@@ -14,16 +14,22 @@ import { useRouter } from "expo-router";
 import { formatTime } from "@/utils/constants/stringUtils";
 import { Ionicons, Octicons } from "@expo/vector-icons";
 import LoadingIndicator from "@/components/ui/loading";
-import { Onlinee, socket } from "@/utils/socket";
+import { socket } from "@/utils/socket";
 import { Image } from "react-native";
+import { useAppState } from "@/store/actions";
+import WPSuccess from "@/components/ui/success/WPSuccess";
+import WPError from "@/components/ui/error/WPError";
 
 const InboxScreen = () => {
   const router = useRouter();
-
+  const state = useAppState()
+  const globalError = state.globalError
+  const globalSuccess = state.globalSuccess
   const { data, isLoading, error } = useGetInbox();
+  
   useEffect(() => {
     socket.on("userConversationsFetched", (populated) => {
-      console.log("populated", populated);
+      // console.log("populated", populated);
     });
   }, []);
   if (isLoading) {
@@ -51,6 +57,8 @@ const InboxScreen = () => {
   return (
     <SafeAreaView className="flex-1 bg-bg mt-10">
       <HeaderWithIcon title="Inbox" />
+      <WPSuccess visible={globalSuccess?.visible} description={globalSuccess?.description}/>
+       <WPError visible={globalError?.visible} description={globalError?.description} />  
       <ScrollView className="flex-1 ">
         <View className=" flex-1">
           {/* <Text className="text-lg font-bold mb-2">

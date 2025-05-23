@@ -15,6 +15,7 @@ import * as ImagePicker from "expo-image-picker";
 import { formToJSON } from "axios";
 import { useUserStore } from "@/store";
 import LoadingIndicator from "./loading";
+import Loading from "./toasts/Loading";
 interface userDetails {
   userDetails: {
     photo: string | undefined;
@@ -111,7 +112,7 @@ const UpdateProfile = () => {
       <TouchableOpacity onPress={handleImagePick}>
         <View style={styles.avatarWrapper}>
           {uploading ? (
-            <LoadingIndicator />
+            <Loading />
           ) : (
             <>
               <Image

@@ -29,7 +29,6 @@ export default function DashboardScreen() {
   // const { user } = useUserData();
   const { data: users = [] } = useGetUsers();
   const user = useUserStore((state) => state.userData);
-  console.log('user', user)
 const refreshUserData = useUserStore(state => state.refreshUserData)
 
 useFocusEffect(

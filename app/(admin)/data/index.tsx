@@ -1,4 +1,5 @@
 import { httpV1 } from "@/api/axios";
+import { useAppActions } from "@/store/actions";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 
 interface AddUserPayload {
@@ -11,6 +12,8 @@ interface AddUserPayload {
 }
 
 export const useGetUsers = () => {
+  const { setGlobalError, setGlobalSuccess } = useAppActions();
+
   return useQuery(
     ["users"],
     async () => {
@@ -23,10 +26,21 @@ export const useGetUsers = () => {
     },
     {
       onSuccess: (data) => {
+        // setGlobalSuccess({
+        //   visible: true,
+        //   description: data.message,
+        // });
         // console.log("Fetched users:", data);
       },
       onError: (error: any) => {
-        console.error("Error fetching users:", error);
+        const message =
+          error.response?.data?.message ||
+          error.message ||
+          "An unexpected error occurred";
+        setGlobalError({
+          visible: true,
+          description: message,
+        });
       },
     }
   );
@@ -34,26 +48,36 @@ export const useGetUsers = () => {
 
 export const useAddUser = () => {
   const queryClient = useQueryClient();
-  
+  const { setGlobalError, setGlobalSuccess } = useAppActions();
+
   return useMutation(
     ["users"],
     async (payload: AddUserPayload) => {
-      console.log("payload", payload);
       const response = await httpV1({
         method: "POST",
         url: "/users/add",
         data: payload,
       });
-      console.log("response", response);
       return response.data;
     },
     {
       onSuccess: (data) => {
-        console.log("User added successfully:", data);
-        queryClient.invalidateQueries(["users"]);
+        setGlobalSuccess({
+          visible: true,
+          description: data.message,
+        }),
+          queryClient.invalidateQueries(["users"]);
       },
       onError: (error: any) => {
-        console.error("Error adding user:", error);
+        const message =
+          error.response?.data?.message ||
+          error.message ||
+          "An unexpected error occurred";
+
+        setGlobalError({
+          visible: true,
+          description: message,
+        });
       },
     }
   );
@@ -61,6 +85,7 @@ export const useAddUser = () => {
 
 export const useDeleteUser = (id: string) => {
   const queryClient = useQueryClient();
+  const { setGlobalError, setGlobalSuccess } = useAppActions();
 
   return useMutation(
     ["users"],
@@ -73,10 +98,22 @@ export const useDeleteUser = (id: string) => {
     },
     {
       onSuccess: (data) => {
-        console.log("User deleted successfully:", data);
-        queryClient.invalidateQueries(["users"]);
+        setGlobalSuccess({
+          visible: true,
+          description: data.message,
+        }),
+          queryClient.invalidateQueries(["users"]);
       },
       onError: (error: any) => {
+        const message =
+          error.response?.data?.message ||
+          error.message ||
+          "An unexpected error occurred";
+
+        setGlobalError({
+          visible: true,
+          description: message,
+        });
         console.error("Error deleting user:", error);
       },
     }
@@ -85,24 +122,36 @@ export const useDeleteUser = (id: string) => {
 
 export const useUpdateUser = (id: string) => {
   const queryClient = useQueryClient();
+  const { setGlobalError, setGlobalSuccess } = useAppActions();
 
   return useMutation(
-    ["users"],  
+    ["users"],
     async (payload: AddUserPayload) => {
       const response = await httpV1({
         method: "PUT",
         url: `/user/${id}`,
         data: payload,
-      }); 
+      });
       return response.data;
     },
     {
       onSuccess: (data) => {
-        console.log("User updated successfully:", data);
-        queryClient.invalidateQueries(["users"]);
+        setGlobalSuccess({
+          visible: true,
+          description: data.message,
+        }),
+          queryClient.invalidateQueries(["users"]);
       },
       onError: (error: any) => {
-        console.error("Error updating user:", error);
+        const message =
+          error.response?.data?.message ||
+          error.message ||
+          "An unexpected error occurred";
+
+        setGlobalError({
+          visible: true,
+          description: message,
+        });
       },
     }
   );

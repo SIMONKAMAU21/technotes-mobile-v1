@@ -8,8 +8,14 @@ import { deleteUserData, setUserToken, signOut, useUserData } from "@/utils";
 import { HeaderWithIcon } from "@/components/ui/headerWithIcon";
 import Updateprofile from "@/components/ui/updateprofile";
 import { useUserStore } from "@/store";
+import { useAppState } from "@/store/actions";
+import WPSuccess from "@/components/ui/success/WPSuccess";
+import WPError from "@/components/ui/error/WPError";
 
 export default function ProfileScreen() {
+  const state = useAppState()
+  const globalError = state.globalError
+  const globalSuccess = state.globalSuccess
   const colorScheme = useColorScheme();
   const [isDarkMode, setIsDarkMode] = useState(colorScheme === "dark");
   const router = useRouter();
@@ -51,6 +57,8 @@ export default function ProfileScreen() {
   };
   return (
     <SafeAreaView className="flex-1 mt-10">
+       <WPSuccess visible={globalSuccess?.visible} description={globalSuccess?.description}/>
+       <WPError visible={globalError?.visible} description={globalError?.description} />  
       <HeaderWithIcon title="Profile" />
       <ScrollView
         className={`flex-1 ${isDarkMode ? "bg-bg" : "bg-gray-50"}  text-white`}

@@ -26,7 +26,6 @@ export default function TeacherLayout() {
     timeoutRef.current = setTimeout(() => {
       
       if (!userData || userData?.role !== "teacher") {
-        console.log("Redirecting to signIn because user is:", userData);
         redirectedRef.current = true;
         router.replace("/(auth)/signIn");
         return;
