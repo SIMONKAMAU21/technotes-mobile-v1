@@ -29,7 +29,7 @@ export const useLogin = () => {
     {
       onSuccess: async (data:LoginResponse) => {
         // setUserToken doesn't return anything (void), so token will be undefined
-        await setUserToken(data.token);
+        // await setUserToken(data.token);
         // If you need the token value, get it directly from data
       },
       onError: (error: any) => {

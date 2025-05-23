@@ -4,7 +4,7 @@ import {
   ThemeProvider,
 } from "@react-navigation/native";
 import { useFonts } from "expo-font";
-import { Stack } from "expo-router";
+import { Stack, useRouter } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
@@ -32,21 +32,27 @@ export const queryClient = new QueryClient({
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
-  const userData = useUserStore(state => state.userData)
-
   const [loaded] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
   });
+  const isHydrated = useUserStore((state) => state.isHydrated);
+
   useEffect(() => {
-    initializeUserStore()
-    if (loaded) {
+    initializeUserStore();
+  }, []);
+  
+  useEffect(() => {
+    if (loaded && isHydrated) {
       SplashScreen.hideAsync();
     }
-  }, [loaded]);
+  }, [loaded, isHydrated]);
 
   if (!loaded) {
     return null;
   }
+  // if (!userData) {
+  //   router.replace("/(auth)/signIn");
+  // }
   // useEffect(() => {
   //   if (userData) {
   //     connectSocket();
@@ -69,7 +75,6 @@ export default function RootLayout() {
             <Stack.Screen name="(teacher)" options={screenOptions} />
             <Stack.Screen name="+not-found" />
             <Stack.Screen name="(profile)" options={screenOptions} />
-
           </Stack>
           <StatusBar style="light" backgroundColor="white" />
         </PaperProvider>

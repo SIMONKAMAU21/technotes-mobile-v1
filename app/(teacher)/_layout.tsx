@@ -5,7 +5,7 @@ import { screenOptions } from "@/constants/animation";
 import { useUserStore } from "@/store";
 import LoadingIndicator from "@/components/ui/loading";
 
-export default function StudentLayout() {
+export default function TeacherLayout() {
   const { userData, isHydrated } = useUserStore();
   const router = useRouter();
   const redirectedRef = useRef(false);
@@ -17,9 +17,6 @@ export default function StudentLayout() {
 
     // Prevent multiple redirections
     if (redirectedRef.current) return;
-
-    // console.log('userData in AdminLayout:', userData);
-
     // Clear any existing timeout
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
@@ -27,15 +24,13 @@ export default function StudentLayout() {
 
     // Debounce the auth check to handle rapid state changes
     timeoutRef.current = setTimeout(() => {
-      // console.log('Final userData check:', userData);
       
-      if (!userData || userData?.role !== "student") {
-        // console.log("Redirecting to signIn because user is:", userData);
+      if (!userData || userData?.role !== "teacher") {
+        console.log("Redirecting to signIn because user is:", userData);
         redirectedRef.current = true;
         router.replace("/(auth)/signIn");
         return;
-      }
-    }, 300); // Increased delay to handle rapid state changes
+     }   }, 300); // Increased delay to handle rapid state changes
 
     // Cleanup timeout on unmount
     return () => {

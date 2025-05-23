@@ -4,7 +4,7 @@ import { useColorScheme } from "@/hooks/useColorScheme";
 import { CustomButton } from "@/components/ui/customButton";
 import { useRouter } from "expo-router";
 import * as SecureStore from "expo-secure-store";
-import { deleteUserData, useUserData } from "@/utils";
+import { deleteUserData, setUserToken, signOut, useUserData } from "@/utils";
 import { HeaderWithIcon } from "@/components/ui/headerWithIcon";
 import Updateprofile from "@/components/ui/updateprofile";
 import { useUserStore } from "@/store";
@@ -13,8 +13,8 @@ export default function ProfileScreen() {
   const colorScheme = useColorScheme();
   const [isDarkMode, setIsDarkMode] = useState(colorScheme === "dark");
   const router = useRouter();
-  const  user  = useUserStore(state => state.userData);
-  const setUser = useUserStore(state => state.setUserData)
+  const user = useUserStore((state) => state.userData);
+  const setUser = useUserStore((state) => state.setUserData);
   useEffect(() => {
     loadThemePreference();
   }, []);
@@ -43,11 +43,12 @@ export default function ProfileScreen() {
       console.error("Error saving theme preference:", error);
     }
   };
-const logout = async() =>{
-  setUser(null)
-await deleteUserData()
-  router.replace("/(auth)/signIn")
-}
+  const logout = async () => {
+    setUser(null);
+    signOut()
+    await deleteUserData();
+    router.replace("/(auth)/signIn");
+  };
   return (
     <SafeAreaView className="flex-1 mt-10">
       <HeaderWithIcon title="Profile" />
@@ -55,11 +56,10 @@ await deleteUserData()
         className={`flex-1 ${isDarkMode ? "bg-bg" : "bg-gray-50"}  text-white`}
         contentContainerClassName="p-4"
       >
-        <Updateprofile  />
-       <View className="mt-2 self-center ">
-       <CustomButton children="Logout" onPress={logout} />
-
-       </View>
+        <Updateprofile />
+        <View className="mt-2 self-center ">
+          <CustomButton children="Logout" onPress={logout} />
+        </View>
       </ScrollView>
     </SafeAreaView>
   );

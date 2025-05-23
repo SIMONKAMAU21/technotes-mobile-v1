@@ -44,7 +44,7 @@ useEffect(() => {
             router.replace("/(auth)/signIn");
         }
       }else{
-        router.replace('/(auth)/signIn')
+        router.push('/(auth)/signIn')
       }
     };
 

@@ -25,6 +25,7 @@ const CustomInput = React.forwardRef<typeof TextInput, InputProps>(
         activeOutlineColor="#ed8936"
         value={props.value}
         multiline={multiline || true}
+        
         {...props}
         helperText={error}
       />

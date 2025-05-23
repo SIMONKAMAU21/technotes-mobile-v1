@@ -49,8 +49,7 @@ const UpdateProfile = () => {
         id: userData?.id,
       };
       const response = await updatePassword(payload);
-      console.log("response", response);
-      router.replace("/(auth)/signIn");
+      router.replace("/(onbording)");
     } catch (error) {
       console.log("error", error);
     }

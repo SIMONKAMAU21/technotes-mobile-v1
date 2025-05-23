@@ -3,11 +3,12 @@ import CustomInput from "@/components/ui/customInput";
 import { HeaderWithIcon } from "@/components/ui/headerWithIcon";
 import { Logo } from "@/components/ui/logo";
 import { router } from "expo-router";
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { TextInput, View, Text, SafeAreaView, ScrollView } from "react-native";
 import { useLogin } from "./data";
 import { deleteUserData, setUserToken } from "@/utils";
-import { useUserStore } from "@/store";
+import { initializeUserStore, useUserStore } from "@/store";
+import { useFocusEffect } from "@react-navigation/native";
 
 const SignIn = () => {
   const [email, setEmail] = useState("admin24@gmail.com");
@@ -15,8 +16,11 @@ const SignIn = () => {
   const [loading, setLoading] = useState(false);
   const { mutate: mutateLogin } = useLogin();
   const setUser = useUserStore((state) => state.setUserData);
+
+
+
   const handleSignIn = async () => {
-    await deleteUserData()
+    // await deleteUserData()
     try {
       setLoading(true);
       const payload = {
@@ -25,23 +29,25 @@ const SignIn = () => {
       };
 
       mutateLogin(payload, {
-        onSuccess: (response: any) => {
-          setUser(response.user);
-          setUserToken(response.token);
+        onSuccess: async(response: any) => {
+
+        await  setUser(response.user);
+         await setUserToken(response.token);
           // Based on user role, redirect to appropriate dashboard
           switch (response.user.role) {
             case "admin":
               router.replace("(admin)/tabs/dashboard" as any);
               break;
             case "teacher":
-              router.replace("/dashboard/teacher" as any);
+              router.replace("(teacher)/tabs/dashboard" as any);
               break;
             case "student":
               router.replace("(student)/tabs/dashboard" as any);
               break;
             default:
-              router.replace("/dashboard/default" as any);
+            router.replace("/(auth)/signIn");
           }
+
         },
         onError: (error) => {
           console.error("Sign in error:", error);

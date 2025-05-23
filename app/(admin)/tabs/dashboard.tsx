@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import {
   View,
   Text,
@@ -11,11 +11,18 @@ import { useColorScheme } from "@/hooks/useColorScheme";
 import HeaderDashboard from "@/components/ui/headerDashbord";
 import { useUserData } from "@/utils";
 import { useGetUsers } from "../data";
-import { router, useFocusEffect } from "expo-router";
+import { router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { Card } from "@/components/ui/card";
 import { GiftedChat } from "react-native-gifted-chat";
 import { useUserStore } from "@/store";
+import { useFocusEffect } from "@react-navigation/native";
+
+
+interface userData {
+  // user:[]
+  role:string
+}
 export default function DashboardScreen() {
   const colorScheme = useColorScheme();
   const isDarkMode = colorScheme === "light";
@@ -24,10 +31,15 @@ export default function DashboardScreen() {
   const user = useUserStore((state) => state.userData);
   console.log('user', user)
 const refreshUserData = useUserStore(state => state.refreshUserData)
-interface userData {
-  // user:string
-  role:string
-}
+
+useFocusEffect(
+ useCallback(()=>{
+  if(!user){
+    router.replace("/(auth)/signIn")
+  }
+ },[user])
+) 
+
 // useFocusEffect (()=>{
 //    refreshUserData()
 // },[refreshUserData])
