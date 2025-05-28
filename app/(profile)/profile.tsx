@@ -65,7 +65,7 @@ export default function ProfileScreen() {
         contentContainerClassName="p-4"
       >
         <Updateprofile />
-        <View className="mt-2 self-center ">
+        <View className="mt-2 w-full self-center ">
           <CustomButton children="Logout" onPress={logout} />
         </View>
       </ScrollView>

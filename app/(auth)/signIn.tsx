@@ -16,7 +16,6 @@ const SignIn = () => {
   const state = useAppState()
   const globalError = state.globalError
   const globalSuccess = state.globalSuccess
-  
   const [email, setEmail] = useState("admin24@gmail.com");
   const [password, setPassword] = useState("demo123");
   const [loading, setLoading] = useState(false);
@@ -36,7 +35,6 @@ const SignIn = () => {
 
       mutateLogin(payload, {
         onSuccess: async(response: any) => {
-
         await  setUser(response.user);
          await setUserToken(response.token);
           // Based on user role, redirect to appropriate dashboard

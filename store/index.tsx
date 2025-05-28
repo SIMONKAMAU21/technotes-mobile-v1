@@ -7,6 +7,9 @@ interface UserData {
   name: string;
   email: string;
   photo: string | undefined;
+  phone: string | undefined;
+  gender:"MALE" | "FEMALE" | "OTHER";
+  address: string | undefined;
   role: 'admin' | 'teacher' | 'student';
 }
 
