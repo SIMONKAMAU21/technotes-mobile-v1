@@ -1,10 +1,10 @@
 # Pull Request: Hey! I just created a pull request
 
 ## Description
-This PR updates the README file for the Lemonade Payments mobile application.
+This PR updates the README file for the Technotes  mobile application.
 
 ##  What does this PR do?
-This PR updates the README file for the Lemonade Payments mobile application. The changes include:
+This PR updates the README file for the Technotes  mobile application. The changes include:
 
 - Detailed user journeys
 - Figma design references
