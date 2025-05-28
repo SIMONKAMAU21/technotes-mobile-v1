@@ -12,10 +12,9 @@ import { CustomButton } from "./customButton";
 import { useUpdatePassword, useUpdatePicture } from "@/app/(profile)/data";
 import { useRouter } from "expo-router";
 import * as ImagePicker from "expo-image-picker";
-import { formToJSON } from "axios";
 import { useUserStore } from "@/store";
-import LoadingIndicator from "./loading";
 import Loading from "./toasts/Loading";
+import { HStack, VStack } from "./Stacks";
 interface userDetails {
   userDetails: {
     photo: string | undefined;
@@ -25,7 +24,7 @@ interface userDetails {
 }
 const UpdateProfile = () => {
   //   console.log("userDetails", userDetails);
-  const [currentPassword, setCurrentPassword] = useState("demo123");
+  const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [image, setImage] = useState(null);
@@ -78,6 +77,10 @@ const UpdateProfile = () => {
         const fileNames = overSize?.map((file) => file.fileName);
         return;
       }
+      if(result.canceled){
+        return
+
+      }
       if (!result.cancelled || overSize?.length < 0) {
         setImage(result?.assets?.[0]?.uri);
       }
@@ -104,10 +107,10 @@ const UpdateProfile = () => {
   };
 
   return (
-    <View className="bg-white p-4 items-center  rounded-lg">
+    <View className=" items-center gap-2 rounded-lg">
       {/* Cover + Profile */}
 
-      <View style={styles.header} className="bg-primary" />
+      <View style={styles.header} className="bg-primary " />
 
       <TouchableOpacity onPress={handleImagePick}>
         <View style={styles.avatarWrapper}>
@@ -131,38 +134,64 @@ const UpdateProfile = () => {
       </TouchableOpacity>
 
       {/* Change Password */}
-      <Text style={styles.title}>Change Password</Text>
-      <CustomInput
-        // placeholder="Current password"
-        value={currentPassword}
-        label="Current password"
-        onChangeText={setCurrentPassword}
-        secureTextEntry
-        // style={styles.input}
-      />
-      <CustomInput
-        // placeholder="New password"
-        value={newPassword}
-        label="New password"
-        onChangeText={setNewPassword}
-        secureTextEntry
-        // style={styles.input}
-      />
-      <CustomInput
-        // placeholder="Confirm password"
-        value={confirmPassword}
-        label="Confirm password"
-        onChangeText={setConfirmPassword}
-        secureTextEntry
-        // style={styles.input}
-      />
+      <View className="w-full p-2 bg-white rounded-lg">
+        <Text style={styles.title}>Change Password</Text>
+        <CustomInput
+          // placeholder="Current password"
+          value={currentPassword}
+          label="Current password"
+          onChangeText={setCurrentPassword}
+          secureTextEntry
+          // style={styles.input}
+        />
+        <CustomInput
+          // placeholder="New password"
+          value={newPassword}
+          label="New password"
+          onChangeText={setNewPassword}
+          secureTextEntry
+          // style={styles.input}
+        />
+        <CustomInput
+          // placeholder="Confirm password"
+          value={confirmPassword}
+          label="Confirm password"
+          onChangeText={setConfirmPassword}
+          secureTextEntry
+          // style={styles.input}
+        />
 
-      <CustomButton onPress={handlePasswordUpdate}>
-        Update Password
-      </CustomButton>
-      <Text className="text-gray-400 text-sm">{userData?.name}</Text>
-      <Text className="text-gray-400 text-sm">{userData?.email}</Text>
-      <Text className="text-gray-400 text-sm">{userData?.role}</Text>
+        <CustomButton onPress={handlePasswordUpdate}>
+          Update Password
+        </CustomButton>
+      </View>
+      <VStack className="w-full p-2 bg-white pt-2 rounded-lg ">
+        <HStack className="justify-between items-center border-b-2 border-gray-100 mb-4"> 
+          <Text className="text-gray-400 text-lg font-bold">Fullname:</Text>
+          <Text className="text-gray-400 text-sm">{userData?.name}</Text>
+        </HStack>
+         <HStack className="justify-between border-b-2 border-gray-100 items-center mb-4">
+          <Text className="text-gray-400 text-lg font-bold">Email:</Text>
+        <Text className="text-gray-400 text-sm">{userData?.email}</Text>
+        
+        </HStack>
+         <HStack className="justify-between border-b-2 border-gray-100 items-center mb-4">
+          <Text className="text-gray-400 text-lg font-bold">Phone:</Text>
+        <Text className="text-gray-400 text-sm">{userData?.phone || "N/A"}</Text>
+        </HStack>
+
+         <HStack className="justify-between border-b-2 border-gray-100 items-center mb-4">
+          <Text className="text-gray-400 text-lg font-bold">Role:</Text>
+        <Text className="text-gray-400 text-sm">{userData?.role}</Text>
+        </HStack>
+         <HStack className="justify-between border-b-2 border-gray-100 items-center mb-4">
+          <Text className="text-gray-400 text-lg font-bold">Gender:</Text>
+        <Text className="text-gray-400 text-sm">{userData?.gender ||"N/A"}</Text>
+        </HStack> <HStack className="justify-between border-b-2 border-gray-100 items-center mb-4">
+          <Text className="text-gray-400 text-lg font-bold">Address:</Text>
+        <Text className="text-gray-400 text-sm">{userData?.address || "N/A"}</Text>
+        </HStack>
+      </VStack>
     </View>
   );
 };
@@ -182,7 +211,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 10,
   },
   avatarWrapper: {
-    marginTop: -40,
+    marginTop: -50,
     marginBottom: 20,
     borderRadius: 50,
     overflow: "hidden",
