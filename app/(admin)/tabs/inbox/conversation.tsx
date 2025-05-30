@@ -6,20 +6,27 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import { HeaderWithIcon } from "@/components/ui/headerWithIcon";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { useGetConversation, useSendMessage } from "./data";
 import { useUserData } from "@/utils";
 import CustomInput from "@/components/ui/customInput";
 import { CustomButton } from "@/components/ui/customButton";
 import { Ionicons } from "@expo/vector-icons";
 import { formatTime } from "@/utils/constants/stringUtils";
-import { socket } from "@/utils/socket";
 import { useAppActions, useAppState } from "@/store/actions";
 import WPSuccess from "@/components/ui/success/WPSuccess";
 import WPError from "@/components/ui/error/WPError";
 import Loading from "@/components/ui/toasts/Loading";
+import { useChatStore } from "@/store/useChatStore";
+import { IconButton } from "react-native-paper";
+import { InboxHeaderWithIcon } from "@/components/ui/inboxHeader";
+
+interface PayloadType {
+  receiverId: string;
+  senderId: string;
+  content: string;
+}
 
 const ConversationScreen = () => {
   const state = useAppState();
@@ -28,91 +35,117 @@ const ConversationScreen = () => {
   const params = useLocalSearchParams();
   const { user } = useUserData();
   const [content, setContent] = useState("");
+  const scrollViewRef = useRef<ScrollView>(null);
+  const { setGlobalError, setGlobalSuccess } = useAppActions();
   const conversation = JSON.parse(params.conversation as string);
   const conversationId = conversation?.lastMessage?.conversationId;
-  const { data, isLoading, error } = useGetConversation(conversationId);
-  const [newMessages, setNewMessages] = useState<any[]>([]);
   const userId = user?.id;
-  const scrollViewRef = useRef<ScrollView>(null);
+  const title = conversation?.lastMessage?.receiverId?.name;
+  const receiverPhoto = conversation?.lastMessage?.receiverId?.photo;
+  // Define the type for the chat store (adjust the properties/types as needed)
+  interface ChatStoreType {
+    messages: any[];
+    getMessages: (conversationId: string) => void;
+    isMessagesLoading: boolean;
+    selectedUser: any;
+    subscribeToMessages: () => void;
+    isSendingMessage: boolean;
+    unsubscribeFromMessages: () => void;
+    sendMessage: (
+      payload: PayloadType,
+      actions: { setGlobalError: any; setGlobalSuccess: any }
+    ) => Promise<void>;
+    clearMessages: () => void;
+  }
 
-  const getReceiverIdFromConversation = (
-    conversationId: string,
-    loggedInUserId: string
-  ) => {
-    const ids = conversationId?.split("_");
-    return ids?.find((id) => id !== loggedInUserId);
-  };
-  useEffect(() => {
-    if (newMessages.length > 0) {
-      scrollViewRef.current?.scrollToEnd({ animated: true });
-    }
-  }, [newMessages]);
+  const {
+    messages,
+    getMessages,
+    isMessagesLoading,
+    selectedUser,
+    subscribeToMessages,
+    isSendingMessage,
+    unsubscribeFromMessages,
+    sendMessage,
+    clearMessages,
+  } = useChatStore() as ChatStoreType;
+  const getReceiverIdFromConversation = useCallback(
+    (conversationId: string, loggedInUserId: string) => {
+      const ids = conversationId?.split("_");
+      return ids?.find((id) => id !== loggedInUserId);
+    },
+    []
+  );
+
   const receiverId = getReceiverIdFromConversation(conversationId, userId);
-  const { mutate: sendMessage, isLoading: sending, isError } = useSendMessage();
 
-  // Combine existing messages with new messages
-  const allMessages = React.useMemo(() => {
-    const existingMessages = data || [];
-    const combinedMessages = [...existingMessages, ...newMessages];
-
-    // Sort by timestamp to maintain chronological order
-    return combinedMessages.sort(
-      (a, b) =>
-        new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
-    );
-  }, [data, newMessages]);
-
+  // Load messages and subscribe to updates
   useEffect(() => {
-    if (conversationId) {
-      console.log("first", conversationId);
-      // Join the conversation room
-      socket.emit("joinConversation", conversationId);
+    if (!conversationId) return;
 
-      socket.on("messageAdded", (message) => {
-        console.log("message", message);
-        setNewMessages((prevMessages) => {
-          // Check if message already exists to avoid duplicates
-          const messageExists = prevMessages.some(
-            (msg) => msg._id === message._id
-          );
-          if (!messageExists) {
-            return [...prevMessages, message];
-          }
-          return prevMessages;
-        });
-      });
+    // Clear previous messages when switching conversations
+    clearMessages();
 
-      return () => {
-        // Leave room when component unmounts or conversationId changes
-        socket.emit("leaveConversation", conversationId);
-        socket.off("messageAdded");
-      };
+    // Load messages for this conversation
+    getMessages(conversationId);
+
+    // Subscribe to real-time updates
+    subscribeToMessages();
+
+    // Cleanup function
+    return () => {
+      unsubscribeFromMessages();
+    };
+  }, [
+    conversationId,
+    getMessages,
+    subscribeToMessages,
+    unsubscribeFromMessages,
+    clearMessages,
+  ]);
+
+  // Auto-scroll to bottom when new messages arrive
+  useEffect(() => {
+    if (messages.length > 0) {
+      const timer = setTimeout(() => {
+        scrollViewRef.current?.scrollToEnd({ animated: true });
+      }, 100);
+
+      return () => clearTimeout(timer);
     }
-  }, [conversationId]);
-  //scrolling to latest message
+  }, [messages]);
 
   const handleSend = async () => {
-    const payload = {
-      receiverId,
-      senderId: userId,
-      content,
-    };
-    if (!content || !userId || !receiverId) {
+    if (!content.trim() || !userId || !receiverId || isSendingMessage) {
       return;
     }
+
+    const payload: PayloadType = {
+      receiverId: receiverId as string,
+      senderId: userId as string,
+      content: content.trim(),
+    };
+
     try {
-      if (payload) {
-        const response = await sendMessage(payload);
-        setContent("");
-        // Note: The new message will be added via socket, so no need to manually add it here
-      }
+      await sendMessage(payload, { setGlobalError, setGlobalSuccess });
+      setContent("");
+
+      // Scroll to bottom after sending
+      setTimeout(() => {
+        scrollViewRef.current?.scrollToEnd({ animated: true });
+      }, 100);
     } catch (error) {
-      console.log("error", error);
+      console.error("Error sending message:", error);
+      // Error handling is done in the store
     }
+  };
+
+  const handleContentChange = (text: string) => {
+    setContent(text);
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-bg mt-10">
+    <SafeAreaView className="flex-1  bg-bg mt-10">
       <WPSuccess
         visible={globalSuccess?.visible}
         description={globalSuccess?.description}
@@ -121,28 +154,31 @@ const ConversationScreen = () => {
         visible={globalError?.visible}
         description={globalError?.description}
       />
-      <HeaderWithIcon title="Conversation" />
+      {/* <HeaderWithIcon title="Conversation" /> */}
+      <InboxHeaderWithIcon title={title} url={receiverPhoto} />
       <KeyboardAvoidingView
         className="flex-1 text-black"
         behavior={Platform.OS === "ios" ? "padding" : "height"}
-        // keyboardVerticalOffset={100} // adjust if needed
         keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}
       >
         <ScrollView
-          className="flex-1 bg-bg px-4 mt-2"
+          className="flex-1 bg-bg px-4"
           ref={scrollViewRef}
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ flexGrow: 1, paddingBottom: 10 }}
         >
-          {isLoading && <Loading />}
-          {allMessages?.map((message: any) => {
-            const isSender = message?.senderId._id === userId;
+          {isMessagesLoading && <Loading />}
+
+          {messages?.map((message) => {
+            const isSender =
+              message?.senderId?._id === userId || message?.senderId === userId;
+
             return (
               <View
-                key={message._id}
+                key={message._id || message.id}
                 className={`p-2 w-auto mt-2 rounded-lg shadow max-w-[95%] ${
-                  isSender ? "self-start bg-primary" : "self-end bg-red-100"
+                  isSender ? "self-end bg-primary" : "self-start bg-red-100"
                 }`}
               >
                 <View>
@@ -158,7 +194,7 @@ const ConversationScreen = () => {
                       isSender ? "text-white/50" : "text-gray-500"
                     } text-xs self-end`}
                   >
-                    {formatTime(message?.timestamp)}
+                    {formatTime(message?.timestamp || message?.createdAt)}
                   </Text>
                 </View>
               </View>
@@ -166,39 +202,51 @@ const ConversationScreen = () => {
           })}
         </ScrollView>
 
-        <View className="pl-2 pr-2 flex flex-row items-center justify-between">
+        <View className="p-2 flex flex-row items-center bg-bg self-center  rounded-3xl  w-[98%]] mb-2 justify-between">
           <CustomInput
             style={{
               minHeight: 40,
-              maxHeight: 40,
+              maxHeight: 50,
               width: "80%",
-              borderRadius: 20,
+              borderRadius: 50,
               padding: 2,
+              margin: 2,
               paddingTop: 2,
-              textOverflow: "hidden",
-
-              // paddingHorizontal: 10,
+              paddingBottom: 2,
+              textOverflow: "scroll",
+              textAlignVertical: "top",
               paddingVertical: 0,
             }}
-            placeholder="Message...."
+            placeholder="Message"
             multiline={true}
-            onChangeText={setContent}
+            onChangeText={handleContentChange}
             value={content}
           />
-          <CustomButton
-            onPress={handleSend}
-            disabled={!content}
-            style={{ width: "15%", height: 40 }}
-          >
-            {sending ? (
-              <>
-                <Loading />
-                <Text className="text-white font-bold text-lg">...</Text>{" "}
-              </>
-            ) : (
-              <Ionicons name="send" size={24} color="white" />
-            )}
-          </CustomButton>
+          <IconButton
+            icon={"camera"}
+            onPress={() => setContent("")}
+            iconColor="black"
+            size={24}
+            className="bg-bg rounded-full"
+          />
+          {isSendingMessage ? (
+            <IconButton
+              icon={"loading"}
+              onPress={handleSend}
+              iconColor="white"
+              size={24}
+              className="bg-primary rounded-full"
+            />
+          ) : (
+            <IconButton
+              icon={"send"}
+              onPress={handleSend}
+              iconColor="white"
+              size={24}
+              className="bg-primary rounded-lg"
+              disabled={!content.trim() || isSendingMessage}
+            />
+          )}
         </View>
       </KeyboardAvoidingView>
     </SafeAreaView>

@@ -50,7 +50,9 @@ export const useGetConversation = (conversationId: string) => {
       return response.data;
     },
     {
-      onSuccess: () => {},
+      onSuccess: (data) => {
+        console.log('data', data)
+      },
       onError: (error: any) => {
         const errorMsg =
           error?.response?.data?.message ||
@@ -62,6 +64,9 @@ export const useGetConversation = (conversationId: string) => {
           description: errorMsg,
         });
       },
+       staleTime: Infinity,
+      refetchOnMount: false,
+      refetchOnWindowFocus: false,
     }
   );
 };
@@ -79,7 +84,7 @@ export const useSendMessage = () => {
       return response;
     },
     {
-      onSuccess: (data) => {
+      onSuccess: (data:any) => {
         setGlobalSuccess({
           visible: true,
           description: data?.message || "Message Sent",

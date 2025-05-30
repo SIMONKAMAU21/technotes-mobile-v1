@@ -1,9 +1,4 @@
 import { create } from 'zustand';
-
-
-
-
-
 interface globalDefaultProps {
   visible: boolean;
   description: string;

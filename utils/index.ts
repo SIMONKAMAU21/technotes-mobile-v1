@@ -12,7 +12,7 @@ export async function getUserToken() {
   }
 }
 export async function signOut() {
-const response =   await SecureStore.deleteItemAsync("userToken");
+// const response =   await SecureStore.deleteItemAsync("userToken");
   await SecureStore.deleteItemAsync("userData");
 }
 export async function setUserToken(token:string) {

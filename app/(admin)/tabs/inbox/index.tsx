@@ -3,35 +3,36 @@ import {
   Text,
   SafeAreaView,
   ScrollView,
-  ActivityIndicator,
   TouchableOpacity,
 } from "react-native";
 import React, { useEffect } from "react";
 import { useGetInbox } from "./data";
 import { HeaderWithIcon } from "@/components/ui/headerWithIcon";
-import { Avatar, Icon } from "react-native-paper";
 import { useRouter } from "expo-router";
 import { formatTime } from "@/utils/constants/stringUtils";
-import { Ionicons, Octicons } from "@expo/vector-icons";
+import { MaterialCommunityIcons, Octicons } from "@expo/vector-icons";
 import LoadingIndicator from "@/components/ui/loading";
 import { socket } from "@/utils/socket";
 import { Image } from "react-native";
 import { useAppState } from "@/store/actions";
 import WPSuccess from "@/components/ui/success/WPSuccess";
 import WPError from "@/components/ui/error/WPError";
+import { CustomButton } from "@/components/ui/customButton";
 
 const InboxScreen = () => {
   const router = useRouter();
-  const state = useAppState()
-  const globalError = state.globalError
-  const globalSuccess = state.globalSuccess
+  const state = useAppState();
+  const globalError = state.globalError;
+  const globalSuccess = state.globalSuccess;
   const { data, isLoading, error } = useGetInbox();
-  
+
   useEffect(() => {
     socket.on("userConversationsFetched", (populated) => {
+      // console.log('populated', populated)
       // console.log("populated", populated);
     });
   }, []);
+  
   if (isLoading) {
     return (
       <SafeAreaView className="flex-1 justify-center items-center bg-bg">
@@ -57,8 +58,14 @@ const InboxScreen = () => {
   return (
     <SafeAreaView className="flex-1 bg-bg mt-10">
       <HeaderWithIcon title="Inbox" />
-      <WPSuccess visible={globalSuccess?.visible} description={globalSuccess?.description}/>
-       <WPError visible={globalError?.visible} description={globalError?.description} />  
+      <WPSuccess
+        visible={globalSuccess?.visible}
+        description={globalSuccess?.description}
+      />
+      <WPError
+        visible={globalError?.visible}
+        description={globalError?.description}
+      />
       <ScrollView className="flex-1 ">
         <View className=" flex-1">
           {/* <Text className="text-lg font-bold mb-2">
@@ -92,11 +99,13 @@ const InboxScreen = () => {
                     ) : (
                       <Octicons name="check" color={"#4299E1"} />
                     )}
-                    <Text  style={{textTransform:"lowercase"}}> {item.lastMessage.content}</Text>
+                    <Text style={{ textTransform: "lowercase" }}>
+                  {item.lastMessage.content.length > 60 ? item.lastMessage.content.slice(0,60) + "..." : item.lastMessage.content}
+                   
+                    </Text>
                   </View>
 
                   <Text className="self-end opacity-50 text-sm">
-                    {" "}
                     {formatTime(item?.lastMessage?.timestamp)}
                   </Text>
                 </View>
@@ -105,6 +114,16 @@ const InboxScreen = () => {
           ))}
         </View>
       </ScrollView>
+      <View className="absolute bottom-6 right-6">
+        <CustomButton
+          onPress={() => router.push("/(admin)/tabs/users/userAdd")}
+          // style={{ borderRadius: 30, width: 60, height: 60 }}
+        >
+          <View className="flex-row justify-center items-center">
+            <MaterialCommunityIcons name="chat-plus" size={24} color="white" />
+          </View>
+        </CustomButton>
+      </View>
     </SafeAreaView>
   );
 };
