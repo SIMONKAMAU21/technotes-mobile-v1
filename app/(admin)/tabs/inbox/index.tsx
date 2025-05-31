@@ -26,12 +26,12 @@ const InboxScreen = () => {
   const globalSuccess = state.globalSuccess;
   const { data, isLoading, error } = useGetInbox();
 
-  useEffect(() => {
-    socket.on("userConversationsFetched", (populated) => {
-      // console.log('populated', populated)
-      // console.log("populated", populated);
-    });
-  }, []);
+  // useEffect(() => {
+  //   socket.on("userConversationsFetched", (populated) => {
+  //     // console.log('populated', populated)
+  //     // console.log("populated", populated);
+  //   });
+  // }, []);
   
   if (isLoading) {
     return (

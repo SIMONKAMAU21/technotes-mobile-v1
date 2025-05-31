@@ -21,13 +21,27 @@ import Loading from "@/components/ui/toasts/Loading";
 import { useChatStore } from "@/store/useChatStore";
 import { IconButton } from "react-native-paper";
 import { InboxHeaderWithIcon } from "@/components/ui/inboxHeader";
+import LoadingIndicator from "@/components/ui/loading";
 
 interface PayloadType {
   receiverId: string;
   senderId: string;
   content: string;
 }
-
+interface ChatStoreType {
+  messages: any[];
+  getMessages: (conversationId: string) => void;
+  isMessagesLoading: boolean;
+  selectedUser: any;
+  subscribeToMessages: () => void;
+  isSendingMessage: boolean;
+  unsubscribeFromMessages: () => void;
+  sendMessage: (
+    payload: PayloadType,
+    actions: { setGlobalError: any; setGlobalSuccess: any }
+  ) => Promise<void>;
+  clearMessages: () => void;
+}
 const ConversationScreen = () => {
   const state = useAppState();
   const globalError = state.globalError;
@@ -40,29 +54,25 @@ const ConversationScreen = () => {
   const conversation = JSON.parse(params.conversation as string);
   const conversationId = conversation?.lastMessage?.conversationId;
   const userId = user?.id;
-  const title = conversation?.lastMessage?.receiverId?.name;
-  const receiverPhoto = conversation?.lastMessage?.receiverId?.photo;
-  // Define the type for the chat store (adjust the properties/types as needed)
-  interface ChatStoreType {
-    messages: any[];
-    getMessages: (conversationId: string) => void;
-    isMessagesLoading: boolean;
-    selectedUser: any;
-    subscribeToMessages: () => void;
-    isSendingMessage: boolean;
-    unsubscribeFromMessages: () => void;
-    sendMessage: (
-      payload: PayloadType,
-      actions: { setGlobalError: any; setGlobalSuccess: any }
-    ) => Promise<void>;
-    clearMessages: () => void;
+
+  let title;
+  let receiverPhoto;
+  if (
+    conversation?.lastMessage?.receiverId?._id === userId ||
+    conversation?.lastMessage?.senderId._id === userId
+  ) {
+    title =
+      conversation?.lastMessage?.senderId?.name ||
+      conversation?.lastMessage?.receiverId?.name;
+    receiverPhoto =
+      conversation?.lastMessage?.senderId?.photo ||
+      conversation?.lastMessage?.receiverId?.photo;
   }
 
   const {
     messages,
     getMessages,
     isMessagesLoading,
-    selectedUser,
     subscribeToMessages,
     isSendingMessage,
     unsubscribeFromMessages,
@@ -230,13 +240,7 @@ const ConversationScreen = () => {
             className="bg-bg rounded-full"
           />
           {isSendingMessage ? (
-            <IconButton
-              icon={"loading"}
-              onPress={handleSend}
-              iconColor="white"
-              size={24}
-              className="bg-primary rounded-full"
-            />
+           <Loading/>
           ) : (
             <IconButton
               icon={"send"}
