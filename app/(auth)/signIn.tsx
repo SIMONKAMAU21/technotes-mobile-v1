@@ -11,12 +11,13 @@ import {  useUserStore } from "@/store";
 import WPSuccess from "@/components/ui/success/WPSuccess";
 import WPError from "@/components/ui/error/WPError";
 import { useAppState } from "@/store/actions";
+import { connectSocket } from "@/utils/socket";
 
 const SignIn = () => {
   const state = useAppState()
   const globalError = state.globalError
   const globalSuccess = state.globalSuccess
-  const [email, setEmail] = useState("admin24@gmail.com");
+  const [email, setEmail] = useState("teacher4@gmail.com");
   const [password, setPassword] = useState("demo123");
   const [loading, setLoading] = useState(false);
   const { mutate: mutateLogin } = useLogin();
@@ -51,7 +52,6 @@ const SignIn = () => {
             default:
             router.replace("/(auth)/signIn");
           }
-
         },
         onError: (error) => {
           console.error("Sign in error:", error);

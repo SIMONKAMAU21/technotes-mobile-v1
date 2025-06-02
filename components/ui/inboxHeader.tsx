@@ -21,7 +21,7 @@ export const InboxHeaderWithIcon = ({
 
   return (
     <View className="flex-row items-center justify-between w-full border px-2 py-2 bg-white">
-      <View className="flex-row items-center flex-1   gap-2 w-[40%]">
+      <View className="flex-row items-center flex-1 gap-2 w-[40%]">
         {showBackButton && (
           <TouchableOpacity onPress={() => router.back()}>
             <Ionicons name="arrow-back" size={24} color="black" />

@@ -5,6 +5,8 @@ import { HeaderWithIcon } from "@/components/ui/headerWithIcon";
 import React, { useState } from 'react';
 
 const TeacherDashboard = () => {
+    const { user } = useUserData();
+  
   const [activeSection, setActiveSection] = useState('classes');
 
   const renderSidebar = () => {

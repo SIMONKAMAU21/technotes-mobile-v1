@@ -51,8 +51,8 @@ export default function ProfileScreen() {
   };
   const logout = async () => {
     setUser(null);
-    signOut()
-    await deleteUserData();
+   await signOut()
+    // await deleteUserData();
     router.replace("/(auth)/signIn");
   };
   return (

@@ -1,5 +1,3 @@
-"use client";
-
 import * as React from "react";
 import { TextInput } from "react-native-paper";
 import { StyleSheet } from "react-native";
@@ -29,7 +27,6 @@ const CustomInput = React.forwardRef<typeof TextInput, InputProps>(
         cursorColor="black"
         value={props.value}
         multiline={multiline || true}
-        
         {...props}
         helperText={error}
       />
@@ -49,7 +46,6 @@ const styles = StyleSheet.create({
     color: 'black',
   }
 });
-
 
 
 export default CustomInput;

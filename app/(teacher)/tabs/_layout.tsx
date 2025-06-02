@@ -9,6 +9,7 @@ export default function AdminTabsLayout() {
       '/tabs/users/userdata',
       '/tabs/users/userAdd',
       '/tabs/inbox/conversation',
+      '/tabs/'
 
     ]
     const isHidden = (pathName: string,hiddenPathNames: string[]) => hiddenPathNames.includes(pathName);
@@ -65,7 +66,7 @@ export default function AdminTabsLayout() {
           ),
         }}
       /> */}
-      {/* <Tabs.Screen
+      <Tabs.Screen
         name="inbox"
         options={{
           title: "Inbox",
@@ -73,7 +74,7 @@ export default function AdminTabsLayout() {
             <Ionicons name="mail" color={color} size={size} />
           ),
         }}
-      /> */}
+      />
        {/* <Tabs.Screen
         name="settings"
         component={SettingsScreen}

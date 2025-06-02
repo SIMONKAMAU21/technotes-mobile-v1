@@ -11,13 +11,14 @@ import { useLocalSearchParams} from "expo-router";
 import { useUserData } from "@/utils";
 import CustomInput from "@/components/ui/customInput";
 import { formatTime } from "@/utils/constants/stringUtils";
-import { useAppActions, useAppState } from "@/store/actions";
 import WPSuccess from "@/components/ui/success/WPSuccess";
 import WPError from "@/components/ui/error/WPError";
 import Loading from "@/components/ui/toasts/Loading";
 import { useChatStore } from "@/store/useChatStore";
 import { IconButton } from "react-native-paper";
 import { InboxHeaderWithIcon } from "@/components/ui/inboxHeader";
+import { connectSocket } from "@/utils/socket";
+import { useAppActions, useAppState } from "@/store/actions";
 
 interface PayloadType {
   receiverId: string;
@@ -42,11 +43,12 @@ const ConversationScreen = () => {
   const state = useAppState();
   const globalError = state.globalError;
   const globalSuccess = state.globalSuccess;
+    const { setGlobalError, setGlobalSuccess } = useAppActions();
+  
   const params = useLocalSearchParams();
   const { user } = useUserData();
   const [content, setContent] = useState("");
   const scrollViewRef = useRef<ScrollView>(null);
-  const { setGlobalError, setGlobalSuccess } = useAppActions();
   const conversation = JSON.parse(params.conversation as string);
   const conversationId = conversation?.lastMessage?.conversationId;
   const userId = user?.id;
@@ -87,6 +89,7 @@ const ConversationScreen = () => {
 
   // Load messages and subscribe to updates
   useEffect(() => {
+    connectSocket()
     if (!conversationId) return;
 
     // Clear previous messages when switching conversations
@@ -133,7 +136,7 @@ const ConversationScreen = () => {
     };
 
     try {
-      await sendMessage(payload, { setGlobalError, setGlobalSuccess });
+      await sendMessage(payload, {setGlobalError , setGlobalSuccess });
       setContent("");
 
       // Scroll to bottom after sending

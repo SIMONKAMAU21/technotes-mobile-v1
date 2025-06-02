@@ -1,6 +1,5 @@
 import { httpV1 } from "@/api/axios";
 import { create } from "zustand";
-import { useAppActions } from "./actions";
 import { socket } from "@/utils/socket";
 
 export const useChatStore = create((set, get) => ({
@@ -15,7 +14,6 @@ export const useChatStore = create((set, get) => ({
   getMessages: async (conversationId:string) => {
     set({ isMessagesLoading: true });
         socket.emit("joinConversation", conversationId);
-
     try {
       const res = await httpV1.get(`/messages/conversation/${conversationId}`);
       set({ 
@@ -28,7 +26,6 @@ export const useChatStore = create((set, get) => ({
       set({ isMessagesLoading: false });
     }
   },
-
   sendMessage: async (
     payload: any,
     {

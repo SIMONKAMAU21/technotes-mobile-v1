@@ -9,6 +9,7 @@ interface CustomButtonProps {
   children: React.ReactNode;
   disabled?: boolean;
   loading?: boolean;
+  className?: string;
 }
 
 export const CustomButton = ({
@@ -17,10 +18,12 @@ export const CustomButton = ({
   style,
   children,
   disabled = false,
+  className = '',
   loading = false,
 }: CustomButtonProps) => {
   return (
     <Button
+    className={`${className}`}
       mode={mode}
       onPress={onPress}
       disabled={disabled}

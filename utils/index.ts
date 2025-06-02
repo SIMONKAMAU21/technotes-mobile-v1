@@ -1,5 +1,6 @@
 import * as SecureStore from "expo-secure-store";
 import { useEffect, useState } from "react";
+import { disconnectSocket } from "./socket";
 
 export async function getUserToken() {
   try {
@@ -12,6 +13,7 @@ export async function getUserToken() {
   }
 }
 export async function signOut() {
+  await disconnectSocket()
 // const response =   await SecureStore.deleteItemAsync("userToken");
   await SecureStore.deleteItemAsync("userData");
 }
