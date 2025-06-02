@@ -17,17 +17,11 @@ export default function OnboardingScreen() {
   const router = useRouter();
 
   useEffect(() => {
-    if (userData) {
-      connectSocket();
-    } else {
-      disconnectSocket();
-    }
-  }, [userData]);
-
-  useEffect(() => {
     const checkUserData = async () => {
       const userToken = await getUserToken();
       if (userData && userToken) {
+        connectSocket();
+
         switch (userData.role) {
           case "admin":
             router.replace("/(admin)/tabs/dashboard");
@@ -42,7 +36,9 @@ export default function OnboardingScreen() {
             router.replace("/(auth)/signIn");
         }
       } else {
-        // router.push("/(auth)/signIn");
+        disconnectSocket();
+
+        router.push("/(auth)/signIn");
       }
     };
 

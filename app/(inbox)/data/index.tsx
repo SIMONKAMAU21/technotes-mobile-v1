@@ -2,7 +2,6 @@ import { httpV1 } from "@/api/axios";
 import { useSocketConnection } from "@/hooks/useSocket";
 import { useUserStore } from "@/store";
 import { useAppActions } from "@/store/actions";
-import { useUserData } from "@/utils";
 import { useMutation, useQuery } from "react-query";
 
 export const useGetInbox = () => {

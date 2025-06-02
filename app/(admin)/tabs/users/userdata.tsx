@@ -73,7 +73,7 @@ export default function UserDetailsScreen() {
   };
 
   return (
-    <SafeAreaView className="flex-1 mt-10 bg-bg">
+    <SafeAreaView className="flex-1 mt-[7%] bg-bg">
       <WPSuccess
         visible={globalSuccess?.visible}
         description={globalSuccess?.description}

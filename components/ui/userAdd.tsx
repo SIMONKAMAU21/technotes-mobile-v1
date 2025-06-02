@@ -53,75 +53,73 @@ export const UserAdd = ({
   };
 
   return (
-    <ScrollView className="flex-1">
-      <View className="p-4">
-        <CustomInput
-          label="Name"
-          value={formData.name}
-          onChangeText={(text) => setFormData({ ...formData, name: text })}
-          placeholder="Enter name"
-        />
+    <View className="p-4 flex-1  gap-5">
+      <CustomInput
+        label="Name"
+        value={formData.name}
+        style={{ width: "100%", height: "12%" }}
+        onChangeText={(text) => setFormData({ ...formData, name: text })}
+        placeholder="Enter name"
+      />
 
-        <CustomInput
-          label="Email"
-          value={formData.email}
-          onChangeText={(text) => setFormData({ ...formData, email: text })}
-          placeholder="Enter email"
-          keyboardType="email-address"
-        />
+      <CustomInput
+        label="Email"
+        value={formData.email}
+        style={{ width: "100%", height: "12%" }}
+        onChangeText={(text) => setFormData({ ...formData, email: text })}
+        placeholder="Enter email"
+        keyboardType="email-address"
+      />
 
-        <CustomInput
-          label="Phone"
-          value={formData.phone}
-          onChangeText={(text) => setFormData({ ...formData, phone: text })}
-          placeholder="Enter phone number"
-          keyboardType="phone-pad"
-        />
+      <CustomInput
+        label="Phone"
+        value={formData.phone}
+        style={{ width: "100%", height: "12%" }}
+        onChangeText={(text) => setFormData({ ...formData, phone: text })}
+        placeholder="Enter phone number"
+        keyboardType="phone-pad"
+      />
 
-        <CustomInput
-          label="Address"
-          value={formData.address}
-          onChangeText={(text) => setFormData({ ...formData, address: text })}
-          placeholder="Enter address"
-        />
+      <CustomInput
+        label="Address"
+        value={formData.address}
+        style={{ width: "100%", height: "12%" }}
+        onChangeText={(text) => setFormData({ ...formData, address: text })}
+        placeholder="Enter address"
+      />
 
-        <View className="mb-4">
-          <Text className="mb-2 font-bold">Role</Text>
-          <View className="border border-gray-300 rounded">
-            <Picker
-              selectedValue={formData.role}
-              onValueChange={(value) =>
-                setFormData({ ...formData, role: value })
-              }
-              style={{ color: "black" }}
-            >
-              <Picker.Item label="Select a role" value="" />
-              <Picker.Item label="Admin" value="admin" />
-              <Picker.Item label="Teacher" value="teacher" />
-              <Picker.Item label="Student" value="student" />
-              <Picker.Item label="Parent" value="parent" />
-            </Picker>
-          </View>
+      <View className="">
+        <Text className="mb-2 font-bold">Role</Text>
+        <View className="border border-gray-300 rounded">
+          <Picker
+            selectedValue={formData.role}
+            onValueChange={(value) => setFormData({ ...formData, role: value })}
+            style={{ color: "black" }}
+          >
+            <Picker.Item label="Select a role" value="" />
+            <Picker.Item label="Admin" value="admin" />
+            <Picker.Item label="Teacher" value="teacher" />
+            <Picker.Item label="Student" value="student" />
+            <Picker.Item label="Parent" value="parent" />
+          </Picker>
         </View>
-
-        <View className="flex-row items-center gap-4 text-black">
-          <RadioInputs
-            label="Gender"
-            options={["Male", "Female", "Other"]}
-            value={formData.gender}
-            onValueChange={(value) =>
-              setFormData({ ...formData, gender: value })
-            }
-          />
-        </View>
-        <CustomButton
-          disabled={isLoading}
-          loading={isLoading}
-          onPress={handleSubmit}
-        >
-          {isLoading ? <Loading /> : submitButtonText}
-        </CustomButton>
       </View>
-    </ScrollView>
+
+      <View className="flex-row  items-center gap-4 text-black">
+        <RadioInputs
+          label="Gender"
+          options={["Male", "Female", "Other"]}
+          value={formData.gender}
+          onValueChange={(value) => setFormData({ ...formData, gender: value })}
+        />
+      </View>
+      <CustomButton
+        disabled={isLoading}
+        loading={isLoading}
+        onPress={handleSubmit}
+      >
+        {isLoading ? <Loading /> : submitButtonText}
+      </CustomButton>
+    </View>
   );
 };

@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, ScrollView, SafeAreaView, ActivityIndicator, TouchableOpacity, Modal, Alert } from 'react-native';
 import { useColorScheme } from '@/hooks/useColorScheme';
-import { useGetUsers } from '../../data';
 import { useRouter } from 'expo-router';
 import { CustomButton } from '@/components/ui/customButton';
 import { Ionicons } from '@expo/vector-icons';
@@ -10,14 +9,12 @@ import { Avatar } from 'react-native-paper';
 import { useAppState } from '@/store/actions';
 import WPSuccess from '@/components/ui/success/WPSuccess';
 import WPError from '@/components/ui/error/WPError';
+import UsersScreen from '@/app/(users)/users'; // Make sure this path is correct
 
-export default function UsersScreen() {
-  const state = useAppState()
-  const globalError = state.globalError
-  const globalSuccess = state.globalSuccess
+export default function Users() {
+  const state = useAppState();
   const colorScheme = useColorScheme();
   const isDarkMode = colorScheme === 'dark';
-  const { data, isLoading, error } = useGetUsers();
   const [selectedUser, setSelectedUser] = useState(null);
   const [showOptions, setShowOptions] = useState(false);
   const router = useRouter();
@@ -31,93 +28,24 @@ export default function UsersScreen() {
   };
 
   return (
-    <SafeAreaView className="flex-1 mt-10 bg-gray-100">
-        <WPSuccess visible={globalSuccess?.visible} description={globalSuccess?.description}/>
-        <WPError visible={globalError?.visible} description={globalError?.description} /> 
-      <ScrollView 
-        className={`flex-1 ${isDarkMode ? 'bg-bg' : 'bg-bg'}`}
-        contentContainerClassName="p-2"
-      >
-        <View className="mb-6">
-          <Text className={`text-2xl font-bold ${isDarkMode ? 'text-black' : 'text-gray-900'}`}>
-            Users
-          </Text>
-          <Text className={`mt-1 ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-            Manage system users
-          </Text>
-        </View>
+    <View className="flex-1 bg-bg">
+      
+      {/* Main Content - UsersScreen */}
+      <View className="flex-1">
+        <UsersScreen />
+      </View>
 
-        <View className={`rounded-l  shadow-sm`}>
-
-          {isLoading ? (
-            <ActivityIndicator size="large" color={isDarkMode ? '#4299E1' : '#000'} />
-          ) : error ? (
-            <Text className={`${isDarkMode ? 'text-red-400' : 'text-red-600'}`}>
-              Error loading users
-            </Text>
-          ) : (
-            <View>
-              {data?.map((user: any) => (
-                <TouchableOpacity
-                  key={user.id}
-                  onPress={() => handleUserPress(user)}
-                  className={`flex-row items-center p-4 mb-1 rounded-md ${
-                    isDarkMode ? 'bg-white' : 'bg-white'
-                  }`}
-                >
-                  <View className="flex-1 flex-row items-center gap-2">
-                    {user?.photo ? (
-                      <Avatar.Image
-                        size={40}
-                        source={{ uri: user?.photo }}
-                      />
-                    ) : (
-                      <Avatar.Text
-                      style={{
-                        backgroundColor:'#4299E1'
-                      }}
-                        size={40}
-                        label={user?.name.charAt(0)}
-                        color={isDarkMode ? 'white' : 'black'}
-                      />
-                    )}
-                    <View className='flex-1'>
-                    <Text className={`font-medium ${isDarkMode ? 'text-black' : 'text-gray-900'} text-transform capitalize`}>
-                      {user.name}
-                    </Text>
-                    <Text className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-100'}`}>
-                      {user.email}
-                    </Text>
-                    </View>
-                  </View>
-                  <Text className={`${
-                    user.role === 'admin' ? 'text-blue-600' :
-                    user.role === 'teacher' ? 'text-yellow-600' :
-                    user.role === 'student' ? 'text-green-600' :
-                    user.role === 'parent' ? 'text-red-600' :
-                    isDarkMode ? 'text-gray-300' : 'text-gray-600'
-                  }`}>
-                    {user.role}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-          )}
-        </View>
-      </ScrollView>
-
+      {/* Floating Add Button */}
       <View className="absolute bottom-6 right-6">
         <CustomButton
           onPress={() => router.push('/(admin)/tabs/users/userAdd')}
-          // style={{ borderRadius: 30, width: 60, height: 60 }}
         >
           <View className='flex-row justify-center items-center'>
-          <Logo className='w-10 h-10'/>
-          <Ionicons name="add" size={24} color="white" />
+            <Logo className='w-10 h-10'/>
+            <Ionicons name="add" size={24} color="white" />
           </View>
         </CustomButton>
       </View>
-    </SafeAreaView>
+    </View>
   );
 }
-

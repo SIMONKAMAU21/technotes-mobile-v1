@@ -16,7 +16,6 @@ import { PaperProvider } from "react-native-paper";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { screenOptions } from "@/constants/animation";
 import { initializeUserStore, useUserStore } from "@/store";
-import { connectSocket, disconnectSocket } from "@/utils/socket";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -40,7 +39,7 @@ export default function RootLayout() {
   useEffect(() => {
     initializeUserStore();
   }, []);
-  
+
   useEffect(() => {
     if (loaded && isHydrated) {
       SplashScreen.hideAsync();
@@ -75,6 +74,8 @@ export default function RootLayout() {
             <Stack.Screen name="(teacher)" options={screenOptions} />
             <Stack.Screen name="+not-found" />
             <Stack.Screen name="(profile)" options={screenOptions} />
+            <Stack.Screen name="(users)" options={screenOptions} />
+            <Stack.Screen name="(inbox)" options={screenOptions} />
           </Stack>
           <StatusBar style="light" backgroundColor="white" />
         </PaperProvider>

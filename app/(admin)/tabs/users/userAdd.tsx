@@ -56,7 +56,7 @@ export default function UserAddScreen() {
   };
 
   return (
-    <SafeAreaView className="flex-1 mt-10">
+    <SafeAreaView className="flex-1 mt-[7%]">
        <WPSuccess visible={globalSuccess?.visible} description={globalSuccess?.description}/>
        <WPError visible={globalError?.visible} description={globalError?.description} /> 
       <HeaderWithIcon
@@ -65,7 +65,7 @@ export default function UserAddScreen() {
         onLeftPress={() => router.back()}
       />
       <ScrollView
-        className={`${isDarkMode ? "bg-bg" : "bg-background"}`}
+        className={`${isDarkMode ? "bg-bg" : "bg-background "} flex-1`}
         contentContainerClassName="p-4"
       >
         <View className="mb-6">
@@ -89,7 +89,7 @@ export default function UserAddScreen() {
         <View
           className={`rounded-lg ${
             isDarkMode ? "bg-white" : "bg-white"
-          } p-4 shadow-sm`}
+          } p-4 shadow-sm   flex-1`}
         >
           <Text
             className={`text-lg font-semibold mb-4 ${
