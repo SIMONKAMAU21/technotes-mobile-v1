@@ -18,8 +18,7 @@ import WPError from "@/components/ui/error/WPError";
 import { CustomButton } from "@/components/ui/customButton";
 import { useUserStore } from "@/store";
 import SearchInput from "@/components/ui/searchInput";
-import { useGetInbox } from "./data";
-import { connectSocket, socket } from "@/utils/socket";
+import { connectSocket } from "@/utils/socket";
 import { useChatStore } from "@/store/useChatStore";
 
 interface ChatStoreType {
@@ -50,7 +49,7 @@ const InboxScreen = () => {
     subscribeToMessages,
     unsubscribeFromMessages,
     clearMessages,
-    isconversationsLoading: isLoading,
+    isconversationsLoading,
     getConversations,
     conversations: data,
     clearConversations,
@@ -95,21 +94,13 @@ const InboxScreen = () => {
     return;
   }
 
-  if (isLoading) {
+  if (isconversationsLoading) {
     return (
       <SafeAreaView className="flex-1 justify-center items-center bg-bg">
         <LoadingIndicator />
       </SafeAreaView>
     );
   }
-
-  // if (error) {
-  //   return (
-  //     <SafeAreaView className="flex-1 justify-center items-center bg-bg">
-  //       <Text>Error loading inbox: {error.message}</Text>
-  //     </SafeAreaView>
-  //   );
-  // }
 
   const handleConversation = (item: any) => {
     router.push({
