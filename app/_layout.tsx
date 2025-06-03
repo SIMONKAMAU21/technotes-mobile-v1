@@ -31,10 +31,11 @@ export const queryClient = new QueryClient({
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
+  const userData = useUserStore((state) => state.userData);
+  const isHydrated = useUserStore((state) => state.isHydrated);
   const [loaded] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
   });
-  const isHydrated = useUserStore((state) => state.isHydrated);
 
   useEffect(() => {
     initializeUserStore();
@@ -46,29 +47,33 @@ export default function RootLayout() {
     }
   }, [loaded, isHydrated]);
 
-  if (!loaded) {
+  // Show loading until everything is ready
+  if (!loaded || !isHydrated) {
     return null;
   }
-  // if (!userData) {
-  //   router.replace("/(auth)/signIn");
-  // }
-  // useEffect(() => {
-  //   if (userData) {
-  //     connectSocket();
-  //   } else {
-  //     disconnectSocket();
-  //   }
-  // }, [userData]);
+
+  // Determine initial route based on user state
+  const getInitialRoute = () => {
+    if (!userData) {
+      return "(auth)";
+    }
+    // Add onboarding check if needed
+    // if (!userData.hasCompletedOnboarding) {
+    //   return "(onbording)";
+    // }
+    return "(onbording)"; // or whatever your default authenticated route is
+  };
+
   return (
     <ThemeProvider value={colorScheme === "light" ? DefaultTheme : DarkTheme}>
       <QueryClientProvider client={queryClient}>
         <PaperProvider>
-          <Stack>
-            {/* Entry routes */}
+          <Stack
+            initialRouteName={getInitialRoute()}
+            screenOptions={screenOptions}
+          >
             <Stack.Screen name="(onbording)" options={screenOptions} />
             <Stack.Screen name="(auth)" options={screenOptions} />
-            {/* <Stack.Screen name="(tabs)" options={screenOptions} /> */}
-            {/* Role-based dashboards (loaded but routed only via onboarding/login) */}
             <Stack.Screen name="(admin)" options={screenOptions} />
             <Stack.Screen name="(student)" options={screenOptions} />
             <Stack.Screen name="(teacher)" options={screenOptions} />

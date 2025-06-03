@@ -35,6 +35,7 @@ interface ChatStoreType {
   conversations: any[];
   isconversationsLoading: boolean;
   isError?: any;
+  clearConversations: () => void;
 }
 
 const InboxScreen = () => {
@@ -52,6 +53,7 @@ const InboxScreen = () => {
     isconversationsLoading: isLoading,
     getConversations,
     conversations: data,
+    clearConversations,
     isError:error
   } = useChatStore() as ChatStoreType;
 
@@ -59,6 +61,7 @@ const InboxScreen = () => {
     connectSocket();
     // Clear previous messages when switching conversations
     clearMessages();
+    clearConversations();
     // Load messages for this conversation
     getConversations(user?.id);
     // Subscribe to real-time updates

@@ -39,7 +39,13 @@ export const useChatStore = create((set, get) => ({
     }
   },
   getConversations: async (userId: string) => {
+     if (!userId || userId === 'undefined' || userId === 'null') {
+    console.log('Invalid userId provided to getConversations');
+    set({ conversations: [], isConversationsLoading: false });
+    return;
+  }
     set({ isConversationsLoading: true });
+  
     // set({ isUsersLoading: true });
     try {
       const res = await httpV1.get(`/messages/user/${userId}/conversations`);
@@ -131,5 +137,8 @@ export const useChatStore = create((set, get) => ({
   // Helper method to clear messages when switching conversations
   clearMessages: () => {
     set({ messages: [] });
+  },
+  clearConversations: () => {
+    set({ conversations: [] });
   },
 }));

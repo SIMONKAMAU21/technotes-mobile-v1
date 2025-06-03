@@ -17,7 +17,7 @@ import { useAppState } from "@/store/actions";
 import WPSuccess from "@/components/ui/success/WPSuccess";
 import WPError from "@/components/ui/error/WPError";
 import { CustomButton } from "@/components/ui/customButton";
-import InboxScreen from "@/app/(inbox)";
+import InboxScreen from "@/app/(inbox)/inbox";
 import { useGetInbox } from "@/app/(inbox)/data";
 
 const AdminInbox = () => {
