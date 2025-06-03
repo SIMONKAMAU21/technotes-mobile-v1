@@ -10,13 +10,13 @@ import {
 import { useColorScheme } from "@/hooks/useColorScheme";
 import HeaderDashboard from "@/components/ui/headerDashbord";
 import { useUserData } from "@/utils";
-import { useGetUsers } from "../data";
 import { router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { Card } from "@/components/ui/card";
 import { GiftedChat } from "react-native-gifted-chat";
 import { useUserStore } from "@/store";
 import { useFocusEffect } from "@react-navigation/native";
+import { useGetUsers } from "@/shared/data/api";
 
 
 interface userData {
@@ -48,7 +48,7 @@ useFocusEffect(
   const teacherCount = users.filter((user:userData) => user.role === "teacher").length;
   const parentCount = users.filter((user:userData) => user.role === "parent").length;
   return (
-    <SafeAreaView className="flex-1 mt-10">
+    <SafeAreaView className="flex-1 mt-[7%]">
       <HeaderDashboard
         userName={user?.name}
         isDarkMode={isDarkMode}

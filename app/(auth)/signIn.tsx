@@ -11,6 +11,7 @@ import {  useUserStore } from "@/store";
 import WPSuccess from "@/components/ui/success/WPSuccess";
 import WPError from "@/components/ui/error/WPError";
 import { useAppState } from "@/store/actions";
+import { connectSocket } from "@/utils/socket";
 
 const SignIn = () => {
   const state = useAppState()
@@ -51,7 +52,6 @@ const SignIn = () => {
             default:
             router.replace("/(auth)/signIn");
           }
-
         },
         onError: (error) => {
           console.error("Sign in error:", error);
@@ -68,7 +68,7 @@ const SignIn = () => {
   };
 
   return (
-    <SafeAreaView className="flex-1 justify-center items-center w-full bg-white">
+    <SafeAreaView className="flex-1 justify-center items-center mt-[7%] w-full bg-white">
       <HeaderWithIcon title="Sign In" bgColor="secondary" />
       <WPSuccess visible={globalSuccess?.visible} description={globalSuccess?.description}/>
       <WPError visible={globalError?.visible} description={globalError?.description} />  
@@ -86,15 +86,15 @@ const SignIn = () => {
             Welcome back! Please sign in to continue.
           </Text>
 
-          <View className="w-full max-w-md items-center">
+          <View className="w-full gap-2 max-w-md items-center">
             <CustomInput
-              style={{ width: "100%" }}
+              style={{ width: "100%",height:"15%",padding: 10 }}
               label="Email"
               value={email}
               onChangeText={setEmail}
             />
             <CustomInput
-              style={{ width: "100%" }}
+              style={{ width: "100%",height: "15%",padding: 10 }}
               label="Password"
               value={password}
               onChangeText={setPassword}

@@ -1,8 +1,6 @@
-"use client";
-
 import * as React from "react";
-import { TextInput } from "react-native-paper";
-import { StyleSheet } from "react-native";
+// import { TextInput } from "react-native-paper";
+import { StyleSheet, TextInput } from "react-native";
 
 interface InputProps extends React.ComponentProps<typeof TextInput> {
   label?: string;
@@ -10,24 +8,24 @@ interface InputProps extends React.ComponentProps<typeof TextInput> {
 }
 
 const CustomInput = React.forwardRef<typeof TextInput, InputProps>(
-  ({ style, label, error,multiline, ...props }, ref) => {
+  ({ style, label, error, multiline, ...props }, ref) => {
     return (
       <TextInput
         ref={ref}
-        mode={props.mode || "outlined"}
+        // mode={props.mode || "outlined"}
         label={label}
         error={!!error}
         style={[styles.input, style]}
         underlineColor="transparent"
         textColor="black"
         scrollEnabled={false}
-        numberOfLines={2}
+        numberOfLines={3}
         onChangeText={props.onChangeText}
         placeholderTextColor="black"
-        activeOutlineColor="#ed8936"
+        // activeOutlineColor="#e2e8f0"
+        cursorColor="black"
         value={props.value}
         multiline={multiline || true}
-        
         {...props}
         helperText={error}
       />
@@ -37,15 +35,16 @@ const CustomInput = React.forwardRef<typeof TextInput, InputProps>(
 
 const styles = StyleSheet.create({
   input: {
-    width: '100%',
-    marginVertical: 8,
-    backgroundColor: '#e2e8f0',
+    width: "100%",
+    // height: "50%",
+    textAlign: "auto",
+    borderWidth: 1,
+    backgroundColor: "#e2e8f0",
     borderRadius: 10,
-    color: 'black',
-  }
+    borderColor: "#e2e8f0",
+    padding: 10,
+    color: "black",
+  },
 });
 
-
-
 export default CustomInput;
-

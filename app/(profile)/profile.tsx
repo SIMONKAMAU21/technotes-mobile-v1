@@ -51,12 +51,12 @@ export default function ProfileScreen() {
   };
   const logout = async () => {
     setUser(null);
-    signOut()
-    await deleteUserData();
+   await signOut()
+    // await deleteUserData();
     router.replace("/(auth)/signIn");
   };
   return (
-    <SafeAreaView className="flex-1 mt-10">
+    <SafeAreaView className="flex-1 mt-[7%]">
        <WPSuccess visible={globalSuccess?.visible} description={globalSuccess?.description}/>
        <WPError visible={globalError?.visible} description={globalError?.description} />  
       <HeaderWithIcon title="Profile" />
@@ -65,7 +65,7 @@ export default function ProfileScreen() {
         contentContainerClassName="p-4"
       >
         <Updateprofile />
-        <View className="mt-2 w-full self-center ">
+        <View className="mt-[6%] w-full self-center ">
           <CustomButton children="Logout" onPress={logout} />
         </View>
       </ScrollView>

@@ -77,9 +77,8 @@ const UpdateProfile = () => {
         const fileNames = overSize?.map((file) => file.fileName);
         return;
       }
-      if(result.canceled){
-        return
-
+      if (result.canceled) {
+        return;
       }
       if (!result.cancelled || overSize?.length < 0) {
         setImage(result?.assets?.[0]?.uri);
@@ -134,27 +133,30 @@ const UpdateProfile = () => {
       </TouchableOpacity>
 
       {/* Change Password */}
-      <View className="w-full p-2 bg-white rounded-lg">
+      <View className="w-full p-2 gap-2 bg-white rounded-lg">
         <Text style={styles.title}>Change Password</Text>
         <CustomInput
-          // placeholder="Current password"
+          placeholder="Current password"
           value={currentPassword}
+          style={{ width: "100%", height: "12%" }}
           label="Current password"
           onChangeText={setCurrentPassword}
           secureTextEntry
           // style={styles.input}
         />
         <CustomInput
-          // placeholder="New password"
+          placeholder="New password"
           value={newPassword}
           label="New password"
+          style={{ width: "100%", height: "12%" }}
           onChangeText={setNewPassword}
           secureTextEntry
           // style={styles.input}
         />
         <CustomInput
-          // placeholder="Confirm password"
+          placeholder="Confirm password"
           value={confirmPassword}
+          style={{ width: "100%", height: "12%" }}
           label="Confirm password"
           onChangeText={setConfirmPassword}
           secureTextEntry
@@ -166,30 +168,35 @@ const UpdateProfile = () => {
         </CustomButton>
       </View>
       <VStack className="w-full p-2 bg-white pt-2 rounded-lg ">
-        <HStack className="justify-between items-center border-b-2 border-gray-100 mb-4"> 
+        <HStack className="justify-between items-center border-b-2 border-gray-100 mb-4">
           <Text className="text-gray-400 text-lg font-bold">Fullname:</Text>
           <Text className="text-gray-400 text-sm">{userData?.name}</Text>
         </HStack>
-         <HStack className="justify-between border-b-2 border-gray-100 items-center mb-4">
+        <HStack className="justify-between border-b-2 border-gray-100 items-center mb-4">
           <Text className="text-gray-400 text-lg font-bold">Email:</Text>
-        <Text className="text-gray-400 text-sm">{userData?.email}</Text>
-        
+          <Text className="text-gray-400 text-sm">{userData?.email}</Text>
         </HStack>
-         <HStack className="justify-between border-b-2 border-gray-100 items-center mb-4">
+        <HStack className="justify-between border-b-2 border-gray-100 items-center mb-4">
           <Text className="text-gray-400 text-lg font-bold">Phone:</Text>
-        <Text className="text-gray-400 text-sm">{userData?.phone || "N/A"}</Text>
+          <Text className="text-gray-400 text-sm">
+            {userData?.phone || "N/A"}
+          </Text>
         </HStack>
-
-         <HStack className="justify-between border-b-2 border-gray-100 items-center mb-4">
+        <HStack className="justify-between border-b-2 border-gray-100 items-center mb-4">
           <Text className="text-gray-400 text-lg font-bold">Role:</Text>
-        <Text className="text-gray-400 text-sm">{userData?.role}</Text>
+          <Text className="text-gray-400 text-sm">{userData?.role}</Text>
         </HStack>
-         <HStack className="justify-between border-b-2 border-gray-100 items-center mb-4">
+        <HStack className="justify-between border-b-2 border-gray-100 items-center mb-4">
           <Text className="text-gray-400 text-lg font-bold">Gender:</Text>
-        <Text className="text-gray-400 text-sm">{userData?.gender ||"N/A"}</Text>
-        </HStack> <HStack className="justify-between border-b-2 border-gray-100 items-center mb-4">
+          <Text className="text-gray-400 text-sm">
+            {userData?.gender || "N/A"}
+          </Text>
+        </HStack>{" "}
+        <HStack className="justify-between border-b-2 border-gray-100 items-center mb-4">
           <Text className="text-gray-400 text-lg font-bold">Address:</Text>
-        <Text className="text-gray-400 text-sm">{userData?.address || "N/A"}</Text>
+          <Text className="text-gray-400 text-sm">
+            {userData?.address || "N/A"}
+          </Text>
         </HStack>
       </VStack>
     </View>

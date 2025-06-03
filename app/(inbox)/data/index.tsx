@@ -2,7 +2,6 @@ import { httpV1 } from "@/api/axios";
 import { useSocketConnection } from "@/hooks/useSocket";
 import { useUserStore } from "@/store";
 import { useAppActions } from "@/store/actions";
-import { useUserData } from "@/utils";
 import { useMutation, useQuery } from "react-query";
 
 export const useGetInbox = () => {
@@ -50,7 +49,9 @@ export const useGetConversation = (conversationId: string) => {
       return response.data;
     },
     {
-      onSuccess: () => {},
+      onSuccess: (data) => {
+        console.log('data', data)
+      },
       onError: (error: any) => {
         const errorMsg =
           error?.response?.data?.message ||
@@ -62,6 +63,9 @@ export const useGetConversation = (conversationId: string) => {
           description: errorMsg,
         });
       },
+       staleTime: Infinity,
+      refetchOnMount: false,
+      refetchOnWindowFocus: false,
     }
   );
 };
@@ -79,7 +83,7 @@ export const useSendMessage = () => {
       return response;
     },
     {
-      onSuccess: (data) => {
+      onSuccess: (data:any) => {
         setGlobalSuccess({
           visible: true,
           description: data?.message || "Message Sent",

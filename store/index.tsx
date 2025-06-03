@@ -53,6 +53,7 @@ export const useUserStore = create<UserState>((set, get) => ({
     set({ isLoading: true, error: null });
     try {
       const storedData = await SecureStore.getItemAsync('userData');
+      // console.log('storedData', storedData)
       if (storedData) {
         set({ userData: JSON.parse(storedData) });
       } else {
