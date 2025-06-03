@@ -16,7 +16,7 @@ import { PaperProvider } from "react-native-paper";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { screenOptions } from "@/constants/animation";
 import { initializeUserStore, useUserStore } from "@/store";
-
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 SplashScreen.preventAutoHideAsync();
 
 export const queryClient = new QueryClient({
@@ -65,6 +65,7 @@ export default function RootLayout() {
   };
 
   return (
+    <GestureHandlerRootView style={{ flex: 1 }}>
     <ThemeProvider value={colorScheme === "light" ? DefaultTheme : DarkTheme}>
       <QueryClientProvider client={queryClient}>
         <PaperProvider>
@@ -86,5 +87,6 @@ export default function RootLayout() {
         </PaperProvider>
       </QueryClientProvider>
     </ThemeProvider>
+    </GestureHandlerRootView>
   );
 }
