@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { View, Text, ScrollView, SafeAreaView, Switch } from "react-native";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { CustomButton } from "@/components/ui/customButton";
@@ -11,6 +11,8 @@ import { useUserStore } from "@/store";
 import { useAppState } from "@/store/actions";
 import WPSuccess from "@/components/ui/success/WPSuccess";
 import WPError from "@/components/ui/error/WPError";
+import { ThemeContext } from "@/store/themeContext";
+import { Theme } from "@/constants/theme";
 
 export default function ProfileScreen() {
   const state = useAppState()
@@ -21,6 +23,8 @@ export default function ProfileScreen() {
   const router = useRouter();
   const user = useUserStore((state) => state.userData);
   const setUser = useUserStore((state) => state.setUserData);
+    const { theme } = useContext(ThemeContext);
+    const color = Theme[theme];
   useEffect(() => {
     loadThemePreference();
   }, []);
@@ -61,13 +65,12 @@ export default function ProfileScreen() {
        <WPError visible={globalError?.visible} description={globalError?.description} />  
       <HeaderWithIcon title="Profile" />
       <ScrollView
-        className={`flex-1 ${isDarkMode ? "bg-bg" : "bg-gray-50"}  text-white`}
+      style={{backgroundColor:color.background}}
+        className={`flex-1  text-white`}
         contentContainerClassName="p-4"
       >
-        <Updateprofile />
-        <View className="mt-[6%] w-full self-center ">
-          <CustomButton children="Logout" onPress={logout} />
-        </View>
+        <Updateprofile logout={logout} />
+       
       </ScrollView>
     </SafeAreaView>
   );

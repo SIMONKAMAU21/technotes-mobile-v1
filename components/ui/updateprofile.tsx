@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   View,
   Text,
@@ -15,6 +15,8 @@ import * as ImagePicker from "expo-image-picker";
 import { useUserStore } from "@/store";
 import Loading from "./toasts/Loading";
 import { HStack, VStack } from "./Stacks";
+import { ThemeContext } from "@/store/themeContext";
+import { Theme } from "@/constants/theme";
 interface userDetails {
   userDetails: {
     photo: string | undefined;
@@ -22,7 +24,9 @@ interface userDetails {
     name: string | undefined;
   };
 }
-const UpdateProfile = () => {
+const UpdateProfile = ({ logout }) => {
+  const { theme } = useContext(ThemeContext);
+  const color = Theme[theme];
   //   console.log("userDetails", userDetails);
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -133,8 +137,16 @@ const UpdateProfile = () => {
       </TouchableOpacity>
 
       {/* Change Password */}
-      <View className="w-full p-2 gap-2 bg-white rounded-lg">
-        <Text style={styles.title}>Change Password</Text>
+      <View
+        style={{ backgroundColor: color.bg }}
+        className="w-full p-2 gap-2 bg-white rounded-lg"
+      >
+        <Text
+          className={theme === "dark" ? "text-white" : "text-black"}
+          style={styles.title}
+        >
+          Change Password
+        </Text>
         <CustomInput
           placeholder="Current password"
           value={currentPassword}
@@ -167,7 +179,10 @@ const UpdateProfile = () => {
           Update Password
         </CustomButton>
       </View>
-      <VStack className="w-full p-2 bg-white pt-2 rounded-lg ">
+      <VStack
+        style={{ backgroundColor: color.bg }}
+        className="w-full p-2 bg-white pt-2 rounded-lg "
+      >
         <HStack className="justify-between items-center border-b-2 border-gray-100 mb-4">
           <Text className="text-gray-400 text-lg font-bold">Fullname:</Text>
           <Text className="text-gray-400 text-sm">{userData?.name}</Text>
@@ -191,14 +206,17 @@ const UpdateProfile = () => {
           <Text className="text-gray-400 text-sm">
             {userData?.gender || "N/A"}
           </Text>
-        </HStack>{" "}
-        <HStack className="justify-between border-b-2 border-gray-100 items-center mb-4">
+        </HStack>
+        <HStack className="justify-between border-gray-100 items-center mb-4">
           <Text className="text-gray-400 text-lg font-bold">Address:</Text>
           <Text className="text-gray-400 text-sm">
             {userData?.address || "N/A"}
           </Text>
         </HStack>
       </VStack>
+      <View className=" w-full self-center ">
+        <CustomButton children="Logout" onPress={logout} />
+      </View>
     </View>
   );
 };

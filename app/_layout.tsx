@@ -1,13 +1,12 @@
 import {
   DarkTheme,
   DefaultTheme,
-  ThemeProvider,
 } from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import { Stack, useRouter } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import "react-native-reanimated";
 import "../global.css";
 import { useColorScheme } from "@/hooks/useColorScheme";
@@ -16,6 +15,8 @@ import { PaperProvider } from "react-native-paper";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { screenOptions } from "@/constants/animation";
 import { initializeUserStore, useUserStore } from "@/store";
+import { ThemeContext, ThemeProvider } from "@/store/themeContext";
+import { Theme } from "@/constants/theme";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -63,9 +64,11 @@ export default function RootLayout() {
     // }
     return "(onbording)"; // or whatever your default authenticated route is
   };
+    const { theme } = useContext(ThemeContext);
+    const color = Theme[theme];
 
   return (
-    <ThemeProvider value={colorScheme === "light" ? DefaultTheme : DarkTheme}>
+    <ThemeProvider>
       <QueryClientProvider client={queryClient}>
         <PaperProvider>
           <Stack
@@ -82,7 +85,7 @@ export default function RootLayout() {
             <Stack.Screen name="(users)" options={screenOptions} />
             <Stack.Screen name="(inbox)" options={screenOptions} />
           </Stack>
-          <StatusBar style="light" backgroundColor="white" />
+          <StatusBar style="light" backgroundColor={color.statusBar} />
         </PaperProvider>
       </QueryClientProvider>
     </ThemeProvider>

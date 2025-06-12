@@ -57,7 +57,7 @@ export default function InboxLayout() {
         <Stack.Screen name="inbox" options={screenOptions} />
         <Stack.Screen name="conversation" options={screenOptions} />
       </Stack>
-      <StatusBar style="light" backgroundColor="#4299E1" />
+      {/* <StatusBar style="light" backgroundColor="#4299E1" /> */}
     </>
   );
 }

@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useContext } from "react";
 import {
   View,
   Text,
@@ -9,55 +9,62 @@ import {
 } from "react-native";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import HeaderDashboard from "@/components/ui/headerDashbord";
-import { useUserData } from "@/utils";
 import { router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { Card } from "@/components/ui/card";
-import { GiftedChat } from "react-native-gifted-chat";
 import { useUserStore } from "@/store";
 import { useFocusEffect } from "@react-navigation/native";
 import { useGetUsers } from "@/shared/data/api";
-
+import { ThemeContext } from "@/store/themeContext";
+import { Theme } from "@/constants/theme";
 
 interface userData {
   // user:[]
-  role:string
+  role: string;
 }
 export default function DashboardScreen() {
   const colorScheme = useColorScheme();
-  const isDarkMode = colorScheme === "light";
-  // const { user } = useUserData();
   const { data: users = [] } = useGetUsers();
   const user = useUserStore((state) => state.userData);
-const refreshUserData = useUserStore(state => state.refreshUserData)
+  const { theme } = useContext(ThemeContext);
+  const color = Theme[theme];
 
-useFocusEffect(
- useCallback(()=>{
-  if(!user){
-    router.replace("/(auth)/signIn")
-  }
- },[user])
-) 
+  useFocusEffect(
+    useCallback(() => {
+      if (!user) {
+        router.replace("/(auth)/signIn");
+      }
+    }, [user])
+  );
 
-// useFocusEffect (()=>{
-//    refreshUserData()
-// },[refreshUserData])
+  // useFocusEffect (()=>{
+  //    refreshUserData()
+  // },[refreshUserData])
   // Calculate user role counts
-  const adminCount = users.filter((user:userData) => user.role === "admin").length;
-  const studentCount = users.filter((user:userData) => user.role === "student").length;
-  const teacherCount = users.filter((user:userData) => user.role === "teacher").length;
-  const parentCount = users.filter((user:userData) => user.role === "parent").length;
+  const adminCount = users.filter(
+    (user: userData) => user.role === "admin"
+  ).length;
+  const studentCount = users.filter(
+    (user: userData) => user.role === "student"
+  ).length;
+  const teacherCount = users.filter(
+    (user: userData) => user.role === "teacher"
+  ).length;
+  const parentCount = users.filter(
+    (user: userData) => user.role === "parent"
+  ).length;
   return (
-    <SafeAreaView className="flex-1 mt-[7%]">
+    <SafeAreaView
+      className="flex-1 mt-[7%]"
+      style={{ backgroundColor: color.background }}
+    >
       <HeaderDashboard
         userName={user?.name}
-        isDarkMode={isDarkMode}
-        onThemeToggle={() => {}}
         userImage={user?.photo}
         onMenuPress={() => {}}
       />
       <ScrollView
-        className={` ${isDarkMode ? "bg-gray-900" : "bg-bg "}`}
+        className={`bg-${color.background}`}
         contentContainerClassName="p-2"
       >
         {/* <View className="mb-6">
@@ -76,13 +83,15 @@ useFocusEffect(
         </View> */}
 
         <View
-          className={`rounded-lg ${
-            isDarkMode ? "bg-gray-800" : "bg-white"
-          } p-4 shadow-sm mb-4`}
+          style={{ backgroundColor: color.bg }}
+          className={`
+          } p-4 shadow-sm mb-4 rounded-lg`}
         >
           <Text
+            style={{ color: color.text }}
             className={`text-lg font-semibold ${
-              isDarkMode ? "text-white" : "text-gray-900"
+              ""
+              // isDarkMode ? "text-white" : "text-gray-900"
             }`}
           >
             User Statistics
@@ -121,14 +130,12 @@ useFocusEffect(
         </View>
 
         <View
-          className={`rounded-lg ${
-            isDarkMode ? "bg-gray-800" : "bg-white"
-          } p-4 shadow-sm mb-4`}
+          style={{ backgroundColor: color.bg }}
+          className={`rounded-lg p-4 shadow-sm mb-4 `}
         >
           <Text
-            className={`text-lg font-semibold mb-4 ${
-              isDarkMode ? "text-white" : "text-gray-900"
-            }`}
+            style={{ color: color.text }}
+            className={`text-lg font-semibold mb-4`}
           >
             System Overview
           </Text>
@@ -144,7 +151,7 @@ useFocusEffect(
             <View className="bg-green-100 p-4 rounded-lg">
               <Text className="text-green-800 font-semibold">Admin Users</Text>
               <Text className="text-green-600 text-2xl font-bold mt-1">
-                {users.filter((user:userData) => user.role === "admin").length}
+                {users.filter((user: userData) => user.role === "admin").length}
               </Text>
             </View>
 
@@ -155,7 +162,7 @@ useFocusEffect(
               <Text className="text-purple-600 text-2xl font-bold mt-1">
                 {
                   users.filter(
-                    (user:userData) =>
+                    (user: userData) =>
                       user.role === "student" ||
                       user.role === "teacher" ||
                       user.role === "parent"
@@ -167,14 +174,12 @@ useFocusEffect(
         </View>
 
         <View
-          className={`rounded-lg ${
-            isDarkMode ? "bg-gray-800" : "bg-white"
-          } p-4 shadow-sm mb-4`}
+          style={{ backgroundColor: color.bg }}
+          className={`rounded-lg  p-4 shadow-sm mb-4`}
         >
           <Text
-            className={`text-lg font-semibold mb-4 ${
-              isDarkMode ? "text-white" : "text-gray-900"
-            }`}
+            style={{ color: color.text }}
+            className={`text-lg font-semibold mb-4 `}
           >
             Quick Links
           </Text>
@@ -196,8 +201,13 @@ useFocusEffect(
           </TouchableOpacity>
         </View>
         <View className="flex-row justify-between">
-          <View className="bg-white p-4 rounded-lg w-full">
-            <Text className="text-black font-bold mb-2">Recent Users</Text>
+          <View
+            className=" p-4 rounded-lg w-full"
+            style={{ backgroundColor: color.bg }}
+          >
+            <Text className=" font-bold mb-2" style={{ color: color.text }}>
+              Recent Users
+            </Text>
             {users
               .slice(0, 10)
               .map(
@@ -225,9 +235,19 @@ useFocusEffect(
 
                         // <Ionicons name="person-circle-outline" size={40} color="gray" />
                       )}
-                      <Text className="text-black text-trasnform capitalize">{user.name}</Text>
+                      <Text
+                        className="text-black text-trasnform capitalize"
+                        style={{ color: color.text }}
+                      >
+                        {user.name}
+                      </Text>
                     </View>
-                    <Text className="text-black/70">{user.role}</Text>
+                    <Text
+                      className="text-black/70"
+                      style={{ color: color.text }}
+                    >
+                      {user.role}
+                    </Text>
                   </View>
                 )
               )}

@@ -6,7 +6,7 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
-import React, { useEffect, useRef, useState, useCallback } from "react";
+import React, { useEffect, useRef, useState, useCallback, useContext } from "react";
 import { useLocalSearchParams } from "expo-router";
 import { useUserData } from "@/utils";
 import CustomInput from "@/components/ui/customInput";
@@ -19,6 +19,8 @@ import { IconButton } from "react-native-paper";
 import { InboxHeaderWithIcon } from "@/components/ui/inboxHeader";
 import { connectSocket } from "@/utils/socket";
 import { useAppActions, useAppState } from "@/store/actions";
+import { ThemeContext } from "@/store/themeContext";
+import { Theme } from "@/constants/theme";
 
 interface PayloadType {
   receiverId: string;
@@ -49,7 +51,8 @@ const ConversationScreen = () => {
   const { user } = useUserData();
   const [content, setContent] = useState("");
   const scrollViewRef = useRef<ScrollView>(null);
-
+  const { theme } = useContext(ThemeContext);
+  const color = Theme[theme]
   const userId = user?.id;
 
   // Safe JSON parsing with error handling
@@ -180,7 +183,7 @@ let conversationId = null;
   };
 
   return (
-    <SafeAreaView className="flex-1  bg-bg mt-[7%]">
+    <SafeAreaView className="flex-1 mt-[7%]" style={{backgroundColor:color.background}}>
       <WPSuccess
         visible={globalSuccess?.visible}
         description={globalSuccess?.description}
@@ -197,9 +200,10 @@ let conversationId = null;
         keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}
       >
         <ScrollView
-          className="flex-1 bg-bg px-[2%] py-2"
+          className="flex-1 px-[2%] py-2"
           ref={scrollViewRef}
           keyboardShouldPersistTaps="handled"
+          style={{backgroundColor:color.background}}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ flexGrow: 1, paddingBottom: 10 }}
         >
@@ -237,12 +241,14 @@ let conversationId = null;
           })}
         </ScrollView>
 
-        <View className="px-[2%]  flex flex-row   items-center bg-bg self-center  rounded-3xl  w-[100%] mb-[1%] justify-between">
+        <View style={{backgroundColor:color.bg}} className="px-[2%]  flex flex-row   items-center bg-bg self-center  rounded-3xl  w-[100%] mb-[1%] justify-between">
           <CustomInput
             style={{
               height: "70%",
               width: "80%",
+              color:color.text,
               padding: 10,
+              backgroundColor:color.bg
             }}
             placeholder="Message"
             multiline={true}

@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useContext, useMemo, useState } from "react";
 import {
   View,
   Text,
@@ -23,6 +23,8 @@ import Loading from "@/components/ui/toasts/Loading";
 import { HeaderWithIcon } from "@/components/ui/headerWithIcon";
 import SearchInput from "@/components/ui/searchInput";
 import LoadingIndicator from "@/components/ui/loading";
+import { ThemeContext } from "@/store/themeContext";
+import { Theme } from "@/constants/theme";
 
 export default function UsersScreen() {
   const state = useAppState();
@@ -33,31 +35,32 @@ export default function UsersScreen() {
   const { data, isLoading, error } = useGetUsers();
   const [selectedUser, setSelectedUser] = useState(null);
   const [showOptions, setShowOptions] = useState(false);
-    const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
 
   const router = useRouter();
+  const { theme } = useContext(ThemeContext);
+  const color = Theme[theme];
+  const filteredUsers = useMemo(() => {
+    if (!data || !searchQuery.trim()) {
+      return data || [];
+    }
+    const query = searchQuery.toLowerCase().trim();
+    return data.filter((user: any) => {
+      return (
+        user.name.toLowerCase().includes(query) ||
+        user.email.toLowerCase().includes(query) ||
+        user.role.toLowerCase().includes(query)
+      );
+    });
+  }, [data, searchQuery]);
 
-const filteredUsers = useMemo(()=>{
-if(!data || !searchQuery.trim()){
-return data || []
-}
-const query = searchQuery.toLowerCase().trim();
-return data.filter((user:any)=>{
-  return (
-    user.name.toLowerCase().includes(query) ||
-    user.email.toLowerCase().includes(query) ||
-    user.role.toLowerCase().includes(query)
-  );
-})
-},[data, searchQuery]);
-
-const handleSearchChange = (text: string) => {
-  setSearchQuery(text);
-}
+  const handleSearchChange = (text: string) => {
+    setSearchQuery(text);
+  };
 
   const handleUserPress = (user: any) => {
     // setSelectedUser(user);
-    console.log("here",user)
+    console.log("here", user);
     router.push({
       pathname: "/(inbox)/conversation",
       params: { userdata: JSON.stringify(user) },
@@ -65,7 +68,7 @@ const handleSearchChange = (text: string) => {
   };
 
   return (
-    <SafeAreaView className="flex-1 mt-[7%] bg-bg">
+    <SafeAreaView className="flex-1 mt-[7%] " style={{backgroundColor:color.background}}>
       <WPSuccess
         visible={globalSuccess?.visible}
         description={globalSuccess?.description}
@@ -84,6 +87,7 @@ const handleSearchChange = (text: string) => {
       <ScrollView
         className={`flex-1 ${isDarkMode ? "bg-bg" : "bg-bg "}`}
         contentContainerClassName="p-2"
+        style={{backgroundColor:color.background}}
       >
         <View className={`rounded-l  shadow-sm`}>
           {isLoading ? (
@@ -97,10 +101,9 @@ const handleSearchChange = (text: string) => {
               {filteredUsers?.map((user: any) => (
                 <TouchableOpacity
                   key={user.id}
+                  style={{backgroundColor:color.bg}}
                   onPress={() => handleUserPress(user)}
-                  className={`flex-row items-center p-4 mb-1 rounded-md ${
-                    isDarkMode ? "bg-white" : "bg-white"
-                  }`}
+                  className={`flex-row items-center p-4 mb-1 rounded-md `}
                 >
                   <View className="flex-1 flex-row items-center gap-2">
                     {user?.photo ? (
@@ -117,9 +120,8 @@ const handleSearchChange = (text: string) => {
                     )}
                     <View className="flex-1">
                       <Text
-                        className={`font-medium ${
-                          isDarkMode ? "text-black" : "text-gray-900"
-                        } text-transform capitalize`}
+                      style={{color:color.text}}
+                        className={`font-medium text-transform capitalize`}
                       >
                         {user.name}
                       </Text>

@@ -1,4 +1,6 @@
-import React from 'react';
+import { Theme } from '@/constants/theme';
+import { ThemeContext } from '@/store/themeContext';
+import React, { useContext } from 'react';
 import { View, Text } from 'react-native';
 import { RadioButton } from 'react-native-paper';
 
@@ -17,9 +19,11 @@ export const RadioInputs = ({
   onValueChange,
   className = ''
 }: RadioInputsProps) => {
+    const { theme } = useContext(ThemeContext);
+    const color = Theme[theme];
   return (
     <View className={`mb-4 ${className}`}>
-      <Text className=" mb-2 font-bold">{label}</Text>
+      <Text style={{color:color.text}} className=" mb-2 font-bold">{label}</Text>
       <RadioButton.Group
         onValueChange={onValueChange}
         value={value}
@@ -32,7 +36,7 @@ export const RadioInputs = ({
               label={option}
               value={option}
               color="#4299e1"
-              labelStyle={{color: "black", fontSize: 16}}
+              labelStyle={{color:color.text, fontSize: 16}}
             />
           ))}
         </View>

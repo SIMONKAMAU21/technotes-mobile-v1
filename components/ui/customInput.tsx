@@ -21,7 +21,7 @@ const CustomInput = React.forwardRef<typeof TextInput, InputProps>(
         scrollEnabled={false}
         numberOfLines={3}
         onChangeText={props.onChangeText}
-        placeholderTextColor="black"
+        placeholderTextColor="gray"
         // activeOutlineColor="#e2e8f0"
         cursorColor="black"
         value={props.value}
@@ -38,12 +38,12 @@ const styles = StyleSheet.create({
     width: "100%",
     // height: "50%",
     textAlign: "auto",
-    borderWidth: 1,
+    // borderWidth: 1,
     backgroundColor: "#e2e8f0",
     borderRadius: 10,
     borderColor: "#e2e8f0",
     padding: 10,
-    color: "black",
+    // color: "black",
   },
 });
 

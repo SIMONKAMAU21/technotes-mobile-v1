@@ -10,7 +10,7 @@ export default function ProfileLayout() {
         <Stack.Screen name="profile" options={{ headerShown: false }} />
 
       </Stack>
-      <StatusBar style="light" backgroundColor="#4299E1" />
+      {/* <StatusBar style="light" backgroundColor="#4299E1" /> */}
     </>
   );
 }

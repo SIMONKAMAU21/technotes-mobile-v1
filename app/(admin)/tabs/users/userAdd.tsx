@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { View, Text, ScrollView, SafeAreaView, Alert } from "react-native";
 import { router } from "expo-router";
 import { useColorScheme } from "@/hooks/useColorScheme";
@@ -12,11 +12,13 @@ import { UserAdd } from "@/components/ui/userAdd";
 import { useAppState } from "@/store/actions";
 import WPSuccess from "@/components/ui/success/WPSuccess";
 import WPError from "@/components/ui/error/WPError";
+import { ThemeContext } from "@/store/themeContext";
+import { Theme } from "@/constants/theme";
 
 export default function UserAddScreen() {
-  const state = useAppState()
-  const globalError = state.globalError
-  const globalSuccess = state.globalSuccess
+  const state = useAppState();
+  const globalError = state.globalError;
+  const globalSuccess = state.globalSuccess;
   const colorScheme = useColorScheme();
   const isDarkMode = colorScheme === "dark";
   const { mutate: addUser, isLoading, isError } = useAddUser();
@@ -54,26 +56,30 @@ export default function UserAddScreen() {
       console.log(error);
     }
   };
-
+  const { theme } = useContext(ThemeContext);
+  const color = Theme[theme];
   return (
     <SafeAreaView className="flex-1 mt-[7%]">
-       <WPSuccess visible={globalSuccess?.visible} description={globalSuccess?.description}/>
-       <WPError visible={globalError?.visible} description={globalError?.description} /> 
+      <WPSuccess
+        visible={globalSuccess?.visible}
+        description={globalSuccess?.description}
+      />
+      <WPError
+        visible={globalError?.visible}
+        description={globalError?.description}
+      />
       <HeaderWithIcon
         title="Add New User"
         leftIcon="arrow-back"
         onLeftPress={() => router.back()}
       />
       <ScrollView
-        className={`${isDarkMode ? "bg-bg" : "bg-background "} flex-1`}
+        className={` flex-1`}
         contentContainerClassName="p-4"
+        style={{ backgroundColor: color.background }}
       >
         <View className="mb-6">
-          <Text
-            className={`text-2xl font-bold ${
-              isDarkMode ? "text-black" : "text-gray-900"
-            }`}
-          >
+          <Text style={{ color: color.text }} className={`text-2xl font-bold `}>
             Add New User
           </Text>
           <Text
@@ -82,24 +88,27 @@ export default function UserAddScreen() {
             Enter information for new user
           </Text>
         </View>
-        <View className="flex-row justify-center">
+        
+        {/* <View className="flex-row justify-center">
           <Logo />
-        </View>
+        </View> */}
 
         <View
-          className={`rounded-lg ${
-            isDarkMode ? "bg-white" : "bg-white"
-          } p-4 shadow-sm   flex-1`}
+          style={{ backgroundColor: color.bg }}
+          className={`rounded-lg  p-4 shadow-sm   flex-1`}
         >
           <Text
-            className={`text-lg font-semibold mb-4 ${
-              isDarkMode ? "text-black" : "text-gray-900"
-            }`}
+            style={{ color: color.text }}
+            className={`text-lg font-semibold mb-4 `}
           >
             User Information
           </Text>
-          <UserAdd onSubmit={handleAddUser}  isLoading={isLoading} isError={isError} initialData={formData}/>
-
+          <UserAdd
+            onSubmit={handleAddUser}
+            isLoading={isLoading}
+            isError={isError}
+            initialData={formData}
+          />
         </View>
       </ScrollView>
     </SafeAreaView>

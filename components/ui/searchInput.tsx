@@ -1,3 +1,5 @@
+import { Theme } from '@/constants/theme';
+import { ThemeContext } from '@/store/themeContext';
 import * as React from 'react';
 import { Searchbar } from 'react-native-paper';
 
@@ -9,17 +11,17 @@ interface SearchInputProps {
 }
 
 const SearchInput : React.FC<SearchInputProps> = ({value,placeholder,onChange, className}) => {
-  const [searchQuery, setSearchQuery] = React.useState('');
-
+  const { theme } = React.useContext(ThemeContext);
+  const color = Theme[theme]
   return (
     <Searchbar
       placeholder={placeholder || 'Search...'}
       onChangeText={onChange}
       value={value}
       className={`rounded-lg ${className || ''}`}
-        inputStyle={{ color: '#000' }}
+        inputStyle={{ color:color.text }}
         placeholderTextColor={'#888'}
-      style={{ margin: 10, backgroundColor: '#fff',width: '90%' ,height: 50 }}
+      style={{ margin: 10, backgroundColor:color.bg,width: '90%' ,height: 50 }}
     />
   );
 };

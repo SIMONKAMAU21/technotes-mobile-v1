@@ -1,112 +1,110 @@
-import React, { useState, useEffect } from "react";
-import { View, Text, ScrollView, SafeAreaView, Switch } from "react-native";
-import { useColorScheme } from "@/hooks/useColorScheme";
-import { CustomButton } from "@/components/ui/customButton";
-import { useRouter } from "expo-router";
-import * as SecureStore from "expo-secure-store";
-import { useUserStore } from "@/store";
+import React, { useContext, useState, useEffect } from "react";
+import {
+  Image,
+  SafeAreaView,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { ThemeContext } from "@/store/themeContext";
+import { HeaderWithIcon } from "@/components/ui/headerWithIcon";
+import { Theme } from "@/constants/theme";
 
-export default function SettingsScreen() {
-  const colorScheme = useColorScheme();
-  const [isDarkMode, setIsDarkMode] = useState(colorScheme === "dark");
-  const router = useRouter();
-  const setUser = useUserStore((state) => state.setUserData);
+const themeOptions = [
+  { label: "Light Mode", value: "light" },
+  { label: "Dark Mode", value: "dark" },
+  { label: "Automatic", value: "automatic" },
+  { label: "System Default", value: "system" },
+];
+
+const SettingsScreen = () => {
+  const { theme, setMode, mode, toggleTheme } = useContext(ThemeContext);
+  const [selectedOption, setSelectedOption] = useState(mode);
+  const isNightTime = () => {
+    const currentTime = new Date();
+    const currentMinutes =
+      currentTime.getHours() * 60 + currentTime.getMinutes();
+    return currentMinutes >= 18 * 60 + 30 || currentMinutes <= 6 * 60 + 30;
+  };
+  const color = Theme[theme];
   useEffect(() => {
-    loadThemePreference();
-  }, []);
+    // Set initial option from current theme
+    if (theme === "light") setSelectedOption("light");
+    else if (theme === "dark") setSelectedOption("dark");
+    else setSelectedOption(mode);
+  }, [theme]);
 
-  const loadThemePreference = async () => {
-    try {
-      const savedTheme = await SecureStore.getItemAsync("theme");
-      if (savedTheme !== null) {
-        setIsDarkMode(savedTheme === "dark");
-      }
-    } catch (error) {
-      console.error("Error loading theme preference:", error);
+  useEffect(() => {
+    if (selectedOption === "automatic") {
+      setMode(isNightTime() ? "dark" : "light");
+    }
+  }, [selectedOption]);
+
+  useEffect(() => {
+    let intervalId: NodeJS.Timeout;
+    if (selectedOption === "automatic") {
+      intervalId = setInterval(() => {
+        setMode(isNightTime() ? "dark" : "light");
+      }, 60000);
+    }
+    return () => clearInterval(intervalId);
+  }, [selectedOption]);
+
+  const handleSelectOption = (value: string) => {
+    setSelectedOption(value);
+    if (value === "automatic") {
+      setMode(isNightTime() ? "dark" : "light");
+    } else if (value === "system") {
+      setMode(null);
+    } else {
+      setMode(value); // 'light' or 'dark'
     }
   };
 
-  const toggleDarkMode = async () => {
-    try {
-      const newTheme = !isDarkMode;
-      setIsDarkMode(newTheme);
-      await SecureStore.setItemAsync("theme", newTheme ? "dark" : "light");
-      // Force app to re-render with new theme
-      if (typeof window !== "undefined") {
-        window.location.reload();
-      }
-    } catch (error) {
-      console.error("Error saving theme preference:", error);
-    }
-  };
-  const Logout = () => {
-    setUser(null);
-    router.replace("/(auth)/signIn");
-  };
   return (
-    <SafeAreaView className="flex-1 mt-10">
+    <SafeAreaView
+      style={{ backgroundColor: color.background }}
+      className="flex-1 mt-[7%]"
+    >
+      <HeaderWithIcon title="Preferences" />
       <ScrollView
-        className={`flex-1 ${isDarkMode ? "bg-gray-900" : "bg-gray-50"}`}
-        contentContainerClassName="p-4"
+        style={{ backgroundColor: color.background }}
+        className="flex-1 bg-[#F7F7F7] pt-5"
       >
-        <View className="mb-6">
-          <Text
-            className={`text-2xl font-bold ${
-              isDarkMode ? "text-white" : "text-gray-900"
-            }`}
-          >
-            Settings
-          </Text>
-          <Text
-            className={`mt-1 ${isDarkMode ? "text-gray-300" : "text-gray-600"}`}
-          >
-            Manage your application settings
-          </Text>
-        </View>
-
-        <View
-          className={`rounded-lg ${
-            isDarkMode ? "bg-gray-800" : "bg-white"
-          } p-4 shadow-sm mb-4`}
+        <Text
+          style={{ color: color.text, fontWeight: "500" }}
+          className="mx-4 mb-2"
         >
-          <Text
-            className={`text-lg font-semibold ${
-              isDarkMode ? "text-white" : "text-gray-900"
-            }`}
-          >
-            App Information
-          </Text>
-          <Text
-            className={`mt-2 ${isDarkMode ? "text-gray-300" : "text-gray-600"}`}
-          >
-            Version 1.0.0
-          </Text>
-        </View>
-
+          Accessibility
+        </Text>
         <View
-          className={`rounded-lg ${
-            isDarkMode ? "bg-gray-800" : "bg-white"
-          } p-4 shadow-sm mb-4`}
+          style={{ backgroundColor: color.bg }}
+          className=" rounded-md mx-4 mb-4 max-h-[80%] p-3"
         >
-          <View className="flex-row justify-between items-center">
-            <Text
-              className={`text-lg font-semibold ${
-                isDarkMode ? "text-white" : "text-gray-900"
-              }`}
+          {themeOptions.map(({ label, value }) => (
+            <TouchableOpacity
+              key={value}
+              className="flex-row items-center py-4"
+              onPress={() => handleSelectOption(value)}
+              style={{ backgroundColor: color.bg }}
             >
-              Dark Mode
-            </Text>
-            <Switch
-              value={isDarkMode}
-              onValueChange={toggleDarkMode}
-              trackColor={{ false: "#767577", true: "#81b0ff" }}
-              thumbColor={isDarkMode ? "#f5dd4b" : "#f4f3f4"}
-            />
-          </View>
+              <Text style={{ color: color.text }} className="flex-1">
+                {label}
+              </Text>
+              {selectedOption === value && (
+                <Image
+                  // source={require('@/assets/images/preferences-check.png')}
+                  resizeMode="contain"
+                  className="w-6 h-6"
+                />
+              )}
+            </TouchableOpacity>
+          ))}
         </View>
-
-        <CustomButton children="Logout" onPress={Logout} />
       </ScrollView>
     </SafeAreaView>
   );
-}
+};
+
+export default SettingsScreen;

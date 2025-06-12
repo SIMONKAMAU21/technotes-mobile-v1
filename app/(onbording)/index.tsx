@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import { View, Text, Image, SafeAreaView, ScrollView } from "react-native";
 import { useRouter } from "expo-router";
 import { CustomButton } from "@/components/ui/customButton";
@@ -8,6 +8,9 @@ import { connectSocket, disconnectSocket } from "@/utils/socket";
 import WPSuccess from "@/components/ui/success/WPSuccess";
 import WPError from "@/components/ui/error/WPError";
 import { useAppState } from "@/store/actions";
+import { ThemeContext } from "@/store/themeContext";
+import { Theme } from "@/constants/theme";
+import { Logo, Logo1 } from "@/components/ui/logo";
 
 export default function OnboardingScreen() {
   const state = useAppState();
@@ -44,9 +47,10 @@ export default function OnboardingScreen() {
 
     checkUserData();
   }, [userData]); // Run when `user` changes
-
+  const { theme } = useContext(ThemeContext);
+  const color = Theme[theme];
   return (
-    <SafeAreaView className="flex-1 border border-red-200 justify-between items-center p-8 bg-white">
+    <SafeAreaView style={{backgroundColor:color.background}} className="flex-1  justify-between items-center p-8 bg-white">
       <WPSuccess
         visible={globalSuccess?.visible}
         description={globalSuccess?.description}
@@ -57,11 +61,11 @@ export default function OnboardingScreen() {
       />
       <ScrollView className="flex-1">
         <View className="justify-center mt-[50%] items-center">
-          <Image
-            source={require("../../assets/images/school2.png")}
-            className="w-48 h-48 mb-8"
-          />
-          <Text className="text-3xl font-bold text-center mb-4">
+          {theme === "dark" ? (            <Logo size={50} className="w-40 h-40" />
+          ) :(
+            <Logo1 size={50} className="w-40 h-40" />
+          )}
+          <Text style={{color:color.text}} className="text-3xl font-bold text-center mb-4">
             Welcome to the school management App
           </Text>
           <Text className="text-lg text-center text-gray-600 mb-8">

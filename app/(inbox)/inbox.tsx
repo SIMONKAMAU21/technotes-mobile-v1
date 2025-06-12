@@ -5,7 +5,7 @@ import {
   ScrollView,
   TouchableOpacity,
 } from "react-native";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import { HeaderWithIcon } from "@/components/ui/headerWithIcon";
 import { useRouter } from "expo-router";
 import { formatTime } from "@/utils/constants/stringUtils";
@@ -20,6 +20,8 @@ import { useUserStore } from "@/store";
 import SearchInput from "@/components/ui/searchInput";
 import { connectSocket } from "@/utils/socket";
 import { useChatStore } from "@/store/useChatStore";
+import { ThemeContext } from "@/store/themeContext";
+import { Theme } from "@/constants/theme";
 
 interface ChatStoreType {
   messages: any[];
@@ -44,7 +46,8 @@ const InboxScreen = () => {
   const globalSuccess = state.globalSuccess;
   const user = useUserStore((state) => state.userData);
   const [searchQuery, setSearchQuery] = useState("");
-
+ const { theme } = useContext(ThemeContext);
+  const color = Theme[theme]
   const {
     subscribeToMessages,
     unsubscribeFromMessages,
@@ -96,7 +99,7 @@ const InboxScreen = () => {
 
   if (isconversationsLoading) {
     return (
-      <SafeAreaView className="flex-1 justify-center items-center bg-bg">
+      <SafeAreaView className="flex-1 justify-center items-center " style={{backgroundColor:color.background}}>
         <LoadingIndicator />
       </SafeAreaView>
     );
@@ -113,7 +116,7 @@ const InboxScreen = () => {
     setSearchQuery(text);
   };
   return (
-    <SafeAreaView className="flex-1 bg-bg mt-[7%]">
+    <SafeAreaView className="flex-1 mt-[7%] " style={{backgroundColor:color.background}}>
       <HeaderWithIcon title="Inbox" />
       <SearchInput
         placeholder=""
@@ -128,7 +131,7 @@ const InboxScreen = () => {
         visible={globalError?.visible}
         description={globalError?.description}
       />
-      <ScrollView className="flex-1 ">
+      <ScrollView className="flex-1 p-3 ">
         <View className=" flex-1">
           {/* <Text className="text-lg font-bold mb-2">
             Conversations: {data?.length ?? 0}
@@ -136,8 +139,9 @@ const InboxScreen = () => {
           {filteredUsers?.map((item: any) => (
             <TouchableOpacity
               key={item._id}
+              style={{backgroundColor:color.bg}}
               onPress={() => handleConversation(item)}
-              className=" bg-white bg-opacity-50 align-center rounded-lg p-1 mt-1 flex-row"
+              className="  bg-opacity-50 align-center rounded-lg p-1 mt-1 flex-row"
             >
               <View className="flex-row p-1 flex-1 gap-2 items-center">
                 <View className=" border  border-primary rounded-full">
@@ -151,8 +155,8 @@ const InboxScreen = () => {
                   />
                 </View>
 
-                <View className="  flex-1  pl-2 justify-center">
-                  <Text className=" font-semibold text-transform capitalize">
+                <View  className="  flex-1  pl-2 justify-center">
+                  <Text style={{color:color.text}} className=" font-semibold text-transform capitalize">
                     {item?.lastMessage?.receiverId?.name}
                   </Text>
                   <View className="flex-row items-center gap-1">
@@ -161,14 +165,14 @@ const InboxScreen = () => {
                     ) : (
                       <Octicons name="check" color={"#4299E1"} />
                     )}
-                    <Text style={{ textTransform: "lowercase" }}>
+                    <Text style={{ textTransform: "lowercase",color:color.text }}>
                       {item.lastMessage.content.length > 60
                         ? item.lastMessage.content.slice(0, 60) + "..."
                         : item.lastMessage.content}
                     </Text>
                   </View>
 
-                  <Text className="self-end opacity-50 text-sm">
+                  <Text style={{color:color.text}} className="self-end opacity-50 text-sm">
                     {formatTime(item?.lastMessage?.timestamp)}
                   </Text>
                 </View>
