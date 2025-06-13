@@ -41,7 +41,7 @@ const SwipeList = ({
       disableRightSwipe={!isAdmin}
       contentContainerClassName="pb-[30%] border-b-2 border-gray-200"
       contentContainerStyle={{
-        // paddingBottom: 200,
+        paddingBottom: 200,
         overflow: "scroll",
       }}
       rightOpenValue={isAdmin ? -75 : 0} // Adjust based on your design

@@ -33,10 +33,12 @@ export default function UsersScreen() {
   const [selectedUser, setSelectedUser] = useState(null);
   const [showOptions, setShowOptions] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const { user } = useUserData();
 
   const isAdmin = user?.role === "admin"; // Assuming user data has a role field
   const router = useRouter();
-
+const {theme} = useContext(ThemeContext)
+const color = Theme[theme]
   const filteredUsers = useMemo(() => {
     if (!data || !searchQuery.trim()) {
       return data || [];
@@ -70,7 +72,6 @@ export default function UsersScreen() {
   //start a conversation with a user
   const handleUserPress = (user: any) => {
     // setSelectedUser(user);
-    console.log("here", user);
     router.push({
       pathname: "/(inbox)/conversation",
       params: { userdata: JSON.stringify(user) },
@@ -81,10 +82,9 @@ export default function UsersScreen() {
       return (
         <TouchableOpacity
           key={item.id}
+          style={{backgroundColor:color.bg}}
           onPress={() => handleUserPress(item)}
-          className={`flex-row items-center p-4 mb-1 rounded-md ${
-            isDarkMode ? "bg-white" : "bg-white"
-          }`}
+          className={`flex-row  items-center p-4 mb-1 rounded-md `}
         >
           <View className="flex-1 flex-row items-center gap-2">
             {item?.photo ? (
@@ -101,9 +101,8 @@ export default function UsersScreen() {
             )}
             <View className="flex-1">
               <Text
-                className={`font-medium ${
-                  isDarkMode ? "text-black" : "text-gray-900"
-                } text-transform capitalize`}
+              style={{color:color.text}}
+                className={`font-medium text-transform capitalize`}
               >
                 {item.name}
               </Text>
@@ -183,7 +182,7 @@ export default function UsersScreen() {
         className=""
       />
 
-      <View className={`rounded-l  shadow-sm`}>
+      <View className={`rounded-l h-[80%]  shadow-sm`}>
         {isLoading ? (
           <LoadingIndicator />
         ) : error ? (
