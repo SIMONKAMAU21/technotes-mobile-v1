@@ -56,7 +56,7 @@ export const UserAdd = ({
   const { theme } = useContext(ThemeContext);
   const color = Theme[theme];
   return (
-    <View style={{ backgroundColor: color.bg }} className="p-4 flex-1  gap-5">
+    <View style={{ backgroundColor: color.bg }} className="p-4 flex-1 mt-5 rounded-lg  gap-5">
       <CustomInput
         label="Name"
         value={formData.name}

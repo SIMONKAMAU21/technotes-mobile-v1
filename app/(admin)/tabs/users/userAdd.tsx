@@ -88,7 +88,6 @@ export default function UserAddScreen() {
             Enter information for new user
           </Text>
         </View>
-        
         {/* <View className="flex-row justify-center">
           <Logo />
         </View> */}
@@ -103,12 +102,14 @@ export default function UserAddScreen() {
           >
             User Information
           </Text>
-          <UserAdd
-            onSubmit={handleAddUser}
-            isLoading={isLoading}
-            isError={isError}
-            initialData={formData}
-          />
+          <View className="mt-5">
+            <UserAdd
+              onSubmit={handleAddUser}
+              isLoading={isLoading}
+              isError={isError}
+              initialData={formData}
+            />
+          </View>
         </View>
       </ScrollView>
     </SafeAreaView>
