@@ -1,28 +1,25 @@
-import React, { useContext, useMemo, useState } from "react";
+import React, { useCallback, useContext, useMemo, useState } from "react";
 import {
   View,
   Text,
   ScrollView,
   SafeAreaView,
-  ActivityIndicator,
   TouchableOpacity,
-  Modal,
-  Alert,
 } from "react-native";
 import { useColorScheme } from "@/hooks/useColorScheme";
-// import { useGetUsers } from '../../data';
 import { useRouter } from "expo-router";
-import { CustomButton } from "@/components/ui/customButton";
-import { Ionicons } from "@expo/vector-icons";
 import { Avatar } from "react-native-paper";
 import { useAppState } from "@/store/actions";
 import WPSuccess from "@/components/ui/success/WPSuccess";
 import WPError from "@/components/ui/error/WPError";
 import { useGetUsers } from "@/shared/data/api";
-import Loading from "@/components/ui/toasts/Loading";
 import { HeaderWithIcon } from "@/components/ui/headerWithIcon";
 import SearchInput from "@/components/ui/searchInput";
 import LoadingIndicator from "@/components/ui/loading";
+import { useUserData } from "@/utils";
+import { SwipeListView } from "react-native-swipe-list-view";
+import { FontAwesome5, MaterialCommunityIcons } from "@expo/vector-icons";
+import SwipeList from "@/components/ui/gestures/swipeList";
 import { ThemeContext } from "@/store/themeContext";
 import { Theme } from "@/constants/theme";
 
@@ -36,10 +33,12 @@ export default function UsersScreen() {
   const [selectedUser, setSelectedUser] = useState(null);
   const [showOptions, setShowOptions] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const { user } = useUserData();
 
+  const isAdmin = user?.role === "admin"; // Assuming user data has a role field
   const router = useRouter();
-  const { theme } = useContext(ThemeContext);
-  const color = Theme[theme];
+const {theme} = useContext(ThemeContext)
+const color = Theme[theme]
   const filteredUsers = useMemo(() => {
     if (!data || !searchQuery.trim()) {
       return data || [];
@@ -57,18 +56,116 @@ export default function UsersScreen() {
   const handleSearchChange = (text: string) => {
     setSearchQuery(text);
   };
-
+  //editing and deleting users
+  const handleEdit = (user: any) => {
+    router.push({
+      pathname: "/(admin)/tabs/users/userdata",
+      params: { userdata: JSON.stringify(user) },
+    });
+  };
+  const handleDelete = (user: any) => {
+    // router.push({
+    //   pathname: "/(admin)/tabs/users/delete",
+    //   params: { userdata: JSON.stringify(user) },
+    // });
+  };
+  //start a conversation with a user
   const handleUserPress = (user: any) => {
     // setSelectedUser(user);
-    console.log("here", user);
     router.push({
       pathname: "/(inbox)/conversation",
       params: { userdata: JSON.stringify(user) },
     });
   };
+  const renderItem = useCallback(
+    ({ item }: { item: any }) => {
+      return (
+        <TouchableOpacity
+          key={item.id}
+          style={{backgroundColor:color.bg}}
+          onPress={() => handleUserPress(item)}
+          className={`flex-row  items-center p-4 mb-1 rounded-md `}
+        >
+          <View className="flex-1 flex-row items-center gap-2">
+            {item?.photo ? (
+              <Avatar.Image size={40} source={{ uri: item?.photo }} />
+            ) : (
+              <Avatar.Text
+                style={{
+                  backgroundColor: "#4299E1",
+                }}
+                size={40}
+                label={item?.name.charAt(0)}
+                color={isDarkMode ? "white" : "black"}
+              />
+            )}
+            <View className="flex-1">
+              <Text
+              style={{color:color.text}}
+                className={`font-medium text-transform capitalize`}
+              >
+                {item.name}
+              </Text>
+              <Text
+                className={`text-sm ${
+                  isDarkMode ? "text-gray-300" : "text-gray-100"
+                }`}
+              >
+                {item.email}
+              </Text>
+            </View>
+          </View>
+          <Text
+            className={`${
+              item.role === "admin"
+                ? "text-blue-600"
+                : item.role === "teacher"
+                ? "text-yellow-600"
+                : item.role === "student"
+                ? "text-green-600"
+                : item.role === "parent"
+                ? "text-red-600"
+                : isDarkMode
+                ? "text-gray-300"
+                : "text-gray-600"
+            }`}
+          >
+            {item.role}
+          </Text>
+        </TouchableOpacity>
+      );
+    },
+    [data, searchQuery, isDarkMode, router, handleUserPress]
+  );
 
+  const renderHiddenItem = useCallback(
+    ({ item }: { item: any }) => {
+      return (
+        <View className=" flex-row justify-between items-center flex-1">
+          {/* Left side (swipe right → show “Edit”) */}
+          <TouchableOpacity
+            onPress={() => handleEdit(item)}
+            className="rounded-l-md items-center justify-center w-24 "
+          >
+            <FontAwesome5 name="user-edit" size={24} color="#EF8F02" />
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => handleUserPress(item)}
+            className="rounded-l-md items-center justify-center w-24 "
+          >
+            <MaterialCommunityIcons
+              name="chat-plus"
+              size={24}
+              color="#4299E1"
+            />
+          </TouchableOpacity>
+        </View>
+      );
+    },
+    [handleEdit, isAdmin]
+  );
   return (
-    <SafeAreaView className="flex-1 mt-[7%] " style={{backgroundColor:color.background}}>
+    <SafeAreaView className="flex-1 border  mt-[7%] " style={{backgroundColor:color.background}}>
       <WPSuccess
         visible={globalSuccess?.visible}
         description={globalSuccess?.description}
@@ -84,91 +181,25 @@ export default function UsersScreen() {
         placeholder="search user ..."
         className=""
       />
-      <ScrollView
-        className={`flex-1 ${isDarkMode ? "bg-bg" : "bg-bg "}`}
-        contentContainerClassName="p-2"
-        style={{backgroundColor:color.background}}
-      >
-        <View className={`rounded-l  shadow-sm`}>
-          {isLoading ? (
-            <LoadingIndicator />
-          ) : error ? (
-            <Text className={`${isDarkMode ? "text-red-400" : "text-red-600"}`}>
-              Error loading users
-            </Text>
-          ) : (
-            <View>
-              {filteredUsers?.map((user: any) => (
-                <TouchableOpacity
-                  key={user.id}
-                  style={{backgroundColor:color.bg}}
-                  onPress={() => handleUserPress(user)}
-                  className={`flex-row items-center p-4 mb-1 rounded-md `}
-                >
-                  <View className="flex-1 flex-row items-center gap-2">
-                    {user?.photo ? (
-                      <Avatar.Image size={40} source={{ uri: user?.photo }} />
-                    ) : (
-                      <Avatar.Text
-                        style={{
-                          backgroundColor: "#4299E1",
-                        }}
-                        size={40}
-                        label={user?.name.charAt(0)}
-                        color={isDarkMode ? "white" : "black"}
-                      />
-                    )}
-                    <View className="flex-1">
-                      <Text
-                      style={{color:color.text}}
-                        className={`font-medium text-transform capitalize`}
-                      >
-                        {user.name}
-                      </Text>
-                      <Text
-                        className={`text-sm ${
-                          isDarkMode ? "text-gray-300" : "text-gray-100"
-                        }`}
-                      >
-                        {user.email}
-                      </Text>
-                    </View>
-                  </View>
-                  <Text
-                    className={`${
-                      user.role === "admin"
-                        ? "text-blue-600"
-                        : user.role === "teacher"
-                        ? "text-yellow-600"
-                        : user.role === "student"
-                        ? "text-green-600"
-                        : user.role === "parent"
-                        ? "text-red-600"
-                        : isDarkMode
-                        ? "text-gray-300"
-                        : "text-gray-600"
-                    }`}
-                  >
-                    {user.role}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-          )}
-        </View>
-      </ScrollView>
 
-      {/* <View className="absolute bottom-6 right-6">
-        <CustomButton
-          onPress={() => router.push('/(admin)/tabs/users/userAdd')}
-          // style={{ borderRadius: 30, width: 60, height: 60 }}
-        >
-          <View className='flex-row justify-center items-center'>
-          <Logo className='w-10 h-10'/>
-          <Ionicons name="add" size={24} color="white" />
-          </View>
-        </CustomButton>
-      </View> */}
+      <View className={`rounded-l h-[80%]  shadow-sm`}>
+        {isLoading ? (
+          <LoadingIndicator />
+        ) : error ? (
+          <Text className={`${isDarkMode ? "text-red-400" : "text-red-600"}`}>
+            Error loading users
+          </Text>
+        ) : (
+          <>
+            <SwipeList
+              data={filteredUsers}
+              renderItem={renderItem}
+              renderHiddenItem={renderHiddenItem}
+              isAdmin={isAdmin}
+            />
+          </>
+        )}
+      </View>
     </SafeAreaView>
   );
 }

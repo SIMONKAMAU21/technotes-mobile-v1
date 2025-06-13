@@ -12,7 +12,7 @@ export default function UsersLayout() {
       <Stack screenOptions={screenOptions}>
         <Stack.Screen name="users" options={{ headerShown: false }} />
       </Stack>
-      <StatusBar style="light" backgroundColor="#4299E1" />
+      {/* <StatusBar style="light" backgroundColor="#4299E1" /> */}
     </>
   );
 }
