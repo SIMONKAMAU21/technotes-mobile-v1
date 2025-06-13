@@ -84,20 +84,16 @@ export default function DashboardScreen() {
 
         <View
           style={{ backgroundColor: color.bg }}
-          className={`
-          } p-4 shadow-sm mb-4 rounded-lg`}
+          className={` p-4 shadow-sm mb-4 rounded-lg`}
         >
           <Text
             style={{ color: color.text }}
-            className={`text-lg font-semibold ${
-              ""
-              // isDarkMode ? "text-white" : "text-gray-900"
-            }`}
+            className={`text-lg font-semibold`}
           >
             User Statistics
           </Text>
 
-          <View className="flex-row flex-wrap gap-4 justify-between mt-4">
+          <View className="flex-row w-full flex-wrap overflow-hidden gap-4 justify-between mt-4">
             <Card
               color="white"
               icon="people"
