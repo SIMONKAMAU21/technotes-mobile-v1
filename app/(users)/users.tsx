@@ -182,7 +182,7 @@ const color = Theme[theme]
         className=""
       />
 
-      <View className={`rounded-l h-[80%]  shadow-sm`}>
+      <View className={`rounded-l h-[90%]  shadow-sm`}>
         {isLoading ? (
           <LoadingIndicator />
         ) : error ? (

@@ -106,13 +106,13 @@ const SignIn = () => {
 
           <View className="w-full gap-2 max-w-md items-center">
             <CustomInput
-              style={{ width: "100%", height: "15%", padding: 10 }}
+              style={{ width: "100%", padding: 10 }}
               label="Email"
               value={email}
               onChangeText={setEmail}
             />
             <CustomInput
-              style={{ width: "100%", height: "15%", padding: 10 }}
+              style={{ width: "100%", padding: 10 }}
               label="Password"
               value={password}
               onChangeText={setPassword}

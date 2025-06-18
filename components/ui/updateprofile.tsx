@@ -8,7 +8,6 @@ import {
   StyleSheet,
   ScrollView,
 } from "react-native";
-import CustomInput from "./customInput";
 import { CustomButton } from "./customButton";
 import { useUpdatePassword, useUpdatePicture } from "@/app/(profile)/data";
 import { useRouter } from "expo-router";
@@ -18,6 +17,7 @@ import Loading from "./toasts/Loading";
 import { HStack, VStack } from "./Stacks";
 import { ThemeContext } from "@/store/themeContext";
 import { Theme } from "@/constants/theme";
+import CustomInput from "./customInput";
 interface userDetails {
   userDetails: {
     photo: string | undefined;
@@ -114,9 +114,9 @@ const UpdateProfile = () => {
     <ScrollView
       style={{ backgroundColor: color.background }}
       className={`flex-1  text-white`}
-      contentContainerClassName="p-4 gap-2"
+      contentContainerClassName="p-4 gap-4"
     >
-      <View className=" items-center gap-2 rounded-lg">
+      <View className=" flex-1 items-center gap-2 rounded-lg">
 
         <View style={styles.header} className="bg-primary " />
 
@@ -144,7 +144,7 @@ const UpdateProfile = () => {
         {/* Change Password */}
         <View
           style={{ backgroundColor: color.bg }}
-          className="w-full p-2 max-h-[30%] gap-2 rounded-lg"
+          className="w-full p-2 max-h-[50%] gap-5 rounded-lg"
         >
           <Text
             className={theme === "dark" ? "text-white" : "text-black"}
@@ -155,7 +155,7 @@ const UpdateProfile = () => {
           <CustomInput
             placeholder="Current password"
             value={currentPassword}
-            style={{ width: "100%", height: "10%" }}
+            style={{ width: "100%", height:"70%"}}
             label="Current password"
             onChangeText={setCurrentPassword}
             secureTextEntry
@@ -165,7 +165,10 @@ const UpdateProfile = () => {
             placeholder="New password"
             value={newPassword}
             label="New password"
-            style={{ width: "100%", height: "10%" }}
+            style={{ width: "100%", height:"70%"}}
+            helperText={
+              isError ? "Password must be at least 6 characters" : ""
+            }
             onChangeText={setNewPassword}
             secureTextEntry
             // style={styles.input}
@@ -173,7 +176,7 @@ const UpdateProfile = () => {
           <CustomInput
             placeholder="Confirm password"
             value={confirmPassword}
-            style={{ width: "100%", height: "10%" }}
+            style={{ width: "100%", height:"70%"}}
             label="Confirm password"
             onChangeText={setConfirmPassword}
             secureTextEntry
@@ -186,7 +189,7 @@ const UpdateProfile = () => {
         </View>
         <VStack
           style={{ backgroundColor: color.bg }}
-          className="w-full p-2 bg-white   rounded-lg "
+          className="w-full p-2 bg-white  flex-2  rounded-lg "
         >
           <HStack className="justify-between items-center border-b-2 border-gray-100 mb-4">
             <Text className="text-gray-400 text-lg font-bold">Fullname:</Text>

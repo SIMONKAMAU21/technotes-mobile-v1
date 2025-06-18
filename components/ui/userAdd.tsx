@@ -60,7 +60,7 @@ export const UserAdd = ({
       <CustomInput
         label="Name"
         value={formData.name}
-        style={{ width: "100%", height: "12%" }}
+            style={{ width: "100%", height:"70%"}}
         onChangeText={(text) => setFormData({ ...formData, name: text })}
         placeholder="Enter name"
       />
@@ -68,7 +68,7 @@ export const UserAdd = ({
       <CustomInput
         label="Email"
         value={formData.email}
-        style={{ width: "100%", height: "12%" }}
+            style={{ width: "100%", height:"70%"}}
         onChangeText={(text) => setFormData({ ...formData, email: text })}
         placeholder="Enter email"
         keyboardType="email-address"
@@ -77,7 +77,7 @@ export const UserAdd = ({
       <CustomInput
         label="Phone"
         value={formData.phone}
-        style={{ width: "100%", height: "12%" }}
+            style={{ width: "100%", height:"70%"}}
         onChangeText={(text) => setFormData({ ...formData, phone: text })}
         placeholder="Enter phone number"
         keyboardType="phone-pad"
@@ -86,7 +86,7 @@ export const UserAdd = ({
       <CustomInput
         label="Address"
         value={formData.address}
-        style={{ width: "100%", height: "12%" }}
+            style={{ width: "100%", height:"70%"}}
         onChangeText={(text) => setFormData({ ...formData, address: text })}
         placeholder="Enter address"
       />

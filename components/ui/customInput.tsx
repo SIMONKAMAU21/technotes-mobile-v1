@@ -1,6 +1,8 @@
+import { Theme } from "@/constants/theme";
+import { ThemeContext } from "@/store/themeContext";
 import * as React from "react";
 // import { TextInput } from "react-native-paper";
-import { StyleSheet, TextInput } from "react-native";
+import { StyleSheet, Text, TextInput, View } from "react-native";
 
 interface InputProps extends React.ComponentProps<typeof TextInput> {
   label?: string;
@@ -9,7 +11,11 @@ interface InputProps extends React.ComponentProps<typeof TextInput> {
 
 const CustomInput = React.forwardRef<typeof TextInput, InputProps>(
   ({ style, label, error, multiline, ...props }, ref) => {
+ const { theme } = React.useContext(ThemeContext);
+  const color = Theme[theme];
     return (
+      <View className=" h-auto flex-1" style={{ width: "100%" }}>
+        {label && <Text style={{color:color.text,marginBottom:5,fontWeight:600}}>{label}</Text>}
       <TextInput
         ref={ref}
         // mode={props.mode || "outlined"}
@@ -29,6 +35,7 @@ const CustomInput = React.forwardRef<typeof TextInput, InputProps>(
         {...props}
         helperText={error}
       />
+      </View>
     );
   }
 );
@@ -36,7 +43,7 @@ const CustomInput = React.forwardRef<typeof TextInput, InputProps>(
 const styles = StyleSheet.create({
   input: {
     width: "100%",
-    // height: "50%",
+    // height: "70%",
     textAlign: "auto",
     // borderWidth: 1,
     backgroundColor: "#e2e8f0",
@@ -44,6 +51,17 @@ const styles = StyleSheet.create({
     borderColor: "#e2e8f0",
     padding: 10,
     // color: "black",
+  },
+  label: {
+    fontSize: 16,
+    fontWeight: "bold",
+    marginBottom: 5,
+    color: "white",
+  },
+  errorText: {
+    color: "red",
+    fontSize: 12,
+    marginTop: 5,
   },
 });
 

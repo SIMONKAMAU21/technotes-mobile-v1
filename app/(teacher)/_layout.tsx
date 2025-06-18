@@ -1,9 +1,11 @@
 import { Stack, useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useContext } from "react";
 import { screenOptions } from "@/constants/animation";
 import { useUserStore } from "@/store";
 import LoadingIndicator from "@/components/ui/loading";
+import { ThemeContext } from "@/store/themeContext";
+import { Theme } from "@/constants/theme";
 
 export default function TeacherLayout() {
   const { userData, isHydrated } = useUserStore();
@@ -48,13 +50,17 @@ export default function TeacherLayout() {
   if (redirectedRef.current) {
     return <LoadingIndicator />;
   }
-
+ const { theme } = useContext(ThemeContext);
+  const color = Theme[theme];
   return (
     <>
       <Stack screenOptions={screenOptions}>
         <Stack.Screen name="tabs" options={{ headerShown: false }} />
       </Stack>
-      <StatusBar style="light" backgroundColor="#4299E1" />
+            <StatusBar style="light" backgroundColor={color.statusBar} />
+      
+
+      {/* <StatusBar style="light" backgroundColor="#4299E1" /> */}
     </>
   );
 }

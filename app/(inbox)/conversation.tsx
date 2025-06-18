@@ -244,7 +244,7 @@ let conversationId = null;
         <View style={{backgroundColor:color.bg}} className="px-[2%]  flex flex-row   items-center bg-bg self-center  rounded-3xl  w-[100%] mb-[1%] justify-between">
           <CustomInput
             style={{
-              height: "70%",
+              // height: "70%",
               width: "80%",
               color:color.text,
               padding: 10,

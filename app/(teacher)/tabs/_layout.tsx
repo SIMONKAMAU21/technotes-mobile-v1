@@ -1,8 +1,12 @@
 // app/(admin)/tabs/_layout.tsx
 import { Tabs, usePathname } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
-import React from "react";
+import React, { useContext } from "react";
+import { ThemeContext } from "@/store/themeContext";
+import { Theme } from "@/constants/theme";
 export default function AdminTabsLayout() {
+   const { theme } = useContext(ThemeContext);
+    const color = Theme[theme];
   const pathName = usePathname();
 // console.log('pathName', pathName)
     const hiddenPathNames = [
@@ -22,10 +26,13 @@ export default function AdminTabsLayout() {
           return { display: 'none' }
         }
         return {
-          backgroundColor: '#4299E1',
-          display: 'flex',
-          height:60,
-          alignItems: 'center',
+            backgroundColor: color.statusBar,
+            display: "flex",
+            height: 60,
+            alignItems: "center",
+            borderWidth:1,
+            borderColor:color.statusBar,
+            paddingHorizontal:10,
         }
       })(route),
       tabBarActiveTintColor: 'white',
@@ -73,16 +80,15 @@ export default function AdminTabsLayout() {
           ),
         }}
       />
-       {/* <Tabs.Screen
+       <Tabs.Screen
         name="settings"
-        component={SettingsScreen}
         options={{
           title: "Settings",
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="settings" color={color} size={size} />
           ),
         }}
-      />  */}
+      /> 
     </Tabs>
   );
 }
