@@ -1,5 +1,7 @@
 import { httpV1 } from "@/api/axios";
+import { queryClient } from "@/app/_layout";
 import { useAppActions } from "@/store/actions";
+import { socket } from "@/utils/socket";
 import { useQuery } from "react-query";
 
 export const useGetUsers = () => {
@@ -16,7 +18,12 @@ export const useGetUsers = () => {
       return response.data;
     },
     {
-      onSuccess: (data) => {
+      onSuccess: () => {
+        if(!socket.hasListeners("userAdded")){
+          socket.on("userAdded",(newUser)=>{
+            queryClient.setQueryData(["users"],(old : any  =[])=>[newUser,...old])
+          })
+        }
         // setGlobalSuccess({
         //   visible: true,
         //   description: data.message,

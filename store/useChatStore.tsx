@@ -119,7 +119,6 @@ export const useChatStore = create((set, get) => ({
 
     socket.on("userConversationsFetched", (populated) => {
       const state = get();
-      console.log("populated", populated);
       // Only add message if it belongs to the current conversation
 
       set({

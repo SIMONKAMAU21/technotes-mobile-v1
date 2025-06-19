@@ -1,6 +1,6 @@
 // app/(admin)/tabs/_layout.tsx
 import { Tabs, usePathname } from "expo-router";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import React, { useContext } from "react";
 import { ThemeContext } from "@/store/themeContext";
 import { Theme } from "@/constants/theme";
@@ -78,6 +78,15 @@ export default function AdminTabsLayout() {
           title: "Inbox",
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="mail" color={color} size={size} />
+          ),
+        }}
+      />
+       <Tabs.Screen
+        name="Events"
+        options={{
+          title: "Events",
+          tabBarIcon: ({ color, size }) => (
+            <MaterialIcons name="event" size={size} color={color} />
           ),
         }}
       />

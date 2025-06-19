@@ -1,16 +1,17 @@
 import { httpV1 } from "@/api/axios";
+import { queryClient } from "@/app/_layout";
 import { useSocketConnection } from "@/hooks/useSocket";
 import { useUserStore } from "@/store";
 import { useAppActions } from "@/store/actions";
+import { socket } from "@/utils/socket";
 import { useMutation, useQuery } from "react-query";
 
 export const useGetInbox = () => {
   const user = useUserStore((state) => state.userData); // This should be synchronous
   useSocketConnection(user?.id);
   const { setGlobalError, setGlobalSuccess } = useAppActions();
-
   return useQuery(
-    ["inbox", user?.id],
+    ["inbox"],
     async () => {
       const response = await httpV1({
         method: "GET",
@@ -19,8 +20,22 @@ export const useGetInbox = () => {
       return response.data;
     },
     {
-      enabled: !!user?.id, // only run if user ID exists
-      onSuccess: (data) => {},
+      onSuccess: () => {
+        if(!socket.hasListeners("userConversationsFetched")){
+          socket.on("userConversationsFetched",(newConversation)=>{
+            queryClient.setQueryData(["inbox"],(old : any = [])=> {
+              // Check if the new conversation already exists
+              const exists = old.some((conv: any) => conv._id === newConversation._id);
+              if (exists) {
+                // If it exists, return the old data without modification
+                return old;
+              }
+              // If it doesn't exist, add the new conversation to the front
+              return [newConversation, ...old];
+            })
+          })
+        }
+      },
       onError: (error: any) => {
         const errorMsg =
           error?.response?.data?.message ||

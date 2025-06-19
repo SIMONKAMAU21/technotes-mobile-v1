@@ -22,6 +22,7 @@ import { connectSocket } from "@/utils/socket";
 import { useChatStore } from "@/store/useChatStore";
 import { ThemeContext } from "@/store/themeContext";
 import { Theme } from "@/constants/theme";
+import { useGetInbox } from "./data";
 
 interface ChatStoreType {
   messages: any[];
@@ -48,13 +49,13 @@ const InboxScreen = () => {
   const [searchQuery, setSearchQuery] = useState("");
  const { theme } = useContext(ThemeContext);
   const color = Theme[theme]
+  const {data:conversations , isLoading} = useGetInbox()
   const {
     subscribeToMessages,
     unsubscribeFromMessages,
     clearMessages,
     isconversationsLoading,
     getConversations,
-    conversations: data,
     clearConversations,
     isError:error
   } = useChatStore() as ChatStoreType;
@@ -79,19 +80,19 @@ const InboxScreen = () => {
     unsubscribeFromMessages,
     clearMessages,
   ]);
-  const filteredUsers = useMemo(() => {
-    if (!data || !searchQuery.trim()) {
-      return data || [];
+  const filteredConversations = useMemo(() => {
+    if (!conversations || !searchQuery.trim()) {
+      return conversations || [];
     }
     const query = searchQuery.toLowerCase().trim();
-    return data.filter((chat: any) => {
+    return conversations.filter((chat: any) => {
       return (
         chat.lastMessage.receiverId.name?.toLowerCase().includes(query) ||
         chat.lastMessage.content.toLowerCase().includes(query) ||
         chat.lastMessage.senderId.role?.toLowerCase().includes(query)
       );
     });
-  }, [data, searchQuery]);
+  }, [conversations, searchQuery]);
 
   if (!user) {
     return;
@@ -136,7 +137,7 @@ const InboxScreen = () => {
           {/* <Text className="text-lg font-bold mb-2">
             Conversations: {data?.length ?? 0}
           </Text> */}
-          {filteredUsers?.map((item: any) => (
+          {filteredConversations?.map((item: any) => (
             <TouchableOpacity
               key={item._id}
               style={{backgroundColor:color.bg}}

@@ -18,14 +18,16 @@ export default function OnboardingScreen() {
   const globalSuccess = state.globalSuccess;
   const userData = useUserStore((state) => state.userData);
   const router = useRouter();
-
+// if(!userData ){
+//     return ; // or a loading spinner
+// }
   useEffect(() => {
     const checkUserData = async () => {
       const userToken = await getUserToken();
       if (userData && userToken) {
         connectSocket();
 
-        switch (userData.role) {
+        switch (userData?.role) {
           case "admin":
             router.replace("/(admin)/tabs/dashboard");
             break;
