@@ -72,6 +72,7 @@ export const useDeleteUser = (id: string) => {
           queryClient.invalidateQueries(["users"]);
       },
       onError: (error: any) => {
+        console.log('error', error)
         const message =
           error.response?.data?.message ||
           error.message ||

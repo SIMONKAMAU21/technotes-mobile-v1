@@ -30,8 +30,7 @@ export default function UsersScreen() {
   const colorScheme = useColorScheme();
   const isDarkMode = colorScheme === "dark";
   const { data, isLoading, error } = useGetUsers();
-  const [selectedUser, setSelectedUser] = useState(null);
-  const [showOptions, setShowOptions] = useState(false);
+ 
   const [searchQuery, setSearchQuery] = useState("");
   const { user } = useUserData();
 
@@ -63,12 +62,7 @@ const color = Theme[theme]
       params: { userdata: JSON.stringify(user) },
     });
   };
-  const handleDelete = (user: any) => {
-    // router.push({
-    //   pathname: "/(admin)/tabs/users/delete",
-    //   params: { userdata: JSON.stringify(user) },
-    // });
-  };
+
   //start a conversation with a user
   const handleUserPress = (user: any) => {
     // setSelectedUser(user);
@@ -81,7 +75,7 @@ const color = Theme[theme]
     ({ item }: { item: any }) => {
       return (
         <TouchableOpacity
-          key={item.id}
+          key={item._id}
           style={{backgroundColor:color.bg}}
           onPress={() => handleUserPress(item)}
           className={`flex-row  items-center p-4 mb-1 rounded-md `}
@@ -95,7 +89,7 @@ const color = Theme[theme]
                   backgroundColor: "#4299E1",
                 }}
                 size={40}
-                label={item?.name.charAt(0)}
+                label={item?.name?.charAt(0)}
                 color={isDarkMode ? "white" : "black"}
               />
             )}

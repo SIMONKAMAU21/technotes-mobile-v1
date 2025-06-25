@@ -4,6 +4,8 @@ import {
   Text,
   TouchableOpacity,
   View,
+  Platform,
+  KeyboardAvoidingView,
 } from "react-native";
 import React, { useContext, useMemo, useState } from "react";
 import { useEvents } from "./data/data";
@@ -12,7 +14,7 @@ import LoadingIndicator from "@/components/ui/loading";
 import { ThemeContext } from "@/store/themeContext";
 import { Theme } from "@/constants/theme";
 import { HeaderWithIcon } from "@/components/ui/headerWithIcon";
-import { Picker } from "@react-native-picker/picker"; // install this if not yet installed
+import { Picker } from "@react-native-picker/picker";
 import { HStack } from "@/components/ui/Stacks";
 import SearchInput from "@/components/ui/searchInput";
 import { Menu } from "react-native-paper";
@@ -21,21 +23,8 @@ const EventList = () => {
   const { data: events, isLoading, isError } = useEvents();
   const { theme } = useContext(ThemeContext);
   const color = Theme[theme];
-  const [visible, setVisible] = React.useState(false);
+  const [visible, setVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-
-  const openMenu = () => {
-    if (visible) return; // Prevent multiple calls
-    searchQuery && setSearchQuery(""); // Reset selected role when opening menu
-
-    setVisible(true);
-  };
-
-  const closeMenu = () => setVisible(false);
-  if (isLoading) return <LoadingIndicator />;
-  if (isError) return <Text>Error loading events.</Text>;
-  if (!events?.length) return <Text>No events available.</Text>;
-
 
   const filteredEvents = useMemo(() => {
     if (!events || !searchQuery.trim()) {
@@ -50,21 +39,68 @@ const EventList = () => {
     });
   }, [events, searchQuery]);
 
+  const openMenu = () => {
+    if (visible) return; // Prevent multiple calls
+    searchQuery && setSearchQuery(""); // Reset selected role when opening menu
+    setVisible(true);
+  };
+
+  const closeMenu = () => setVisible(false);
+
+  // Early returns after all hooks are declared
+  if (isLoading) {
+    return (
+      <SafeAreaView
+        style={{ backgroundColor: color.background }}
+        className="flex-1 mt-[7%]"
+      >
+        <LoadingIndicator />
+      </SafeAreaView>
+    );
+  }
+
+  if (isError) {
+    return (
+      <SafeAreaView
+        style={{ backgroundColor: color.background }}
+        className="flex-1 mt-[7%]"
+      >
+        <Text style={{ color: color.text, textAlign: 'center', marginTop: 50 }}>
+          Error loading events.
+        </Text>
+      </SafeAreaView>
+    );
+  }
+
+  if (!events?.length) {
+    return (
+      <SafeAreaView
+        style={{ backgroundColor: color.background }}
+        className="flex-1 mt-[7%]"
+      >
+        <Text style={{ color: color.text, textAlign: 'center', marginTop: 50 }}>
+          No events available.
+        </Text>
+      </SafeAreaView>
+    );
+  }
+
   return (
     <SafeAreaView
       style={{ backgroundColor: color.background }}
       className="flex-1 mt-[7%]"
     >
+      
       <HeaderWithIcon title="Events" />
       <HStack
         style={{
           backgroundColor: theme === "dark" ? color.background : color.bg,
         }}
-        className="items-center    mb-2"
+        className="items-center mb-2"
       >
-        <View className="px-4 mb-2 h-50  w-[30%] rounded-lg">
+        <View className="px-4 mb-2 h-50 w-[30%] rounded-lg">
           <Text
-          className="text-sm"
+            className="text-sm"
             style={{ color: color.text, marginBottom: 2 }}
           >
             Filter by Role:
@@ -72,7 +108,7 @@ const EventList = () => {
           <Menu
             visible={visible}
             onDismiss={closeMenu}
-            contentStyle={{backgroundColor: color.bg}}
+            contentStyle={{ backgroundColor: color.bg }}
             anchor={
               <TouchableOpacity
                 onPress={openMenu}
@@ -92,35 +128,30 @@ const EventList = () => {
             }
           >
             <Menu.Item
-              onPress={() =>{
-                 setSearchQuery("");
-                 closeMenu()
-                }}
-              
+              onPress={() => {
+                setSearchQuery("");
+                closeMenu();
+              }}
               title="All"
               titleStyle={{ color: color.text }}
             />
             <Menu.Item
-              onPress={() => {setSearchQuery("admin");closeMenu()}}
+              onPress={() => {
+                setSearchQuery("admin");
+                closeMenu();
+              }}
               title="Admin"
               titleStyle={{ color: color.text }}
             />
             <Menu.Item
-              onPress={() => {setSearchQuery("teacher");closeMenu()}}
+              onPress={() => {
+                setSearchQuery("teacher");
+                closeMenu();
+              }}
               title="Teacher"
               titleStyle={{ color: color.text }}
             />
           </Menu>
-          {/* <Picker
-            selectedValue={selectedRole}
-            style={{ backgroundColor: color.bg, color: color.text }}
-            onValueChange={(value) => setSelectedRole(value)}
-          >
-            <Picker.Item label="All" value="" />
-            <Picker.Item label="Admin" value="admin" />
-            <Picker.Item label="Teacher" value="teacher" />
-            <Picker.Item label="Parent" value="parent" />
-          </Picker> */}
         </View>
         <SearchInput
           value={searchQuery}
@@ -131,8 +162,17 @@ const EventList = () => {
 
       <FlatList
         data={filteredEvents}
-        contentContainerStyle={{ padding: 10, gap: 12 }}
+        contentContainerStyle={{ 
+          padding: 10, 
+          gap: 12,
+          // Add bottom padding to account for tab bar
+          paddingBottom: Platform.OS === 'ios' ? 100 : 80
+        }}
         keyExtractor={(item) => item._id}
+        // Enable keyboard dismissal when scrolling
+        keyboardShouldPersistTaps="handled"
+        // Automatically adjust content when keyboard appears
+        keyboardDismissMode="on-drag"
         renderItem={({ item }) => (
           <TouchableOpacity
             style={{

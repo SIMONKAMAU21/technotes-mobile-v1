@@ -27,26 +27,42 @@ const SwipeList = ({
 }: swipeListProps) => {
   return (
     <>
-    <SwipeListView
-      data={data}
-      keyExtractor={(item) => item.id}
-      renderItem={renderItem}
-      renderHiddenItem={renderHiddenItem}
-      disableLeftSwipe={isAdmin}
-      closeOnScroll={true}
-      onRightAction={rightAction}
-      onLeftAction={leftAction}
-      closeOnRowPress={true}
-      closeOnRowBeginSwipe={true}
-      disableRightSwipe={!isAdmin}
-      contentContainerClassName="pb-[30%] border-b-2 border-gray-200"
-      contentContainerStyle={{
-        paddingBottom: 200,
-        overflow: "scroll",
-      }}
-      rightOpenValue={isAdmin ? -75 : 0} // Adjust based on your design
-      leftOpenValue={isAdmin ? 75 : 0} // Adjust based on your design
-    />
+      <SwipeListView
+        data={data}
+        keyExtractor={(item) =>
+          item.id ? item.id.toString() : Math.random().toString()
+        }
+        renderItem={renderItem}
+        renderHiddenItem={renderHiddenItem}
+        disableLeftSwipe={isAdmin}
+        closeOnScroll={true}
+        onRightAction={
+          rightAction
+            ? (rowKey, rowMap) => {
+                const user = data?.find((u) => u.id === rowKey);
+                if (user) rightAction(user);
+              }
+            : undefined
+        }
+        onLeftAction={
+          leftAction
+            ? (rowKey, rowMap) => {
+                const user = data?.find((u) => u.id === rowKey);
+                if (user) leftAction(user);
+              }
+            : undefined
+        }
+        closeOnRowPress={true}
+        closeOnRowBeginSwipe={true}
+        disableRightSwipe={!isAdmin}
+        contentContainerClassName="pb-[30%] border-b-2 border-gray-200"
+        contentContainerStyle={{
+          paddingBottom: 200,
+          overflow: "scroll",
+        }}
+        rightOpenValue={isAdmin ? -75 : 0} // Adjust based on your design
+        leftOpenValue={isAdmin ? 75 : 0} // Adjust based on your design
+      />
     </>
   );
 };

@@ -18,6 +18,7 @@ import { HStack, VStack } from "./Stacks";
 import { ThemeContext } from "@/store/themeContext";
 import { Theme } from "@/constants/theme";
 import CustomInput from "./customInput";
+import { useAppActions } from "@/store/actions";
 interface userDetails {
   userDetails: {
     photo: string | undefined;
@@ -28,7 +29,8 @@ interface userDetails {
 const UpdateProfile = () => {
   const { theme } = useContext(ThemeContext);
   const color = Theme[theme];
-  //   console.log("userDetails", userDetails);
+  const { setGlobalError, setGlobalSuccess } = useAppActions();
+
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -40,7 +42,6 @@ const UpdateProfile = () => {
     isError: error,
   } = useUpdatePicture();
   const userData = useUserStore((state) => state.userData);
-  const isLoading = useUserStore((state) => state.isLoading);
   const refreshUserData = useUserStore((state) => state.refreshUserData);
   const router = useRouter();
   const user_id: string | undefined = userData ? userData.id : "N/A";
@@ -80,8 +81,14 @@ const UpdateProfile = () => {
       );
       if (overSize?.length > 0) {
         const fileNames = overSize?.map((file) => file.fileName);
-        return;
+        return setGlobalError({
+          visible: true,
+          description: `File size exceeds 2MB for files: ${fileNames.join(
+            ", "
+          )}`,
+        });
       }
+      console.log("result.canceled", result.canceled);
       if (result.canceled) {
         return;
       }
@@ -102,6 +109,7 @@ const UpdateProfile = () => {
         {
           onSuccess: async () => {
             await refreshUserData();
+            console.log("formData", formData);
           },
         }
       );
@@ -117,7 +125,6 @@ const UpdateProfile = () => {
       contentContainerClassName="p-4 gap-4"
     >
       <View className=" flex-1 items-center gap-2 rounded-lg">
-
         <View style={styles.header} className="bg-primary " />
 
         <TouchableOpacity onPress={handleImagePick}>
@@ -155,7 +162,7 @@ const UpdateProfile = () => {
           <CustomInput
             placeholder="Current password"
             value={currentPassword}
-            style={{ width: "100%", height:"70%"}}
+            style={{ width: "100%", height: "70%" }}
             label="Current password"
             onChangeText={setCurrentPassword}
             secureTextEntry
@@ -165,10 +172,8 @@ const UpdateProfile = () => {
             placeholder="New password"
             value={newPassword}
             label="New password"
-            style={{ width: "100%", height:"70%"}}
-            helperText={
-              isError ? "Password must be at least 6 characters" : ""
-            }
+            style={{ width: "100%", height: "70%" }}
+            helperText={isError ? "Password must be at least 6 characters" : ""}
             onChangeText={setNewPassword}
             secureTextEntry
             // style={styles.input}
@@ -176,7 +181,7 @@ const UpdateProfile = () => {
           <CustomInput
             placeholder="Confirm password"
             value={confirmPassword}
-            style={{ width: "100%", height:"70%"}}
+            style={{ width: "100%", height: "70%" }}
             label="Confirm password"
             onChangeText={setConfirmPassword}
             secureTextEntry
@@ -233,7 +238,7 @@ const styles = StyleSheet.create({
   container: {
     // padding: 20,
     alignItems: "center",
-    overflow:"scroll"
+    overflow: "scroll",
   },
   header: {
     height: 100,

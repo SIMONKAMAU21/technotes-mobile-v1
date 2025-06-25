@@ -16,10 +16,6 @@ export default function ProfileScreen() {
   const state = useAppState();
   const globalError = state.globalError;
   const globalSuccess = state.globalSuccess;
- 
-
-
- 
 
   return (
     <SafeAreaView className="flex-1 mt-[7%]">
@@ -32,8 +28,8 @@ export default function ProfileScreen() {
         description={globalError?.description}
       />
       <HeaderWithIcon title="Profile" />
-   
-        <Updateprofile />
+
+      <Updateprofile />
     </SafeAreaView>
   );
 }

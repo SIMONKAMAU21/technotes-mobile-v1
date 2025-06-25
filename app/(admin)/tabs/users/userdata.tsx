@@ -61,7 +61,21 @@ export default function UserDetailsScreen() {
     };
 
     try {
-      await updateUser(payload);
+      await updateUser(payload,{
+        onSuccess: () => {
+          setGlobalSuccess({
+            visible: true,
+            description: "User updated successfully",
+          });
+          router.back();
+        },
+        onError: (error) => {
+          setGlobalError({
+            visible: true,
+            description: error.message || "Failed to update user",
+          });
+        },
+      });
     } catch (error) {
       setGlobalError({
         visible: true,
@@ -72,9 +86,22 @@ export default function UserDetailsScreen() {
 
   const handleDeleteUser = async () => {
     try {
-      const response = await deleteUser(userData._id);
-      console.log("User deleted successfully:", response);
-      router.back();
+       await deleteUser(userData._id,{
+        onSuccess:()=>{
+          // setGlobalSuccess({
+          //   visible: true,
+          //   description: "User deleted successfully",
+          // });
+          router.back();
+        },
+        onError: (error) => {
+          console.log('error', error)
+          setGlobalError({
+            visible: true,
+            description: error.message || "Failed to delete user",
+          });
+        },
+      });
     } catch (error) {
       console.error("Error deleting user:", error);
       Alert.alert("Error", "Failed to delete user");
