@@ -8,10 +8,7 @@ import { ThemeContext } from "@/store/themeContext";
 import { Theme } from "@/constants/theme";
 interface HeaderDashboardProps {
   userName: string | undefined;
-  isDarkMode: boolean;
-  onThemeToggle: () => void;
   userImage: string | undefined;
-  onMenuPress: () => void;
 }
 
 const HeaderDashboard = ({
@@ -19,7 +16,6 @@ const HeaderDashboard = ({
   userImage,
 }: HeaderDashboardProps) => {
   const router = useRouter();
-  const refreshUserData = useUserStore((state) => state.refreshUserData);
 
   const goProfile = () => {
     router.push("/(profile)/profile");

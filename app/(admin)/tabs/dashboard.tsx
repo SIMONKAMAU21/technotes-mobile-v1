@@ -17,8 +17,15 @@ import { useFocusEffect } from "@react-navigation/native";
 import { useGetUsers } from "@/shared/data/api";
 import { ThemeContext } from "@/store/themeContext";
 import { Theme } from "@/constants/theme";
-import { shadow } from "@/components/ui/shadow";
-
+import MyLineChart, { shadow } from "@/components/ui/shadow";
+import {
+  LineChart,
+  BarChart,
+  ProgressChart,
+  ContributionGraph,
+  StackedBarChart,
+} from "react-native-chart-kit";
+import { HStack, VStack } from "@/components/ui/Stacks";
 interface userData {
   // user:[]
   role: string;
@@ -30,9 +37,8 @@ const bibleVerses = [
   "Trust in the Lord with all your heart. - Prov 3:5",
 ];
 export default function DashboardScreen() {
-  const colorScheme = useColorScheme();
   const { data: users = [] } = useGetUsers();
-  const user = useUserStore((state) => state.userData);
+  const user = useUserStore((state: any) => state.userData);
   const { theme } = useContext(ThemeContext);
   const color = Theme[theme];
   const [verseIndex, setVerseIndex] = useState(0);
@@ -84,79 +90,116 @@ export default function DashboardScreen() {
     >
       <HeaderDashboard userName={user?.name} userImage={user?.photo} />
       <ScrollView
-        className={`bg-${color.background}`}
+        // className={`bg-${color.background}`}
         contentContainerClassName="p-2"
       >
-        {/* <View className="mb-6">
-          <Text
-            className={`text-2xl font-bold ${
-              isDarkMode ? "text-white" : "text-gray-900"
-            }`}
-          >
-            Dashboard
-          </Text>
-          <Text
-            className={`mt-1 ${isDarkMode ? "text-gray-300" : "text-gray-600"}`}
-          >
-            Welcome to your admin dashboard
-          </Text>
-        </View> */}
-
         <View
-          style={{ backgroundColor: color.bg }}
-          className={` p-4 shadow-sm mb-4 rounded-lg`}
+          style={{
+            height: 210,
+            width: "100%",
+            borderRadius: 16,
+            overflow: "hidden",
+            marginBottom: 16,
+            position: "relative",
+          }}
         >
-          <Text
-            style={{ color: color.text }}
-            className={`text-lg font-semibold`}
-          >
-            User Statistics
-          </Text>
+          {/* Background image */}
+          <Image
+            source={{ uri: user?.photo }}
+            style={{
+              width: "100%",
+              height: "100%",
+              position: "absolute",
+            }}
+            resizeMode="cover"
+          />
 
-          <View className="flex-row w-full flex-wrap overflow-hidden gap-4 justify-between mt-4">
-            <Card
-              color="white"
-              icon="people"
-              count={adminCount}
-              bgColor="bg-primary"
-              label="Admins"
-            />
-            <Card
-              color="white"
-              icon="book"
-              count={studentCount}
-              bgColor="bg-secondary"
-              label="Students"
-            />
-            <Card
-              color="white"
-              icon="school"
-              count={teacherCount}
-              bgColor="bg-secondary"
-              label="Teachers"
-            />
-            <Card
-              color="white"
-              icon="person"
-              count={parentCount}
-              bgColor="bg-primary"
-              label="Parents"
-            />
+          {/* Overlay */}
+          <View
+            style={{
+              position: "absolute",
+              width: "100%",
+              height: "100%",
+              backgroundColor: "rgba(56, 53, 15, 0.4)",
+              padding: 10,
+            }}
+          >
+            <Text
+              style={{
+                color: "#fff",
+                fontSize: 20,
+                fontWeight: "bold",
+                marginBottom: 12,
+              }}
+            >
+              User Statistics
+            </Text>
+
+            {/* Card grid */}
+            <View
+              style={{
+                flexDirection: "row",
+                flexWrap: "wrap",
+                justifyContent: "space-between",
+                gap: 12,
+              }}
+            >
+              <Card
+                color="white"
+                icon="people"
+                count={adminCount}
+                // bgColor="bg-primary"
+                label="Admins"
+              />
+              <Card
+                color="white"
+                icon="book"
+                count={studentCount}
+                // bgColor="bg-secondary"
+                label="Students"
+              />
+              <Card
+                color="white"
+                icon="school"
+                count={teacherCount}
+                // bgColor="bg-secondary"
+                label="Teachers"
+              />
+              <Card
+                color="white"
+                icon="person"
+                count={parentCount}
+                // bgColor="bg-primary"
+                label="Parents"
+              />
+            </View>
           </View>
         </View>
-        {/* <View
-          style={{ backgroundColor: color.bg,...shadow
-           }}
-          className={`rounded-lg p-0 shadow-sm mb-4 h-40,w-full `}
-        >
-        
-          <Image
-            className="w-full h-20 rounded-t-lg"
-            source={{ uri: user?.photo }}
-            alt="user photo"
-          />
-          <View className="space-y-4 flex-row justify-between"></View>
-        </View> */}
+        <VStack style={{backgroundColor: color.bg}} className="p-2 rounded-lg mb-4">
+
+<Text style={{color:color.text}} className="font-bold">System Analysis</Text>
+ <MyLineChart
+          adminCount={adminCount}
+          parentCount={parentCount}
+          studentCount={studentCount}
+          teacherCount={teacherCount}
+        />
+        <HStack className="justify-between items-center p-2 mb-4">
+          <Text className="font-bold" style={{ color: color.text }}>
+            A = Admin (s)
+          </Text>
+          <Text className="font-bold" style={{ color: color.text }}>
+            S = Student (s)
+          </Text>
+          <Text className="font-bold" style={{ color: color.text }}>
+            T = Teacher (s)
+          </Text>
+          <Text className="font-bold" style={{ color: color.text }}>
+            P = Parent (s)
+          </Text>
+        </HStack>
+        </VStack>
+       
         <View
           style={{
             ...shadow,
@@ -203,77 +246,6 @@ export default function DashboardScreen() {
             </Text>
           </View>
         </View>
-        <View
-          style={{ backgroundColor: color.bg }}
-          className={`rounded-lg p-4 shadow-sm mb-4 `}
-        >
-          <Text
-            style={{ color: color.text }}
-            className={`text-lg font-semibold mb-4`}
-          >
-            System Overview
-          </Text>
-
-          <View className="space-y-4 flex-row justify-between">
-            <View className="bg-blue-100 p-4 rounded-lg">
-              <Text className="text-blue-800 font-semibold">Active Users</Text>
-              <Text className="text-blue-600 text-2xl font-bold mt-1">
-                {users.length}
-              </Text>
-            </View>
-
-            <View className="bg-green-100 p-4 rounded-lg">
-              <Text className="text-green-800 font-semibold">Admin Users</Text>
-              <Text className="text-green-600 text-2xl font-bold mt-1">
-                {users.filter((user: userData) => user.role === "admin").length}
-              </Text>
-            </View>
-
-            <View className="bg-purple-100 p-4 rounded-lg">
-              <Text className="text-purple-800 font-semibold">
-                Regular Users
-              </Text>
-              <Text className="text-purple-600 text-2xl font-bold mt-1">
-                {
-                  users.filter(
-                    (user: userData) =>
-                      user.role === "student" ||
-                      user.role === "teacher" ||
-                      user.role === "parent"
-                  ).length
-                }
-              </Text>
-            </View>
-          </View>
-        </View>
-
-        {/* <View
-          style={{ backgroundColor: color.bg }}
-          className={`rounded-lg  p-4 shadow-sm mb-4`}
-        >
-          <Text
-            style={{ color: color.text }}
-            className={`text-lg font-semibold mb-4 `}
-          >
-            Quick Links
-          </Text>
-
-          <TouchableOpacity
-            onPress={() => router.push("/(admin)/tabs/users")}
-            className="flex-row items-center p-3 bg-primary rounded-lg mb-2"
-          >
-            <Ionicons name="people" size={24} color="white" />
-            <Text className="text-white ml-2">Manage Users</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            onPress={() => router.push("/(admin)/tabs/users/userAdd")}
-            className="flex-row items-center p-3 bg-secondary rounded-lg"
-          >
-            <Ionicons name="person-add" size={24} color="white" />
-            <Text className="text-white ml-2">Add New User</Text>
-          </TouchableOpacity>
-        </View> */}
         <View className="flex-row justify-between">
           <View
             className=" p-4 rounded-lg w-full"

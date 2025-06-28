@@ -18,7 +18,7 @@ export default function OnboardingScreen() {
   const state = useAppState();
   const globalError = state.globalError;
   const globalSuccess = state.globalSuccess;
-  const userData = useUserStore((state) => state.userData);
+  const userData = useUserStore((state:any) => state.userData);
   const router = useRouter();
 // if(!userData ){
 //     return ; // or a loading spinner
