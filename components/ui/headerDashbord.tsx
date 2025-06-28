@@ -16,10 +16,7 @@ interface HeaderDashboardProps {
 
 const HeaderDashboard = ({
   userName,
-  isDarkMode,
-  onThemeToggle,
   userImage,
-  onMenuPress,
 }: HeaderDashboardProps) => {
   const router = useRouter();
   const refreshUserData = useUserStore((state) => state.refreshUserData);

@@ -13,6 +13,8 @@ import { Theme } from "@/constants/theme";
 import { Logo, Logo1 } from "@/components/ui/logo";
 
 export default function OnboardingScreen() {
+   const { theme } = useContext(ThemeContext);
+  const color = Theme[theme];
   const state = useAppState();
   const globalError = state.globalError;
   const globalSuccess = state.globalSuccess;
@@ -49,8 +51,7 @@ export default function OnboardingScreen() {
 
     checkUserData();
   }, [userData]); // Run when `user` changes
-  const { theme } = useContext(ThemeContext);
-  const color = Theme[theme];
+ 
   return (
     <SafeAreaView style={{backgroundColor:color.background}} className="flex-1  justify-between items-center p-8 bg-white">
       <WPSuccess

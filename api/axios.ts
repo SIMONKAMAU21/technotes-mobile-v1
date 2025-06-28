@@ -15,6 +15,7 @@ httpV1.interceptors.request.use(
     const token = await getUserToken();
     // If token exists, set the Authorization header
     if (token) {
+      // console.log('token', token)
       config.headers['Authorization'] = `JWT ${token}`;
     }
     return config;

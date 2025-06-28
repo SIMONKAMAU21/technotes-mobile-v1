@@ -14,6 +14,7 @@ import { Entypo, Ionicons, MaterialIcons, Zocial } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { signOut } from "@/utils";
 import { useUserStore } from "@/store";
+import { clearAuthToken } from "@/api/axios";
 
 const SettingsScreen = () => {
   const setUser = useUserStore((state) => state.setUserData);
@@ -128,6 +129,7 @@ const SettingsScreen = () => {
   };
 
   const logout = async () => {
+    await clearAuthToken()
     setUser(null);
     await signOut();
     // await deleteUserData();
