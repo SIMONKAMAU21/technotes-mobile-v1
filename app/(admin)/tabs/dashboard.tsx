@@ -42,6 +42,11 @@ export default function DashboardScreen() {
   const { theme } = useContext(ThemeContext);
   const color = Theme[theme];
   const [verseIndex, setVerseIndex] = useState(0);
+  // useEffect(() => {
+  //   console.log("DashboardScreen mounted");
+  //   return () => console.log("DashboardScreen unmounted");
+  // }, []);
+
   useEffect(() => {
     const interval = setInterval(() => {
       setVerseIndex((prev) => (prev + 1) % bibleVerses.length);
@@ -175,31 +180,35 @@ export default function DashboardScreen() {
             </View>
           </View>
         </View>
-        <VStack style={{backgroundColor: color.bg}} className="p-2 rounded-lg mb-4">
-
-<Text style={{color:color.text}} className="font-bold">System Analysis</Text>
- <MyLineChart
-          adminCount={adminCount}
-          parentCount={parentCount}
-          studentCount={studentCount}
-          teacherCount={teacherCount}
-        />
-        <HStack className="justify-between items-center p-2 mb-4">
-          <Text className="font-bold" style={{ color: color.text }}>
-            A = Admin (s)
+        <VStack
+          style={{ backgroundColor: color.bg }}
+          className="p-2 rounded-lg mb-4"
+        >
+          <Text style={{ color: color.text }} className="font-bold">
+            System Analysis
           </Text>
-          <Text className="font-bold" style={{ color: color.text }}>
-            S = Student (s)
-          </Text>
-          <Text className="font-bold" style={{ color: color.text }}>
-            T = Teacher (s)
-          </Text>
-          <Text className="font-bold" style={{ color: color.text }}>
-            P = Parent (s)
-          </Text>
-        </HStack>
+          <MyLineChart
+            adminCount={adminCount}
+            parentCount={parentCount}
+            studentCount={studentCount}
+            teacherCount={teacherCount}
+          />
+          <HStack className="justify-between items-center p-2 mb-4">
+            <Text className="font-bold" style={{ color: color.text }}>
+              A = Admin (s)
+            </Text>
+            <Text className="font-bold" style={{ color: color.text }}>
+              S = Student (s)
+            </Text>
+            <Text className="font-bold" style={{ color: color.text }}>
+              T = Teacher (s)
+            </Text>
+            <Text className="font-bold" style={{ color: color.text }}>
+              P = Parent (s)
+            </Text>
+          </HStack>
         </VStack>
-       
+
         <View
           style={{
             ...shadow,
@@ -255,13 +264,13 @@ export default function DashboardScreen() {
               Recent Users
             </Text>
             {users
-              .slice(0, 10)
+              .slice(0, 5)
               .map(
                 (
                   user: { name: string; role: string; photo: string },
                   index: number
                 ) => (
-                  <View
+                  <TouchableOpacity
                     key={index}
                     className="flex-row items-center justify-between py-2 border-b border-gray-200"
                   >
@@ -294,7 +303,7 @@ export default function DashboardScreen() {
                     >
                       {user.role}
                     </Text>
-                  </View>
+                  </TouchableOpacity>
                 )
               )}
           </View>

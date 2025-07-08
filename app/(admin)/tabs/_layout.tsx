@@ -63,7 +63,7 @@ export default function AdminTabsLayout() {
         }}
       />
 
-      <Tabs.Screen
+      {/* <Tabs.Screen
         name="classes"
         options={{
           title: "Classes",
@@ -71,7 +71,7 @@ export default function AdminTabsLayout() {
             <Ionicons name="school" color={color} size={size} />
           ),
         }}
-      />
+      /> */}
       <Tabs.Screen
         name="inbox"
         options={{

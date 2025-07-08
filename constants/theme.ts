@@ -14,7 +14,7 @@ export const Theme = {
     tabIconDefault: Colors.light.tabIconDefault,
     tabIconSelected: Colors.light.tabIconSelected,
     bg: Colors.light.bg,
-statusBar:Colors.light.statusBar
+    statusBar: Colors.light.statusBar,
     // inputBackground: Colors.light.inputBackground,
     // flagSpaceColor: Colors.light.flagSpaceColor,
     // Add more theme properties as needed
@@ -30,7 +30,7 @@ statusBar:Colors.light.statusBar
     tint: Colors.dark.tint,
     tabIconDefault: Colors.dark.tabIconDefault,
     tabIconSelected: Colors.dark.tabIconSelected,
-    statusBar:Colors.dark.statusBar
+    statusBar: Colors.dark.statusBar,
 
     // inputBackground: Colors.dark.inputBackground,
     // flagSpaceColor: Colors.dark.flagSpaceColor,

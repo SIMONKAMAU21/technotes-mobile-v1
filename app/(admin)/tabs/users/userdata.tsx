@@ -22,6 +22,7 @@ import WPError from "@/components/ui/error/WPError";
 import Loading from "@/components/ui/toasts/Loading";
 import { ThemeContext } from "@/store/themeContext";
 import { Theme } from "@/constants/theme";
+import ZoomableImage from "@/components/ui/zoomable";
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
 
@@ -61,12 +62,8 @@ export default function UserDetailsScreen() {
     };
 
     try {
-      await updateUser(payload,{
+      await updateUser(payload, {
         onSuccess: () => {
-          setGlobalSuccess({
-            visible: true,
-            description: "User updated successfully",
-          });
           router.back();
         },
         onError: (error) => {
@@ -86,8 +83,8 @@ export default function UserDetailsScreen() {
 
   const handleDeleteUser = async () => {
     try {
-       await deleteUser(userData._id,{
-        onSuccess:()=>{
+      await deleteUser(userData._id, {
+        onSuccess: () => {
           // setGlobalSuccess({
           //   visible: true,
           //   description: "User deleted successfully",
@@ -95,7 +92,7 @@ export default function UserDetailsScreen() {
           router.back();
         },
         onError: (error) => {
-          console.log('error', error)
+          console.log("error", error);
           setGlobalError({
             visible: true,
             description: error.message || "Failed to delete user",
@@ -191,65 +188,42 @@ export default function UserDetailsScreen() {
       </ScrollView>
 
       {/* Full Screen Photo Modal */}
-      <Modal
-        visible={isPhotoModalVisible}
-        transparent={true}
-        animationType="fade"
-        onRequestClose={closePhotoModal}
-      >
-        <View
-          style={{
-            flex: 1,
-            backgroundColor: "rgba(0, 0, 0, 0.9)",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
+      {userData?.photo && (
+        <Modal
+          visible={isPhotoModalVisible}
+          transparent={true}
+          animationType="fade"
+          onRequestClose={closePhotoModal}
         >
-          {/* Close button */}
-          <TouchableOpacity
-            onPress={closePhotoModal}
+          <View
             style={{
-              position: "absolute",
-              top: 50,
-              right: 20,
-              zIndex: 1,
-              backgroundColor: "rgba(255, 255, 255, 0.2)",
-              borderRadius: 20,
-              padding: 10,
+              flex: 1,
+              backgroundColor: "rgba(0, 0, 0, 0.9)", // Fixed: was "rgba(0, 0, 0, 10)" which is invalid
+              justifyContent: "center",
+              alignItems: "center",
             }}
           >
-            <Ionicons name="close" size={30} color="white" />
-          </TouchableOpacity>
+            {/* Close button */}
+            <TouchableOpacity
+              onPress={closePhotoModal}
+              style={{
+                position: "absolute",
+                top: 50,
+                right: 20,
+                zIndex: 1,
+                backgroundColor: "rgba(255, 255, 255, 0.2)",
+                borderRadius: 20,
+                padding: 10,
+              }}
+            >
+              <Ionicons name="close" size={30} color="white" />
+            </TouchableOpacity>
 
-          {/* Full screen image */}
-          <Image
-            source={
-              userData?.photo
-                ? { uri: userData?.photo }
-                : require("../../../../assets/images/user-placeholder.png")
-            }
-            style={{
-              width: screenWidth * 0.9,
-              height: screenHeight * 0.9,
-              borderRadius: 10,
-            }}
-            resizeMode="contain"
-          />
-
-          {/* User name below image */}
-          <Text
-            style={{
-              color: "white",
-              fontSize: 24,
-              fontWeight: "bold",
-              marginTop: 20,
-              textAlign: "center",
-            }}
-          >
-            {userData.name}
-          </Text>
-        </View>
-      </Modal>
+            {/* Zoomable image */}
+            <ZoomableImage uri={userData.photo} />
+          </View>
+        </Modal>
+      )}
     </SafeAreaView>
   );
 }

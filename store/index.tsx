@@ -21,7 +21,7 @@ interface UserState {
 
   initialize: () => Promise<void>;
   refreshUserData: () => Promise<void>;
-  updateUserPhoto: (photoUrl: string) => Promise<boolean>;
+  updateUserPhoto: (params: { photoUrl: string; theme: string }) => Promise<boolean>;
   setUserData: (data: UserData | null) => void;
   setHydrated: () => void;
 }
@@ -86,11 +86,11 @@ export const useUserStore = create<UserState>((set, get) => ({
     }
   },
 
-  updateUserPhoto: async (photoUrl: string) => {
+  updateUserPhoto: async ({photoUrl,theme}:{photoUrl:string,theme:string}) => {
     const { userData } = get();
     if (!userData) return false;
     try {
-      const updatedUserData = { ...userData, photo: photoUrl };
+      const updatedUserData = { ...userData, photo: photoUrl,theme:theme };
       await SecureStore.setItemAsync('userData', JSON.stringify(updatedUserData));
       set({ userData: updatedUserData });
       return true;

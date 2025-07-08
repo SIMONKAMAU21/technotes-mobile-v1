@@ -23,6 +23,7 @@ import { useChatStore } from "@/store/useChatStore";
 import { ThemeContext } from "@/store/themeContext";
 import { Theme } from "@/constants/theme";
 import { useGetInbox } from "./data";
+import Loading from "@/components/ui/toasts/Loading";
 
 interface ChatStoreType {
   messages: any[];
@@ -47,9 +48,9 @@ const InboxScreen = () => {
   const globalSuccess = state.globalSuccess;
   const user = useUserStore((state) => state.userData);
   const [searchQuery, setSearchQuery] = useState("");
- const { theme } = useContext(ThemeContext);
-  const color = Theme[theme]
-  const {data:conversations , isLoading} = useGetInbox()
+  const { theme } = useContext(ThemeContext);
+  const color = Theme[theme];
+  const { data: conversations, isLoading } = useGetInbox();
   const {
     subscribeToMessages,
     unsubscribeFromMessages,
@@ -57,7 +58,7 @@ const InboxScreen = () => {
     isconversationsLoading,
     getConversations,
     clearConversations,
-    isError:error
+    isError: error,
   } = useChatStore() as ChatStoreType;
 
   useEffect(() => {
@@ -98,13 +99,16 @@ const InboxScreen = () => {
     return;
   }
 
-  if (isconversationsLoading) {
-    return (
-      <SafeAreaView className="flex-1 justify-center items-center " style={{backgroundColor:color.background}}>
-        <LoadingIndicator />
-      </SafeAreaView>
-    );
-  }
+  // if (isconversationsLoading) {
+  //   return (
+  //     <SafeAreaView
+  //       className="flex-1 justify-center items-center "
+  //       style={{ backgroundColor: color.background }}
+  //     >
+  //       <LoadingIndicator />
+  //     </SafeAreaView>
+  //   );
+  // }
 
   const handleConversation = (item: any) => {
     router.push({
@@ -117,7 +121,10 @@ const InboxScreen = () => {
     setSearchQuery(text);
   };
   return (
-    <SafeAreaView className="flex-1 mt-[7%] " style={{backgroundColor:color.background}}>
+    <SafeAreaView
+      className="flex-1 mt-[7%] "
+      style={{ backgroundColor: color.background }}
+    >
       <HeaderWithIcon title="Inbox" />
       <SearchInput
         placeholder=""
@@ -133,6 +140,7 @@ const InboxScreen = () => {
         description={globalError?.description}
       />
       <ScrollView className="flex-1 p-3 ">
+        {isconversationsLoading && <Loading/>}
         <View className=" flex-1">
           {/* <Text className="text-lg font-bold mb-2">
             Conversations: {data?.length ?? 0}
@@ -140,7 +148,7 @@ const InboxScreen = () => {
           {filteredConversations?.map((item: any) => (
             <TouchableOpacity
               key={item._id}
-              style={{backgroundColor:color.bg}}
+              style={{ backgroundColor: color.bg }}
               onPress={() => handleConversation(item)}
               className="  bg-opacity-50 align-center rounded-lg p-1 mt-1 flex-row"
             >
@@ -156,8 +164,11 @@ const InboxScreen = () => {
                   />
                 </View>
 
-                <View  className="  flex-1  pl-2 justify-center">
-                  <Text style={{color:color.text}} className=" font-semibold text-transform capitalize">
+                <View className="  flex-1  pl-2 justify-center">
+                  <Text
+                    style={{ color: color.text }}
+                    className=" font-semibold text-transform capitalize"
+                  >
                     {item?.lastMessage?.receiverId?.name}
                   </Text>
                   <View className="flex-row items-center gap-1">
@@ -166,14 +177,19 @@ const InboxScreen = () => {
                     ) : (
                       <Octicons name="check" color={"#4299E1"} />
                     )}
-                    <Text style={{ textTransform: "lowercase",color:color.text }}>
+                    <Text
+                      style={{ textTransform: "lowercase", color: color.text }}
+                    >
                       {item.lastMessage.content.length > 60
                         ? item.lastMessage.content.slice(0, 60) + "..."
                         : item.lastMessage.content}
                     </Text>
                   </View>
 
-                  <Text style={{color:color.text}} className="self-end opacity-50 text-sm">
+                  <Text
+                    style={{ color: color.text }}
+                    className="self-end opacity-50 text-sm"
+                  >
                     {formatTime(item?.lastMessage?.timestamp)}
                   </Text>
                 </View>

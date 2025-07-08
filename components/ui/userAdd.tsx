@@ -51,16 +51,19 @@ export const UserAdd = ({
 
   const handleSubmit = () => {
     onSubmit(formData);
-    router.back();
+    // router.back();
   };
   const { theme } = useContext(ThemeContext);
   const color = Theme[theme];
   return (
-    <View style={{ backgroundColor: color.bg }} className="p-4 flex-1 mt-5 rounded-lg  gap-5">
+    <View
+      style={{ backgroundColor: color.bg }}
+      className="p-4 flex-1 mt-5 rounded-lg  gap-5"
+    >
       <CustomInput
         label="Name"
         value={formData.name}
-            style={{ width: "100%", height:"70%"}}
+        style={{ width: "100%", height: "70%" }}
         onChangeText={(text) => setFormData({ ...formData, name: text })}
         placeholder="Enter name"
       />
@@ -68,7 +71,7 @@ export const UserAdd = ({
       <CustomInput
         label="Email"
         value={formData.email}
-            style={{ width: "100%", height:"70%"}}
+        style={{ width: "100%", height: "70%" }}
         onChangeText={(text) => setFormData({ ...formData, email: text })}
         placeholder="Enter email"
         keyboardType="email-address"
@@ -77,7 +80,7 @@ export const UserAdd = ({
       <CustomInput
         label="Phone"
         value={formData.phone}
-            style={{ width: "100%", height:"70%"}}
+        style={{ width: "100%", height: "70%" }}
         onChangeText={(text) => setFormData({ ...formData, phone: text })}
         placeholder="Enter phone number"
         keyboardType="phone-pad"
@@ -86,12 +89,12 @@ export const UserAdd = ({
       <CustomInput
         label="Address"
         value={formData.address}
-            style={{ width: "100%", height:"70%"}}
+        style={{ width: "100%", height: "70%" }}
         onChangeText={(text) => setFormData({ ...formData, address: text })}
         placeholder="Enter address"
       />
 
-      <View >
+      <View>
         <Text style={{ color: color.text }} className="mb-2 font-bold">
           Role
         </Text>
@@ -118,7 +121,7 @@ export const UserAdd = ({
           onValueChange={(value) => setFormData({ ...formData, gender: value })}
         />
       </View>
-      <View style={{borderWidth:1}} className="border border-2-red">
+      <View >
         <CustomButton
           disabled={isLoading}
           loading={isLoading}

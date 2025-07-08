@@ -1,69 +1,36 @@
-import { View, Text } from "react-native";
-import React from "react";
-import { SwipeListView } from "react-native-swipe-list-view";
-interface UserData {
-  id?: string;
-  name?: string;
-  email?: string;
-  role?: string;
-}
-interface swipeListProps {
-  data: UserData[] | undefined;
-  renderItem: (data: { item: UserData }) => React.ReactElement;
-  renderHiddenItem: (data: { item: UserData }) => React.ReactElement;
-  isAdmin?: boolean;
-  handleEdit?: (user: UserData) => void;
-  rightAction?: (user: UserData) => void;
-  leftAction?: (user: UserData) => void;
+// Update your SwipeList component to accept and handle scroll events
+import React from 'react';
+import { SwipeListView } from 'react-native-swipe-list-view';
+
+interface SwipeListProps {
+  data: any[];
+  renderItem: ({ item }: { item: any }) => JSX.Element;
+  renderHiddenItem: ({ item }: { item: any }) => JSX.Element;
+  isAdmin: boolean;
+  onScroll?: (event: any) => void;
+  scrollEventThrottle?: number;
 }
 
-const SwipeList = ({
+const SwipeList: React.FC<SwipeListProps> = ({
   data,
   renderItem,
   renderHiddenItem,
   isAdmin,
-  rightAction,
-  leftAction,
-}: swipeListProps) => {
+  onScroll,
+  scrollEventThrottle = 16,
+}) => {
   return (
-    <>
-      <SwipeListView
-        data={data}
-        keyExtractor={(item) =>
-          item.id ? item.id.toString() : Math.random().toString()
-        }
-        renderItem={renderItem}
-        renderHiddenItem={renderHiddenItem}
-        disableLeftSwipe={isAdmin}
-        closeOnScroll={true}
-        onRightAction={
-          rightAction
-            ? (rowKey, rowMap) => {
-                const user = data?.find((u) => u.id === rowKey);
-                if (user) rightAction(user);
-              }
-            : undefined
-        }
-        onLeftAction={
-          leftAction
-            ? (rowKey, rowMap) => {
-                const user = data?.find((u) => u.id === rowKey);
-                if (user) leftAction(user);
-              }
-            : undefined
-        }
-        closeOnRowPress={true}
-        closeOnRowBeginSwipe={true}
-        disableRightSwipe={!isAdmin}
-        contentContainerClassName="pb-[30%] border-b-2 border-gray-200"
-        contentContainerStyle={{
-          paddingBottom: 200,
-          overflow: "scroll",
-        }}
-        rightOpenValue={isAdmin ? -75 : 0} // Adjust based on your design
-        leftOpenValue={isAdmin ? 75 : 0} // Adjust based on your design
-      />
-    </>
+    <SwipeListView
+      data={data}
+      renderItem={renderItem}
+      renderHiddenItem={renderHiddenItem}
+      rightOpenValue={-150}
+      leftOpenValue={isAdmin ? 150 : 75}
+      keyExtractor={(item) => item._id}
+      showsVerticalScrollIndicator={false}
+      onScroll={onScroll}
+      scrollEventThrottle={scrollEventThrottle}
+    />
   );
 };
 
